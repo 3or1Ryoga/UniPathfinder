@@ -1,5 +1,17 @@
 'use client'
-import LoginForm from './login-form'
+import dynamic from 'next/dynamic'
+
+// LoginFormを動的インポートしてSSGを回避
+const LoginForm = dynamic(() => import('./login-form'), {
+    ssr: false,
+    loading: () => <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        minHeight: '400px',
+        color: '#718096' 
+    }}>ログインフォームを読み込み中...</div>
+})
 
 export default function Home() {
     return (
