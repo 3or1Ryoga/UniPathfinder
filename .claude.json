@@ -1,0 +1,10 @@
+
+{
+    "mcp_servers": {
+    "supabase": {
+    "driver": "supabase",
+    "url": "https://wfvcxxpasvgrzhexoylx.supabase.co",
+    "apiKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndmdmN4eHBhc3ZncnpoZXhveWx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTk1NzcwMDIsImV4cCI6MjA3NTE1MzAwMn0.1wpdlNNBIAElqQRk0LxRn6RLQtLKpLOk03t8dL6ng_c"
+    }
+}
+}
