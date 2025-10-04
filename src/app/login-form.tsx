@@ -12,12 +12,27 @@ export default function LoginForm() {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null)
     const router = useRouter()
-    const supabase = createClient()
+    
+    // クライアントサイドでのみSupabaseクライアントを作成
+    const [supabase] = useState(() => {
+        // 環境変数の存在確認
+        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+            console.warn('Supabase environment variables not found')
+            return null
+        }
+        return createClient()
+    })
 
     const handleSignIn = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setMessage(null)
+
+        if (!supabase) {
+            setMessage({ type: 'error', text: 'サービスが利用できません。しばらく後でお試しください。' })
+            setLoading(false)
+            return
+        }
 
         // パスワードが空の場合はマジックリンクを送信
         if (!password) {
@@ -56,6 +71,12 @@ export default function LoginForm() {
         e.preventDefault()
         setLoading(true)
         setMessage(null)
+
+        if (!supabase) {
+            setMessage({ type: 'error', text: 'サービスが利用できません。しばらく後でお試しください。' })
+            setLoading(false)
+            return
+        }
 
         if (signUpMethod === 'magic') {
             // マジックリンクでの新規登録
@@ -108,6 +129,12 @@ export default function LoginForm() {
     const handleMagicLink = async () => {
         setLoading(true)
         setMessage(null)
+
+        if (!supabase) {
+            setMessage({ type: 'error', text: 'サービスが利用できません。しばらく後でお試しください。' })
+            setLoading(false)
+            return
+        }
 
         const { error } = await supabase.auth.signInWithOtp({
             email,

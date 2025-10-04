@@ -48,8 +48,7 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 
-  // 本番環境での最適化
-  swcMinify: true,
+  // SWC minification is enabled by default in Next.js 15
   
   // 実験的機能（必要に応じて）
   experimental: {

@@ -4,7 +4,13 @@ import { createClient } from '@/utils/supabase/client'
 import { Session } from '@supabase/supabase-js'
 
 export default function PasswordForm({ session }: { session: Session | null }) {
-    const supabase = createClient()
+    const [supabase] = useState(() => {
+        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+            console.warn('Supabase environment variables not found')
+            return null
+        }
+        return createClient()
+    })
     const [loading, setLoading] = useState(false)
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
@@ -14,6 +20,11 @@ export default function PasswordForm({ session }: { session: Session | null }) {
         try {
             setLoading(true)
             setMessage(null)
+
+            if (!supabase) {
+                setMessage({ type: 'error', text: 'サービスが利用できません。しばらく後でお試しください。' })
+                return
+            }
 
             if (newPassword !== confirmPassword) {
                 setMessage({ type: 'error', text: 'パスワードが一致しません' })

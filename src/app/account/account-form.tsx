@@ -4,7 +4,13 @@ import { createClient } from '@/utils/supabase/client'
 import { Session } from '@supabase/supabase-js'
 
 export default function AccountForm({ session }: { session: Session | null }) {
-    const supabase = createClient()
+    const [supabase] = useState(() => {
+        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+            console.warn('Supabase environment variables not found')
+            return null
+        }
+        return createClient()
+    })
     const [loading, setLoading] = useState(true)
     const [fullname, setFullname] = useState<string | null>(null)
     const [username, setUsername] = useState<string | null>(null)
@@ -32,6 +38,11 @@ export default function AccountForm({ session }: { session: Session | null }) {
     const getProfile = useCallback(async () => {
         try {
         setLoading(true)
+        
+        if (!supabase) {
+            console.warn('Supabase client not available')
+            return
+        }
         
         if (!user?.id) {
             console.log('No user ID available')
@@ -100,6 +111,11 @@ export default function AccountForm({ session }: { session: Session | null }) {
     }) {
         try {
         setLoading(true)
+        
+        if (!supabase) {
+            alert('サービスが利用できません。しばらく後でお試しください。')
+            return
+        }
         
         if (!user?.id) {
             alert('No user logged in!')
