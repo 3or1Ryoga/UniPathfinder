@@ -38,7 +38,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
             return
         }
 
-        let { data, error, status } = await supabase
+        const { data, error, status } = await supabase
             .from('profiles')
             .select(`
                 full_name, username, website, avatar_url, email,
@@ -50,6 +50,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
             .single()
 
         if (error && status !== 406) {
+            console.error('Error loading profile:', error)
             throw error
         }
 
@@ -76,6 +77,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
             setInterests(data.interests || '')
         }
         } catch (error) {
+        console.error('Error loading user data:', error)
         alert('Error loading user data!')
         } finally {
         setLoading(false)
@@ -104,7 +106,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
             return
         }
 
-        let { error } = await supabase.from('profiles').upsert({
+        const { error } = await supabase.from('profiles').upsert({
             id: user.id,
             full_name: fullname,
             username,
@@ -130,9 +132,13 @@ export default function AccountForm({ session }: { session: Session | null }) {
             
             updated_at: new Date().toISOString(),
         })
-        if (error) throw error
+        if (error) {
+            console.error('Error updating profile:', error)
+            throw error
+        }
         alert('Profile updated!')
         } catch (error) {
+        console.error('Error updating the data:', error)
         alert('Error updating the data!')
         } finally {
         setLoading(false)

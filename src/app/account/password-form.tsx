@@ -25,17 +25,22 @@ export default function PasswordForm({ session }: { session: Session | null }) {
                 return
             }
 
-            const { data, error } = await supabase.auth.updateUser({
+            const { error } = await supabase.auth.updateUser({
                 password: newPassword
             })
 
-            if (error) throw error
+            if (error) {
+                console.error('Error updating password:', error)
+                throw error
+            }
 
             setMessage({ type: 'success', text: 'パスワードを設定しました！' })
             setNewPassword('')
             setConfirmPassword('')
-        } catch (error: any) {
-            setMessage({ type: 'error', text: error.message || 'パスワードの更新に失敗しました' })
+        } catch (error) {
+            const errorMessage = error instanceof Error ? error.message : 'パスワードの更新に失敗しました'
+            console.error('Password update error:', error)
+            setMessage({ type: 'error', text: errorMessage })
         } finally {
             setLoading(false)
         }

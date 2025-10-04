@@ -21,7 +21,7 @@ export default function LoginForm() {
 
         // パスワードが空の場合はマジックリンクを送信
         if (!password) {
-            const { data, error } = await supabase.auth.signInWithOtp({
+            const { error } = await supabase.auth.signInWithOtp({
                 email,
                 options: {
                     emailRedirectTo: `${window.location.origin}/auth/callback`,
@@ -29,18 +29,20 @@ export default function LoginForm() {
             })
 
             if (error) {
+                console.error('Magic link error:', error)
                 setMessage({ type: 'error', text: error.message })
             } else {
                 setMessage({ type: 'success', text: 'マジックリンクを送信しました。メールを確認してください。' })
             }
         } else {
             // パスワードがある場合は通常のログイン
-            const { data, error } = await supabase.auth.signInWithPassword({
+            const { error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
             })
 
             if (error) {
+                console.error('Password login error:', error)
                 setMessage({ type: 'error', text: error.message })
             } else {
                 setMessage({ type: 'success', text: 'ログインしました！' })
@@ -57,7 +59,7 @@ export default function LoginForm() {
 
         if (signUpMethod === 'magic') {
             // マジックリンクでの新規登録
-            const { data, error } = await supabase.auth.signInWithOtp({
+            const { error } = await supabase.auth.signInWithOtp({
                 email,
                 options: {
                     emailRedirectTo: `${window.location.origin}/auth/callback`,
@@ -65,6 +67,7 @@ export default function LoginForm() {
             })
 
             if (error) {
+                console.error('Magic link signup error:', error)
                 setMessage({ type: 'error', text: error.message })
             } else {
                 setMessage({ type: 'success', text: 'マジックリンクを送信しました。メールを確認してください。' })
@@ -84,7 +87,7 @@ export default function LoginForm() {
                 return
             }
 
-            const { data, error } = await supabase.auth.signUp({
+            const { error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
@@ -93,6 +96,7 @@ export default function LoginForm() {
             })
 
             if (error) {
+                console.error('Password signup error:', error)
                 setMessage({ type: 'error', text: error.message })
             } else {
                 setMessage({ type: 'success', text: '確認メールを送信しました。メールを確認してください。' })
@@ -105,7 +109,7 @@ export default function LoginForm() {
         setLoading(true)
         setMessage(null)
 
-        const { data, error } = await supabase.auth.signInWithOtp({
+        const { error } = await supabase.auth.signInWithOtp({
             email,
             options: {
                 emailRedirectTo: `${window.location.origin}/auth/callback`,
@@ -113,6 +117,7 @@ export default function LoginForm() {
         })
 
         if (error) {
+            console.error('Magic link error:', error)
             setMessage({ type: 'error', text: error.message })
         } else {
             setMessage({ type: 'success', text: 'マジックリンクを送信しました。メールを確認してください。' })
