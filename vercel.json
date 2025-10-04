@@ -6,7 +6,6 @@
   "outputDirectory": ".next",
   "cleanUrls": true,
   "trailingSlash": false,
-  "regions": ["nrt1"],
   "functions": {
     "src/app/**": {
       "maxDuration": 10
