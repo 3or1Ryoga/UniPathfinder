@@ -19,12 +19,26 @@ VercelダッシュボードでSettings > Environment Variablesに以下を追加
 |------|-------|-------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | `https://your-project.supabase.co` | Production, Preview, Development |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `your-anon-key` | Production, Preview, Development |
+| `NEXT_PUBLIC_SITE_URL` | `https://your-app.vercel.app` | Production, Preview, Development |
 
 **重要な手順:**
 1. Supabaseダッシュボードの Settings > API から値を取得
 2. 各環境変数を追加する際は「Production」「Preview」「Development」すべてにチェック
 3. 値をコピペする際は前後のスペースに注意
 4. 保存後は必ず再デプロイを実行
+
+**環境変数設定の確認方法:**
+1. Vercelダッシュボード > Settings > Environment Variables
+2. 以下の3つの変数が存在することを確認:
+   - `NEXT_PUBLIC_SUPABASE_URL` (値: https://で始まるURL)
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (値: eyJで始まる長い文字列)
+   - `NEXT_PUBLIC_SITE_URL` (値: https://で始まるVercel URL)
+3. 各変数で「Production」「Preview」「Development」全てにチェックが入っていることを確認
+4. 保存後、Deployments タブから最新デプロイの「...」> 「Redeploy」を実行
+
+**マジックリンク設定:**
+マジックリンクが正常に動作するには、Supabaseの設定も必要です。
+詳細は `SUPABASE_AUTH_SETUP.md` を参照してください。
 
 ### 3. ビルド設定
 - Framework Preset: Next.js

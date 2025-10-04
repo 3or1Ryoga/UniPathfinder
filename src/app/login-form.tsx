@@ -15,9 +15,22 @@ export default function LoginForm() {
     
     // クライアントサイドでのみSupabaseクライアントを作成
     const [supabase] = useState(() => {
-        // 環境変数の存在確認
-        if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
-            console.warn('Supabase environment variables not found')
+        // 環境変数の存在確認とデバッグログ
+        const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+        const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+        
+        console.log('Environment check:', {
+            hasUrl: !!url,
+            hasKey: !!key,
+            urlPrefix: url ? url.substring(0, 20) + '...' : 'undefined',
+            keyPrefix: key ? key.substring(0, 20) + '...' : 'undefined'
+        })
+        
+        if (!url || !key) {
+            console.error('Missing Supabase environment variables:', {
+                url: !!url,
+                key: !!key
+            })
             return null
         }
         return createClient()
@@ -29,17 +42,25 @@ export default function LoginForm() {
         setMessage(null)
 
         if (!supabase) {
-            setMessage({ type: 'error', text: 'サービスが利用できません。しばらく後でお試しください。' })
+            setMessage({ 
+                type: 'error', 
+                text: 'サービスの設定に問題があります。管理者にお問い合わせください。（エラー: 環境変数未設定）' 
+            })
             setLoading(false)
             return
         }
 
         // パスワードが空の場合はマジックリンクを送信
         if (!password) {
+            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
+            const redirectUrl = `${baseUrl}/auth/callback`
+            
+            console.log('Magic link redirect URL:', redirectUrl)
+            
             const { error } = await supabase.auth.signInWithOtp({
                 email,
                 options: {
-                    emailRedirectTo: `${window.location.origin}/auth/callback`,
+                    emailRedirectTo: redirectUrl,
                 }
             })
 
@@ -73,17 +94,24 @@ export default function LoginForm() {
         setMessage(null)
 
         if (!supabase) {
-            setMessage({ type: 'error', text: 'サービスが利用できません。しばらく後でお試しください。' })
+            setMessage({ 
+                type: 'error', 
+                text: 'サービスの設定に問題があります。管理者にお問い合わせください。（エラー: 環境変数未設定）' 
+            })
             setLoading(false)
             return
         }
 
         if (signUpMethod === 'magic') {
             // マジックリンクでの新規登録
+            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
+            const redirectUrl = `${baseUrl}/auth/callback`
+            console.log('Magic link signup redirect URL:', redirectUrl)
+            
             const { error } = await supabase.auth.signInWithOtp({
                 email,
                 options: {
-                    emailRedirectTo: `${window.location.origin}/auth/callback`,
+                    emailRedirectTo: redirectUrl,
                 }
             })
 
@@ -108,11 +136,15 @@ export default function LoginForm() {
                 return
             }
 
+            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
+            const redirectUrl = `${baseUrl}/auth/callback`
+            console.log('Password signup redirect URL:', redirectUrl)
+            
             const { error } = await supabase.auth.signUp({
                 email,
                 password,
                 options: {
-                    emailRedirectTo: `${window.location.origin}/auth/callback`,
+                    emailRedirectTo: redirectUrl,
                 }
             })
 
@@ -131,15 +163,22 @@ export default function LoginForm() {
         setMessage(null)
 
         if (!supabase) {
-            setMessage({ type: 'error', text: 'サービスが利用できません。しばらく後でお試しください。' })
+            setMessage({ 
+                type: 'error', 
+                text: 'サービスの設定に問題があります。管理者にお問い合わせください。（エラー: 環境変数未設定）' 
+            })
             setLoading(false)
             return
         }
 
+        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
+        const redirectUrl = `${baseUrl}/auth/callback`
+        console.log('Standalone magic link redirect URL:', redirectUrl)
+        
         const { error } = await supabase.auth.signInWithOtp({
             email,
             options: {
-                emailRedirectTo: `${window.location.origin}/auth/callback`,
+                emailRedirectTo: redirectUrl,
             }
         })
 
