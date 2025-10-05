@@ -9,19 +9,22 @@
 4. 「Settings」タブをクリック
 
 ### Site URL設定
-**Site URL**に本番環境のURLを設定：
+**Site URL**にメインのURLを設定：
 ```
-https://uni-pathfinder-e7kb-hd1wnp3k8-ryoga-sakais-projects.vercel.app
+https://uni-pathfinder-lf9w.vercel.app
 ```
+注意：実際に使用するドメインを設定してください。
 
 ### Redirect URLs設定
 **Redirect URLs**に以下を追加（1行ずつ追加）：
 ```
 http://localhost:3000/auth/callback
 http://localhost:3001/auth/callback
+https://uni-pathfinder-lf9w.vercel.app/auth/callback
 https://uni-pathfinder-e7kb-hd1wnp3k8-ryoga-sakais-projects.vercel.app/auth/callback
 https://*.vercel.app/auth/callback
 ```
+重要：Vercelの複数のドメインを使用する場合は、すべて追加してください。
 
 ## 2. 設定手順詳細
 

@@ -64,8 +64,10 @@ export default function LoginForm() {
 
         // パスワードが空の場合はマジックリンクを送信
         if (!password) {
-            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
-            const redirectUrl = `${baseUrl}/auth/callback`
+            // 常に現在のURLを使用（複数のVercelドメインに対応）
+            const redirectUrl = typeof window !== 'undefined' 
+                ? `${window.location.origin}/auth/callback`
+                : `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`
             
             console.log('Magic link redirect URL:', redirectUrl)
             
@@ -116,8 +118,9 @@ export default function LoginForm() {
 
         if (signUpMethod === 'magic') {
             // マジックリンクでの新規登録
-            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
-            const redirectUrl = `${baseUrl}/auth/callback`
+            const redirectUrl = typeof window !== 'undefined' 
+                ? `${window.location.origin}/auth/callback`
+                : `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`
             console.log('Magic link signup redirect URL:', redirectUrl)
             
             const { error } = await supabase.auth.signInWithOtp({
@@ -148,8 +151,9 @@ export default function LoginForm() {
                 return
             }
 
-            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
-            const redirectUrl = `${baseUrl}/auth/callback`
+            const redirectUrl = typeof window !== 'undefined' 
+                ? `${window.location.origin}/auth/callback`
+                : `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`
             console.log('Password signup redirect URL:', redirectUrl)
             
             const { error } = await supabase.auth.signUp({
@@ -183,8 +187,9 @@ export default function LoginForm() {
             return
         }
 
-        const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
-        const redirectUrl = `${baseUrl}/auth/callback`
+        const redirectUrl = typeof window !== 'undefined' 
+            ? `${window.location.origin}/auth/callback`
+            : `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`
         console.log('Standalone magic link redirect URL:', redirectUrl)
         
         const { error } = await supabase.auth.signInWithOtp({
