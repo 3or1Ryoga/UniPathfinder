@@ -1,7 +1,7 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/utils/supabase/client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function LoginForm() {
     const [email, setEmail] = useState('')
@@ -12,6 +12,18 @@ export default function LoginForm() {
     const [loading, setLoading] = useState(false)
     const [message, setMessage] = useState<{ type: 'error' | 'success', text: string } | null>(null)
     const router = useRouter()
+    const searchParams = useSearchParams()
+    
+    // URLパラメータからエラーメッセージを取得
+    useEffect(() => {
+        const error = searchParams.get('error')
+        if (error) {
+            setMessage({ type: 'error', text: decodeURIComponent(error) })
+            // エラーパラメータをURLから削除
+            const newUrl = window.location.pathname
+            window.history.replaceState({}, '', newUrl)
+        }
+    }, [searchParams])
     
     // クライアントサイドでのみSupabaseクライアントを作成
     const [supabase] = useState(() => {
