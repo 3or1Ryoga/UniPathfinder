@@ -18,26 +18,26 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "UniPath Finder - コーディング学習AIコンシェルジュ",
+  title: "TechMight - コーディング学習AIコンシェルジュ",
   description: "GitHubリポジトリを分析し、あなたの現在のスキルレベルを客観的に評価。AIが最適化された学習パスと推奨教材を提案します。初心者開発者向けの無料プログラミング学習サポートサービス。",
   keywords: ["プログラミング学習", "GitHub分析", "AI学習サポート", "コーディング", "開発者", "初心者", "学習パス", "技術スキル"],
-  authors: [{ name: "UniPath Finder Team" }],
-  creator: "UniPath Finder",
-  publisher: "UniPath Finder",
+  authors: [{ name: "TechMight Team" }],
+  creator: "TechMight",
+  publisher: "TechMight",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://unipath-finder.com'),
+  metadataBase: new URL('https://techmight.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: "UniPath Finder - コーディング学習AIコンシェルジュ",
+    title: "TechMight - コーディング学習AIコンシェルジュ",
     description: "GitHubリポジトリを分析し、AIが最適化された学習パスを提案。初心者開発者のスキルアップを完全無料でサポートします。",
-    url: 'https://unipath-finder.com',
-    siteName: 'UniPath Finder',
+    url: 'https://techmight.com',
+    siteName: 'TechMight',
     locale: 'ja_JP',
     type: 'website',
     images: [
@@ -45,13 +45,13 @@ export const metadata: Metadata = {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'UniPath Finder - コーディング学習AIコンシェルジュ',
+        alt: 'TechMight - コーディング学習AIコンシェルジュ',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "UniPath Finder - コーディング学習AIコンシェルジュ",
+    title: "TechMight - コーディング学習AIコンシェルジュ",
     description: "GitHubリポジトリを分析し、AIが最適化された学習パスを提案。初心者開発者のスキルアップを完全無料でサポートします。",
     images: ['/og-image.jpg'],
   },

@@ -69,8 +69,6 @@ export default function LoginForm() {
                 ? `${window.location.origin}/auth/callback`
                 : `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`
             
-            console.log('Magic link redirect URL:', redirectUrl)
-            
             const { error } = await supabase.auth.signInWithOtp({
                 email,
                 options: {
@@ -121,7 +119,6 @@ export default function LoginForm() {
             const redirectUrl = typeof window !== 'undefined' 
                 ? `${window.location.origin}/auth/callback`
                 : `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`
-            console.log('Magic link signup redirect URL:', redirectUrl)
             
             const { error } = await supabase.auth.signInWithOtp({
                 email,
@@ -154,7 +151,6 @@ export default function LoginForm() {
             const redirectUrl = typeof window !== 'undefined' 
                 ? `${window.location.origin}/auth/callback`
                 : `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`
-            console.log('Password signup redirect URL:', redirectUrl)
             
             const { error } = await supabase.auth.signUp({
                 email,
@@ -190,7 +186,6 @@ export default function LoginForm() {
         const redirectUrl = typeof window !== 'undefined' 
             ? `${window.location.origin}/auth/callback`
             : `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/auth/callback`
-        console.log('Standalone magic link redirect URL:', redirectUrl)
         
         const { error } = await supabase.auth.signInWithOtp({
             email,

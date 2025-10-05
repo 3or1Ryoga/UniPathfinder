@@ -28,7 +28,7 @@ export default function Home() {
                             WebkitTextFillColor: 'transparent',
                             fontWeight: 'bold'
                         }}>
-                            UniPathfinder
+                            TechMight
                         </h1>
                         <h2 style={{ 
                             fontSize: '1.3rem', 
@@ -92,7 +92,7 @@ export default function Home() {
                         marginBottom: '3rem',
                         color: '#2d3748'
                     }}>
-                        なぜUniPathfinderなのか？
+                        なぜTechMightなのか？
                     </h2>
                     <div style={{ 
                         display: 'grid', 

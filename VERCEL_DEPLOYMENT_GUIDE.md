@@ -1,4 +1,4 @@
-# Vercelデプロイガイド - UniPath Finder
+# Vercelデプロイガイド - TechMight
 
 ## 🔐 デプロイ前のセキュリティチェックリスト
 
@@ -22,13 +22,13 @@
 ```bash
 # プロジェクトルートで実行
 git add .
-git commit -m "feat: complete UniPath Finder landing page and auth system"
+git commit -m "feat: complete TechMight landing page and auth system"
 git push origin main
 ```
 
 #### **Step 3: Vercelでプロジェクトインポート**
 1. Vercel Dashboard → "New Project"
-2. GitHub リポジトリ`UniPathFinder`を選択
+2. GitHub リポジトリ`TechMight`を選択
 3. Project Settings:
    - **Framework Preset**: Next.js
    - **Root Directory**: `unipath/`
@@ -206,4 +206,4 @@ export default nextConfig;
 
 ---
 
-**🎉 デプロイ完了後、UniPath Finderが世界中からアクセス可能になります！**
+**🎉 デプロイ完了後、TechMightが世界中からアクセス可能になります！**
