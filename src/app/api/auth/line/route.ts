@@ -41,18 +41,20 @@ export async function GET(request: NextRequest) {
         )
 
         // stateとuserIdをクッキーに保存
+        // sameSite: 'none' を使用してクロスサイトでも動作するようにする
+        // ※ 'none' を使う場合は secure: true が必須
         response.cookies.set('line_oauth_state', state, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            secure: true, // 本番環境では必須
+            sameSite: 'none', // クロスサイトリクエストでもクッキーを送信
             maxAge: 600, // 10分
             path: '/'
         })
 
         response.cookies.set('line_oauth_user_id', user.id, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
+            secure: true, // 本番環境では必須
+            sameSite: 'none', // クロスサイトリクエストでもクッキーを送信
             maxAge: 600, // 10分
             path: '/'
         })
