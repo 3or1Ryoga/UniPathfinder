@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 
@@ -8,7 +8,8 @@ interface UserType {
     email?: string
 }
 
-export default function LinkLinePage() {
+// useSearchParams を使用するコンポーネントを分離
+function LinkLineContent() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [user, setUser] = useState<UserType | null>(null)
@@ -190,5 +191,24 @@ export default function LinkLinePage() {
                 </p>
             </div>
         </div>
+    )
+}
+
+// Suspense でラップしたメインコンポーネント
+export default function LinkLinePage() {
+    return (
+        <Suspense fallback={
+            <div style={{
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#f7fafc'
+            }}>
+                <div style={{ color: '#718096' }}>読み込み中...</div>
+            </div>
+        }>
+            <LinkLineContent />
+        </Suspense>
     )
 }

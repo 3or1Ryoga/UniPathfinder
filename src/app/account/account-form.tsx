@@ -1,10 +1,10 @@
 'use client'
-import { useCallback, useEffect, useState } from 'react'
+import { Suspense, useCallback, useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { Session } from '@supabase/supabase-js'
 import { useSearchParams } from 'next/navigation'
 
-export default function AccountForm({ session }: { session: Session | null }) {
+function AccountFormContent({ session }: { session: Session | null }) {
     const searchParams = useSearchParams()
     const [supabase] = useState(() => {
         if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
@@ -501,5 +501,14 @@ export default function AccountForm({ session }: { session: Session | null }) {
                 </form>
             </div>
         </div>
+    )
+}
+
+// Suspense でラップしたメインコンポーネント
+export default function AccountForm({ session }: { session: Session | null }) {
+    return (
+        <Suspense fallback={<div style={{ padding: '2rem' }}>読み込み中...</div>}>
+            <AccountFormContent session={session} />
+        </Suspense>
     )
 }
