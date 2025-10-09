@@ -97,27 +97,31 @@ export async function GET(request: NextRequest) {
         }
 
         const profileData = await profileResponse.json()
+        console.log('LINE profile data received:', { userId: profileData.userId, displayName: profileData.displayName })
 
         // Step 3: Supabase profilesテーブルを更新
         const supabase = await createClient()
+
+        // upsertではなくupdateを使用（既存のユーザーレコードを更新）
         const { error: updateError } = await supabase
             .from('profiles')
-            .upsert({
-                id: userId,
+            .update({
                 line_user_id: profileData.userId,
                 line_display_name: profileData.displayName,
                 line_avatar_url: profileData.pictureUrl || null,
                 updated_at: new Date().toISOString(),
-            }, {
-                onConflict: 'id'
             })
+            .eq('id', userId)
 
         if (updateError) {
             console.error('Failed to update profile with LINE info:', updateError)
+            console.error('Error details:', JSON.stringify(updateError, null, 2))
             return NextResponse.redirect(
-                `${origin}/link-line?error=${encodeURIComponent('LINE情報の保存に失敗しました')}`
+                `${origin}/link-line?error=${encodeURIComponent('LINE情報の保存に失敗しました: ' + updateError.message)}`
             )
         }
+
+        console.log('LINE info saved successfully for user:', userId)
 
         // 成功: クッキーをクリアして友だち追加ページにリダイレクト
         const response = NextResponse.redirect(`${origin}/add-friend`)
