@@ -3,10 +3,15 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { useRouter, useSearchParams } from 'next/navigation'
 
+interface UserType {
+    id: string
+    email?: string
+}
+
 export default function LinkLinePage() {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
-    const [user, setUser] = useState<any>(null)
+    const [user, setUser] = useState<UserType | null>(null)
     const router = useRouter()
     const searchParams = useSearchParams()
     const supabase = createClient()

@@ -33,7 +33,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
     // LINE関連のstate
     const [lineUserId, setLineUserId] = useState<string | null>(null)
     const [lineDisplayName, setLineDisplayName] = useState<string | null>(null)
-    const [lineAvatarUrl, setLineAvatarUrl] = useState<string | null>(null)
+    // const [lineAvatarUrl, setLineAvatarUrl] = useState<string | null>(null) // 将来の機能拡張用に保持
     
     // 追加プロフィール情報
     const [bio, setBio] = useState<string | null>(null)
@@ -93,7 +93,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
             // LINE情報
             setLineUserId(data.line_user_id)
             setLineDisplayName(data.line_display_name)
-            setLineAvatarUrl(data.line_avatar_url)
+            // setLineAvatarUrl(data.line_avatar_url) // 将来の機能拡張用に保持
 
             // 追加プロフィール情報
             setBio(data.bio)

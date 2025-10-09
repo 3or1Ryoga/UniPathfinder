@@ -6,6 +6,7 @@ import { useState } from 'react'
 // LoginFormを動的インポートしてSSGを回避
 // 注意: 既存のメールアドレス認証機能は一時的に無効化されています
 // 将来的に再度有効化する可能性があるため、コードは保持されています
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const LoginForm = dynamic(() => import('./login-form'), {
     ssr: false,
     loading: () => <div style={{
@@ -28,7 +29,7 @@ function GitHubLoginButton() {
             setError(null)
             const supabase = createClient()
 
-            const { data, error } = await supabase.auth.signInWithOAuth({
+            const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'github',
                 options: {
                     redirectTo: `${window.location.origin}/auth/callback`,
@@ -40,6 +41,7 @@ function GitHubLoginButton() {
                 setError('GitHubログインに失敗しました。もう一度お試しください。')
                 setLoading(false)
             }
+            // 成功時はリダイレクトされるため、ここでの処理は不要
         } catch (err) {
             console.error('Unexpected error:', err)
             setError('予期しないエラーが発生しました。')
