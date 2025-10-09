@@ -28,6 +28,8 @@ export type Database = {
           interests: string | null
           line_avatar_url: string | null
           line_display_name: string | null
+          line_friend_added: boolean | null
+          line_friend_added_at: string | null
           line_user_id: string | null
           linkedin_url: string | null
           location: string | null
@@ -52,6 +54,8 @@ export type Database = {
           interests?: string | null
           line_avatar_url?: string | null
           line_display_name?: string | null
+          line_friend_added?: boolean | null
+          line_friend_added_at?: string | null
           line_user_id?: string | null
           linkedin_url?: string | null
           location?: string | null
@@ -76,6 +80,8 @@ export type Database = {
           interests?: string | null
           line_avatar_url?: string | null
           line_display_name?: string | null
+          line_friend_added?: boolean | null
+          line_friend_added_at?: string | null
           line_user_id?: string | null
           linkedin_url?: string | null
           location?: string | null

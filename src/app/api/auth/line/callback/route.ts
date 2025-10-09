@@ -119,8 +119,8 @@ export async function GET(request: NextRequest) {
             )
         }
 
-        // 成功: クッキーをクリアしてアカウントページにリダイレクト
-        const response = NextResponse.redirect(`${origin}/account?line_linked=true`)
+        // 成功: クッキーをクリアして友だち追加ページにリダイレクト
+        const response = NextResponse.redirect(`${origin}/add-friend`)
 
         // クッキーを削除
         response.cookies.delete('line_oauth_state')

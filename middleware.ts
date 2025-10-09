@@ -70,7 +70,8 @@ export const config = {
      * - auth/callback (auth callback)
      * - auth/signout (auth signout)
      * - link-line (LINE connection page - needs auth check separately)
+     * - add-friend (LINE friend-add page - needs auth check separately)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|auth|link-line).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|auth|link-line|add-friend).*)',
   ],
 }
