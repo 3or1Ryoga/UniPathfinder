@@ -102,7 +102,31 @@ export async function GET(request: NextRequest) {
         // Step 3: Supabase profilesテーブルを更新
         const supabase = await createClient()
 
-        // upsertではなくupdateを使用（既存のユーザーレコードを更新）
+        // まず、同じLINE user IDが別のユーザーに紐付いていないかチェック
+        const { data: existingProfiles } = await supabase
+            .from('profiles')
+            .select('id')
+            .eq('line_user_id', profileData.userId)
+            .neq('id', userId)
+
+        // 既存の紐付けがあれば、それをクリア
+        if (existingProfiles && existingProfiles.length > 0) {
+            console.log('Clearing existing LINE association for other users:', existingProfiles)
+            for (const profile of existingProfiles) {
+                await supabase
+                    .from('profiles')
+                    .update({
+                        line_user_id: null,
+                        line_display_name: null,
+                        line_avatar_url: null,
+                        line_friend_added: false,
+                        line_friend_added_at: null,
+                    })
+                    .eq('id', profile.id)
+            }
+        }
+
+        // 現在のユーザーにLINE情報を紐付け
         const { error: updateError } = await supabase
             .from('profiles')
             .update({
