@@ -26,6 +26,9 @@ export type Database = {
           id: string
           instagram_username: string | null
           interests: string | null
+          line_avatar_url: string | null
+          line_display_name: string | null
+          line_user_id: string | null
           linkedin_url: string | null
           location: string | null
           portfolio_url: string | null
@@ -47,6 +50,9 @@ export type Database = {
           id: string
           instagram_username?: string | null
           interests?: string | null
+          line_avatar_url?: string | null
+          line_display_name?: string | null
+          line_user_id?: string | null
           linkedin_url?: string | null
           location?: string | null
           portfolio_url?: string | null
@@ -68,6 +74,9 @@ export type Database = {
           id?: string
           instagram_username?: string | null
           interests?: string | null
+          line_avatar_url?: string | null
+          line_display_name?: string | null
+          line_user_id?: string | null
           linkedin_url?: string | null
           location?: string | null
           portfolio_url?: string | null

@@ -69,7 +69,8 @@ export const config = {
      * - favicon.ico (favicon file)
      * - auth/callback (auth callback)
      * - auth/signout (auth signout)
+     * - link-line (LINE connection page - needs auth check separately)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|auth).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|auth|link-line).*)',
   ],
 }

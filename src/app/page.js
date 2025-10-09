@@ -1,17 +1,113 @@
 'use client'
 import dynamic from 'next/dynamic'
+import { createClient } from '@/utils/supabase/client'
+import { useState } from 'react'
 
 // LoginFormを動的インポートしてSSGを回避
+// 注意: 既存のメールアドレス認証機能は一時的に無効化されています
+// 将来的に再度有効化する可能性があるため、コードは保持されています
 const LoginForm = dynamic(() => import('./login-form'), {
     ssr: false,
-    loading: () => <div style={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
+    loading: () => <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         minHeight: '400px',
-        color: '#718096' 
+        color: '#718096'
     }}>ログインフォームを読み込み中...</div>
 })
+
+// GitHubログインコンポーネント
+function GitHubLoginButton() {
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
+
+    const handleGitHubLogin = async () => {
+        try {
+            setLoading(true)
+            setError(null)
+            const supabase = createClient()
+
+            const { data, error } = await supabase.auth.signInWithOAuth({
+                provider: 'github',
+                options: {
+                    redirectTo: `${window.location.origin}/auth/callback`,
+                }
+            })
+
+            if (error) {
+                console.error('GitHub login error:', error)
+                setError('GitHubログインに失敗しました。もう一度お試しください。')
+                setLoading(false)
+            }
+        } catch (err) {
+            console.error('Unexpected error:', err)
+            setError('予期しないエラーが発生しました。')
+            setLoading(false)
+        }
+    }
+
+    return (
+        <div className="form-widget" style={{ maxWidth: '400px', margin: '0 auto', padding: '2rem' }}>
+            <h2 style={{ textAlign: 'center', marginBottom: '1.5rem', color: '#2d3748' }}>
+                ログイン / 新規登録
+            </h2>
+
+            {error && (
+                <div style={{
+                    padding: '12px',
+                    marginBottom: '1rem',
+                    backgroundColor: '#fee',
+                    color: '#c00',
+                    borderRadius: '8px',
+                    fontSize: '14px'
+                }}>
+                    {error}
+                </div>
+            )}
+
+            <button
+                onClick={handleGitHubLogin}
+                disabled={loading}
+                style={{
+                    width: '100%',
+                    padding: '14px 24px',
+                    backgroundColor: '#24292e',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    cursor: loading ? 'not-allowed' : 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '12px',
+                    transition: 'background-color 0.2s ease',
+                    opacity: loading ? 0.7 : 1
+                }}
+                onMouseOver={(e) => !loading && (e.target.style.backgroundColor = '#1a1e22')}
+                onMouseOut={(e) => !loading && (e.target.style.backgroundColor = '#24292e')}
+            >
+                <svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+                </svg>
+                {loading ? '処理中...' : 'GitHubでログイン / 登録'}
+            </button>
+
+            <p style={{
+                marginTop: '1.5rem',
+                fontSize: '14px',
+                color: '#718096',
+                textAlign: 'center',
+                lineHeight: '1.6'
+            }}>
+                GitHubでログイン後、LINE連携が必要です。<br />
+                初回登録時のみLINEアカウントとの連携をお願いします。
+            </p>
+        </div>
+    )
+}
 
 export default function Home() {
     return (
@@ -79,7 +175,12 @@ export default function Home() {
                     </div>
                 </div>
                 <div className="col-6 auth-widget">
-                    <LoginForm />
+                    {/* 既存のメールアドレス認証フォームは一時的に無効化されています */}
+                    {/* 将来的に再度有効化する可能性があるため、コードは保持されています */}
+                    {/* <LoginForm /> */}
+
+                    {/* 新しいGitHub認証フォーム */}
+                    <GitHubLoginButton />
                 </div>
             </div>
 

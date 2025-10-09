@@ -2,8 +2,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { Session } from '@supabase/supabase-js'
+import { useSearchParams } from 'next/navigation'
 
 export default function AccountForm({ session }: { session: Session | null }) {
+    const searchParams = useSearchParams()
     const [supabase] = useState(() => {
         if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
             console.warn('Supabase environment variables not found')
@@ -16,6 +18,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
     const [username, setUsername] = useState<string | null>(null)
     const [website, setWebsite] = useState<string | null>(null)
     const [avatar_url, setAvatarUrl] = useState<string | null>(null)
+    const [showLineSuccess, setShowLineSuccess] = useState(false)
     
     // SNS関連のstate
     const [githubUsername, setGithubUsername] = useState<string | null>(null)
@@ -26,6 +29,11 @@ export default function AccountForm({ session }: { session: Session | null }) {
     const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null)
     const [facebookUrl, setFacebookUrl] = useState<string | null>(null)
     const [portfolioUrl, setPortfolioUrl] = useState<string | null>(null)
+
+    // LINE関連のstate
+    const [lineUserId, setLineUserId] = useState<string | null>(null)
+    const [lineDisplayName, setLineDisplayName] = useState<string | null>(null)
+    const [lineAvatarUrl, setLineAvatarUrl] = useState<string | null>(null)
     
     // 追加プロフィール情報
     const [bio, setBio] = useState<string | null>(null)
@@ -55,7 +63,8 @@ export default function AccountForm({ session }: { session: Session | null }) {
                 full_name, username, website, avatar_url, email,
                 github_username, twitter_username, linkedin_url, instagram_username,
                 discord_username, youtube_url, facebook_url, portfolio_url,
-                bio, location, skills, interests
+                bio, location, skills, interests,
+                line_user_id, line_display_name, line_avatar_url
             `)
             .eq('id', user.id)
             .single()
@@ -70,7 +79,7 @@ export default function AccountForm({ session }: { session: Session | null }) {
             setUsername(data.username)
             setWebsite(data.website)
             setAvatarUrl(data.avatar_url)
-            
+
             // SNS情報
             setGithubUsername(data.github_username)
             setTwitterUsername(data.twitter_username)
@@ -80,7 +89,12 @@ export default function AccountForm({ session }: { session: Session | null }) {
             setYoutubeUrl(data.youtube_url)
             setFacebookUrl(data.facebook_url)
             setPortfolioUrl(data.portfolio_url)
-            
+
+            // LINE情報
+            setLineUserId(data.line_user_id)
+            setLineDisplayName(data.line_display_name)
+            setLineAvatarUrl(data.line_avatar_url)
+
             // 追加プロフィール情報
             setBio(data.bio)
             setLocation(data.location)
@@ -96,8 +110,16 @@ export default function AccountForm({ session }: { session: Session | null }) {
     }, [user, supabase])
 
     useEffect(() => {
+        // URLパラメータからLINE連携成功フラグを確認
+        const lineLinked = searchParams.get('line_linked')
+        if (lineLinked === 'true') {
+            setShowLineSuccess(true)
+            // 3秒後に成功メッセージを非表示
+            setTimeout(() => setShowLineSuccess(false), 5000)
+        }
+
         getProfile()
-    }, [user, getProfile])
+    }, [user, getProfile, searchParams])
 
     async function updateProfile({
         username,
@@ -167,6 +189,117 @@ export default function AccountForm({ session }: { session: Session | null }) {
     
     return (
         <div className="form-widget">
+            {/* LINE連携成功メッセージ */}
+            {showLineSuccess && (
+                <div style={{
+                    padding: '16px',
+                    marginBottom: '20px',
+                    backgroundColor: '#d4edda',
+                    color: '#155724',
+                    border: '1px solid #c3e6cb',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px'
+                }}>
+                    <span style={{ fontSize: '24px' }}>✅</span>
+                    <div>
+                        <strong>LINE連携が完了しました！</strong>
+                        <div style={{ fontSize: '14px', marginTop: '4px' }}>
+                            これでTechMightの全機能が利用可能になりました。
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* 連携アカウント情報 */}
+            <div style={{
+                backgroundColor: '#f7fafc',
+                padding: '1.5rem',
+                borderRadius: '8px',
+                marginBottom: '2rem',
+                border: '1px solid #e2e8f0'
+            }}>
+                <h3 style={{ marginTop: 0, marginBottom: '1rem', color: '#2d3748' }}>連携アカウント</h3>
+
+                {/* GitHub連携状態 */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '12px',
+                    backgroundColor: 'white',
+                    borderRadius: '6px',
+                    marginBottom: '10px'
+                }}>
+                    <div style={{ marginRight: '12px', fontSize: '24px' }}>
+                        <svg height="24" width="24" viewBox="0 0 16 16" fill="#24292e">
+                            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+                        </svg>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 'bold', color: '#2d3748' }}>GitHub</div>
+                        <div style={{ fontSize: '14px', color: '#718096' }}>
+                            {session?.user.email || '連携済み'}
+                        </div>
+                    </div>
+                    <div style={{
+                        padding: '4px 12px',
+                        backgroundColor: '#48bb78',
+                        color: 'white',
+                        borderRadius: '12px',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                    }}>
+                        連携済み
+                    </div>
+                </div>
+
+                {/* LINE連携状態 */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '12px',
+                    backgroundColor: 'white',
+                    borderRadius: '6px'
+                }}>
+                    <div style={{ marginRight: '12px', fontSize: '24px' }}>
+                        <svg height="24" width="24" viewBox="0 0 24 24" fill="#06C755">
+                            <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+                        </svg>
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 'bold', color: '#2d3748' }}>LINE</div>
+                        <div style={{ fontSize: '14px', color: '#718096' }}>
+                            {lineDisplayName || '未連携'}
+                        </div>
+                    </div>
+                    <div style={{
+                        padding: '4px 12px',
+                        backgroundColor: lineUserId ? '#48bb78' : '#f56565',
+                        color: 'white',
+                        borderRadius: '12px',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                    }}>
+                        {lineUserId ? '連携済み' : '未連携'}
+                    </div>
+                </div>
+
+                {!lineUserId && (
+                    <div style={{
+                        marginTop: '12px',
+                        padding: '10px',
+                        backgroundColor: '#fff5f5',
+                        borderLeft: '4px solid #f56565',
+                        borderRadius: '4px',
+                        fontSize: '14px',
+                        color: '#c53030'
+                    }}>
+                        ⚠️ LINE連携が完了していません。<a href="/link-line" style={{ color: '#667eea', textDecoration: 'underline', marginLeft: '4px' }}>こちらから連携してください</a>
+                    </div>
+                )}
+            </div>
+
             <h3>基本情報</h3>
             <div style={{ marginBottom: '15px' }}>
                 <label htmlFor="email">メールアドレス</label>
