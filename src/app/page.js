@@ -118,23 +118,25 @@ export default function Home() {
             <div className="row" style={{ minHeight: '80vh', alignItems: 'center', padding: 20}}>
                 <div className="col-6">
                     <div style={{ paddingRight: '2rem' }}>
-                        <h1 className="header" style={{ 
-                            fontSize: '2.5rem', 
-                            marginBottom: '1rem',
-                            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            fontWeight: 'bold'
-                        }}>
-                            TechMight
-                        </h1>
+                        <div style={{ marginBottom: '1rem' }}>
+                            <img
+                                src="/TechMight_icon.png"
+                                alt="TechMight Logo"
+                                style={{
+                                    width: '300px',
+                                    height: 'auto',
+                                    display: 'block'
+                                }}
+                            />
+                        </div>
                         <h2 style={{ 
                             fontSize: '1.3rem', 
                             color: '#4a5568', 
                             marginBottom: '1.5rem',
                             fontWeight: 'normal'
                         }}>
-                            あなたの為のプログラミング学習コンシェルジュ
+                            エンジニア学生と世界を繋げる <br></br>
+                            パーソナルメディア
                         </h2>
                         <p style={{ 
                             fontSize: '1.1rem', 
@@ -144,34 +146,11 @@ export default function Home() {
                         }}>
                             GitHubリポジトリを分析し、あなたの現在のスキルレベルを客観的に評価。
                             <br />
-                            AIが最適化された学習パスと推奨教材を提案します。<br></br>
-                            今後、多くの学習教材と連携予定。
+                            AIが最適化された学習パスやイベントやインターンを提案します。<br></br>
+                            今後、多くの企業と連携予定。
                         </p>
-                        
-                        {/* GitHubで始めるCTA */}
-                        <div style={{ marginBottom: '2rem' }}>
-                            <button 
-                                style={{
-                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                    color: 'white',
-                                    border: 'none',
-                                    padding: '12px 24px',
-                                    borderRadius: '8px',
-                                    fontSize: '1.1rem',
-                                    fontWeight: 'bold',
-                                    cursor: 'pointer',
-                                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
-                                    transition: 'transform 0.2s ease'
-                                }}
-                                onMouseOver={(e) => e.target.style.transform = 'translateY(-2px)'}
-                                onMouseOut={(e) => e.target.style.transform = 'translateY(0)'}
-                                onClick={() => alert('GitHub連携機能は開発中です。まずは無料登録をお試しください！')}
-                            >
-                                🚀 GitHubで始める（準備中）
-                            </button>
-                        </div>
-                        
-                        <p style={{ fontSize: '0.9rem', color: '#a0aec0' }}>
+
+                        <p style={{ fontSize: '0.9rem', color: '#a0aec0', marginTop: '2rem' }}>
                             完全無料 • 登録は30秒 • GitHub連携で即座に分析開始
                         </p>
                     </div>
@@ -236,8 +215,8 @@ export default function Home() {
                             </p>
                         </div>
                         
-                        <div style={{ 
-                            textAlign: 'center', 
+                        <div style={{
+                            textAlign: 'center',
                             padding: '2rem',
                             backgroundColor: 'white',
                             borderRadius: '12px',
@@ -252,11 +231,28 @@ export default function Home() {
                                 あなたが今学ぶべき技術と学習順序を明確に提示します。
                             </p>
                         </div>
+
+                        <div style={{
+                            textAlign: 'center',
+                            padding: '2rem',
+                            backgroundColor: 'white',
+                            borderRadius: '12px',
+                            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)'
+                        }}>
+                            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>✨</div>
+                            <h3 style={{ fontSize: '1.3rem', marginBottom: '1rem', color: '#2d3748' }}>
+                                あなたの頑張りが可視化される
+                            </h3>
+                            <p style={{ color: '#718096', lineHeight: '1.6' }}>
+                                自分が何をしてきたのかをまとめなくても、
+                                私たちが自動的にあなたの成長と活動を可視化します。
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* プレゼン資料セクション */}
+            {/* プレゼン資料セクション
             <div style={{ padding: '4rem 0' }}>
                 <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
                     <h2 style={{ 
@@ -291,7 +287,7 @@ export default function Home() {
                         </p>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* 使い方3ステップ */}
             <div style={{ padding: '4rem 0', backgroundColor: '#f7fafc' }}>
@@ -381,7 +377,7 @@ export default function Home() {
             </div>
 
             {/* 最終CTA */}
-            <div style={{ padding: '4rem 0', textAlign: 'center' }}>
+            {/* <div style={{ padding: '4rem 0', textAlign: 'center' }}>
                 <div className="container" style={{ maxWidth: '800px', margin: '0 auto', padding: '0 2rem' }}>
                     <h2 style={{ 
                         fontSize: '2.2rem', 
@@ -420,7 +416,7 @@ export default function Home() {
                         🚀 今すぐ無料で始める
                     </button>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
