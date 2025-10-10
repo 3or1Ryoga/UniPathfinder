@@ -655,7 +655,7 @@ export default function Home() {
                             }}>
                                 <Image
                                     src="/EffortlessProfile.jpg"
-                                    alt="Effortless Profile Screen"
+                                    alt="Stressless Profile Screen"
                                     fill
                                     style={{ objectFit: 'cover' }}
                                 />
@@ -667,7 +667,7 @@ export default function Home() {
                                     color: '#000000',
                                     fontWeight: '700'
                                 }}>
-                                    Effortless Profile
+                                    Stressless Profile
                                 </h3>
                                 <p style={{
                                     color: '#222222',

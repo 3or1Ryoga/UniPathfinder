@@ -300,7 +300,7 @@ function AccountFormContent({ session }: { session: Session | null }) {
                 )}
             </div>
 
-            {/* Effortless Profile 機能構築中のお知らせ */}
+            {/* Stressless Profile 機能構築中のお知らせ */}
             <div style={{
                 backgroundColor: '#E3F2FD',
                 border: '1px solid #5ce1e6',
@@ -322,7 +322,7 @@ function AccountFormContent({ session }: { session: Session | null }) {
                     marginTop: 0,
                     marginBottom: '0.8rem'
                 }}>
-                    Effortless Profile 機能を構築中
+                    Stressless Profile 機能を構築中
                 </h3>
                 <p style={{
                     color: '#222222',
@@ -331,7 +331,7 @@ function AccountFormContent({ session }: { session: Session | null }) {
                     margin: '0 auto',
                     maxWidth: '600px'
                 }}>
-                    GitHubの活動履歴を自動的に分析し、あなたの技術力を可視化する「Effortless Profile」機能を開発中です。<br/>
+                    GitHubの活動履歴を自動的に分析し、あなたの技術力を可視化する「Stressless Profile」機能を開発中です。<br/>
                     完成までもう少しお待ちください。
                 </p>
                 <div style={{
