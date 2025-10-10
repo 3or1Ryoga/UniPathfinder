@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 export default function TermsOfServicePage() {
     return (
         <div style={{
@@ -161,7 +163,7 @@ export default function TermsOfServicePage() {
                 borderTop: '1px solid #e2e8f0',
                 textAlign: 'center'
             }}>
-                <a
+                <Link
                     href="/"
                     style={{
                         color: '#667eea',
@@ -170,7 +172,7 @@ export default function TermsOfServicePage() {
                     }}
                 >
                     ← トップページに戻る
-                </a>
+                </Link>
             </div>
         </div>
     )

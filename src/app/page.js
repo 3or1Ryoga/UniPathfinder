@@ -1,5 +1,6 @@
 'use client'
 import dynamic from 'next/dynamic'
+import Image from 'next/image'
 import { createClient } from '@/utils/supabase/client'
 import { useState } from 'react'
 
@@ -119,9 +120,11 @@ export default function Home() {
                 <div className="col-6">
                     <div style={{ paddingRight: '2rem' }}>
                         <div style={{ marginBottom: '1rem' }}>
-                            <img
+                            <Image
                                 src="/TechMight_icon.png"
                                 alt="TechMight Logo"
+                                width={300}
+                                height={300}
                                 style={{
                                     width: '300px',
                                     height: 'auto',
