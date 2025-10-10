@@ -300,6 +300,54 @@ function AccountFormContent({ session }: { session: Session | null }) {
                 )}
             </div>
 
+            {/* Effortless Profile 機能構築中のお知らせ */}
+            <div style={{
+                backgroundColor: '#E3F2FD',
+                border: '1px solid #5ce1e6',
+                borderRadius: '12px',
+                padding: '2rem',
+                marginBottom: '2rem',
+                textAlign: 'center'
+            }}>
+                <div style={{
+                    fontSize: '3rem',
+                    marginBottom: '1rem'
+                }}>
+                    🚧
+                </div>
+                <h3 style={{
+                    color: '#000000',
+                    fontSize: '1.5rem',
+                    fontWeight: '700',
+                    marginTop: 0,
+                    marginBottom: '0.8rem'
+                }}>
+                    Effortless Profile 機能を構築中
+                </h3>
+                <p style={{
+                    color: '#222222',
+                    fontSize: '1rem',
+                    lineHeight: '1.6',
+                    margin: '0 auto',
+                    maxWidth: '600px'
+                }}>
+                    GitHubの活動履歴を自動的に分析し、あなたの技術力を可視化する「Effortless Profile」機能を開発中です。<br/>
+                    完成までもう少しお待ちください。
+                </p>
+                <div style={{
+                    marginTop: '1.5rem',
+                    padding: '0.8rem 1.5rem',
+                    backgroundColor: '#5ce1e6',
+                    color: '#000000',
+                    borderRadius: '6px',
+                    display: 'inline-block',
+                    fontSize: '0.9rem',
+                    fontWeight: '600'
+                }}>
+                    📅 近日公開予定
+                </div>
+            </div>
+
             <h3>基本情報</h3>
             <div style={{ marginBottom: '15px' }}>
                 <label htmlFor="email">メールアドレス</label>
