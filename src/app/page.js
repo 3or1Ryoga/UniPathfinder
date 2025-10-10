@@ -770,7 +770,7 @@ export default function Home() {
                         fontWeight: '700',
                         lineHeight: '1.3'
                     }}>
-                        未来のキャリアは、<br/>ここから始まる。
+                        未来のキャリアは、ここから始まる。
                     </h2>
                     <p style={{
                         fontSize: '1.2rem',
