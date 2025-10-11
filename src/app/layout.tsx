@@ -18,9 +18,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "TechMight - コーディング学習AIコンシェルジュ",
-  description: "GitHubリポジトリを分析し、あなたの現在のスキルレベルを客観的に評価。AIが最適化された学習パスと推奨教材を提案します。初心者開発者向けの無料プログラミング学習サポートサービス。",
-  keywords: ["プログラミング学習", "GitHub分析", "AI学習サポート", "コーディング", "開発者", "初心者", "学習パス", "技術スキル"],
+  title: "TechMight - 技術力で社会と繋がりたい全学生エンジニアへ",
+  description: "GitHubリポジトリを分析し、あなたの現在のスキルレベルを客観的に評価。AIが自動でプロジェクトを履歴書にします。初心者から上級者まで学生エンジニアの孤立をなくすサポートサービス。",
+  keywords: ["プログラミング学習", "GitHub分析", "AI自動履歴書", "コーディング", "開発者", "初心者", "キャリアパス", "技術スキル"],
   authors: [{ name: "TechMight Team" }],
   creator: "TechMight",
   publisher: "TechMight",
