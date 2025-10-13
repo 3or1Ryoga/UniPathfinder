@@ -421,33 +421,36 @@ export default function Home() {
                                 }}
                             /> */}
                         </div>
-                        <h1 style={{
-                            fontSize: '3.5rem',
-                            color: '#000000',
-                            marginBottom: '1.5rem',
-                            fontWeight: '700',
-                            lineHeight: '1.2'
-                        }}>
-                            技術力で社会と繋がりたい<br/>全学生エンジニアへ <br></br>
-                        </h1>
+                        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
+                            {/* 新しいGitHub認証フォーム */}
+                            <GitHubLoginButton />
+                        </div>
                         <p style={{
                             fontSize: '1.2rem',
                             lineHeight: '1.8',
                             color: '#222222',
-                            marginBottom: '2.5rem',
-                            maxWidth: '540px'
+                            maxWidth: '540px',
+                            margin: '0 auto'
                         }}>
-                            「TechMight」は、あなたのコードを履歴書として具体化し、スキルで企業と直接繋がるためのプラットフォームです。
+                            「TechMight」は、あなたのコードをポートフォリオとして具体化し、スキルベースで様々な機会へと直接繋がるためのプラットフォームです。
                         </p>
                     </div>
                 </div>
-                <div className="col-6 auth-widget" style={{ zIndex: 1 }}>
-                    {/* 既存のメールアドレス認証フォームは一時的に無効化されています */}
-                    {/* 将来的に再度有効化する可能性があるため、コードは保持されています */}
-                    {/* <LoginForm /> */}
-
-                    {/* 新しいGitHub認証フォーム */}
-                    <GitHubLoginButton />
+                <div className="col-6 auth-widget" style={{ zIndex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Image
+                        src="/techmight_image.png"
+                        alt="TechMight Platform"
+                        width={600}
+                        height={600}
+                        style={{
+                            width: '100%',
+                            height: 'auto',
+                            maxWidth: '600px',
+                            objectFit: 'contain',
+                            maskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 100%)',
+                            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 15%, black 100%)'
+                        }}
+                    />
                 </div>
             </div>
 
