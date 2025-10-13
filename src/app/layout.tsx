@@ -18,7 +18,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "TechMight - 技術力で社会と繋がりたい全学生エンジニアへ",
+  title: "TechMight",
   description: "GitHubリポジトリを分析し、あなたの現在のスキルレベルを客観的に評価。AIが自動でプロジェクトを履歴書にします。初心者から上級者まで学生エンジニアの孤立をなくすサポートサービス。",
   keywords: ["プログラミング学習", "GitHub分析", "AI自動履歴書", "コーディング", "開発者", "初心者", "キャリアパス", "技術スキル"],
   authors: [{ name: "TechMight Team" }],
