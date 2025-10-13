@@ -781,7 +781,7 @@ export default function Home() {
                         marginBottom: '3rem',
                         lineHeight: '1.8'
                     }}>
-                        学歴や書類選考に悩む時間はもう終わり。あなたの技術力で、未来の選択肢を広げよう。
+                        SNS発信やポートフォリオ作成に悩む時間はもう終わり。あなたの技術力で、未来の選択肢を広げよう。
                     </p>
                     <button
                         style={{
