@@ -42,18 +42,18 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/TechMight_icon.png',
-        width: 500,
-        height: 500,
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
         alt: 'TechMight - 学生エンジニアのキャリア成長サポート',
       },
     ],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: "TechMight - 学生エンジニアのキャリア成長サポート",
     description: "GitHubの活動を可視化し、学生エンジニアのキャリア成長をサポート。毎日のコミットを記録・分析し、成長の軌跡を追いながら、就職活動に活かせる実績を自動で蓄積します。",
-    images: ['/TechMight_icon.png'],
+    images: ['/og-image.png'],
   },
   robots: {
     index: true,
