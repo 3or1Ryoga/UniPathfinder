@@ -9,17 +9,17 @@ interface WeeklySnapshotProps {
 }
 
 export default function WeeklySnapshot({ data }: WeeklySnapshotProps) {
-  const { currentWeekCommits, previousWeekCommits, streakDays } = data
+  const { currentWeekCommits, todayCommits, previousWeekDailyAverage, streakDays } = data
 
   // 週次目標に対する進捗率
   const progressPercentage = Math.min((currentWeekCommits / WEEKLY_COMMIT_GOAL) * 100, 100)
 
-  // 先週との比較（増減率）
-  const weeklyChange = previousWeekCommits > 0
-    ? ((currentWeekCommits - previousWeekCommits) / previousWeekCommits) * 100
-    : currentWeekCommits > 0 ? 100 : 0
+  // 今日のコミット数 vs 先週の1日平均（増減率）
+  const dailyChange = previousWeekDailyAverage > 0
+    ? ((todayCommits - previousWeekDailyAverage) / previousWeekDailyAverage) * 100
+    : todayCommits > 0 ? 100 : 0
 
-  const isPositiveChange = weeklyChange >= 0
+  const isPositiveChange = dailyChange >= 0
 
   // RadialBarChart用のデータ
   const chartData = [
@@ -82,16 +82,20 @@ export default function WeeklySnapshot({ data }: WeeklySnapshotProps) {
 
         {/* 右側：統計情報 */}
         <div className="flex flex-col justify-center space-y-6">
-          {/* 先週比 */}
+          {/* 今日のコミット vs 先週の1日平均 */}
           <div className="bg-gray-50 rounded-xl p-6">
-            <div className="text-sm text-gray-600 mb-2">先週との比較</div>
+            <div className="text-sm text-gray-600 mb-2">今日の活動</div>
             <div className="flex items-baseline gap-3">
               <div className={`text-3xl font-bold ${isPositiveChange ? 'text-green-600' : 'text-red-600'}`}>
-                {isPositiveChange ? '+' : ''}{weeklyChange.toFixed(1)}%
+                {isPositiveChange ? '+' : ''}{dailyChange.toFixed(1)}%
               </div>
               <div className="text-sm text-gray-500">
-                先週: {previousWeekCommits} コミット
+                vs 先週平均
               </div>
+            </div>
+            <div className="mt-2 text-sm text-gray-600">
+              今日: <span className="font-semibold">{todayCommits}</span> コミット /
+              先週平均: <span className="font-semibold">{previousWeekDailyAverage.toFixed(1)}</span> コミット
             </div>
             <div className="mt-3">
               {isPositiveChange ? (

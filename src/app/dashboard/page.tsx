@@ -255,8 +255,9 @@ export default function DashboardPage() {
 
       {/* フッター */}
       <footer className="mt-16 py-8 text-center text-gray-500 text-sm">
-        <p>データは5分間キャッシュされます</p>
-        <p className="mt-2">GitHub APIから直接取得しています</p>
+        <p className="font-semibold text-gray-700">GitHubデータは毎日19:00（日本時間）に自動更新されます</p>
+        <p className="mt-2">データは5分間キャッシュされます</p>
+        <p className="mt-1">GitHub APIから直接取得しています</p>
       </footer>
     </div>
   )

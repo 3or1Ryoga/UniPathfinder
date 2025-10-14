@@ -68,6 +68,8 @@ export async function GET() {
         weeklySnapshot: {
           currentWeekCommits: 0,
           previousWeekCommits: 0,
+          todayCommits: 0,
+          previousWeekDailyAverage: 0,
           streakDays: 0
         },
         growthChart: generateEmptyGrowthChart(),
@@ -191,12 +193,18 @@ function calculateWeeklySnapshot(
     previousWeekCommits += commitsByDate.get(dateKey) || 0
   }
 
+  // 今日のコミット数
+  const today = nowJST.toISOString().split('T')[0]
+  const todayCommits = commitsByDate.get(today) || 0
+
+  // 先週の1日平均コミット数
+  const previousWeekDailyAverage = previousWeekCommits / 7
+
   // ストリーク計算（今日から遡って、コミットがあった連続日数）
   let streakDays = 0
-  const today = nowJST.toISOString().split('T')[0]
 
   // 今日のコミットがあれば、昨日から遡ってストリークを計算
-  if (commitsByDate.get(today)) {
+  if (todayCommits > 0) {
     streakDays = 1
     const checkDate = new Date(nowJST)
     checkDate.setDate(checkDate.getDate() - 1)
@@ -215,6 +223,8 @@ function calculateWeeklySnapshot(
   return {
     currentWeekCommits,
     previousWeekCommits,
+    todayCommits,
+    previousWeekDailyAverage,
     streakDays
   }
 }

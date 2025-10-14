@@ -3,6 +3,8 @@
 export interface WeeklySnapshot {
   currentWeekCommits: number
   previousWeekCommits: number
+  todayCommits: number // 今日のコミット数
+  previousWeekDailyAverage: number // 先週の1日平均コミット数
   streakDays: number
 }
 
