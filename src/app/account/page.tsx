@@ -1,8 +1,8 @@
 import { createClient } from '@/utils/supabase/server'
-import AccountForm from './account-form'
-// import PasswordForm from './password-form' // 既存のパスワード機能は一時的に無効化
 import { redirect } from 'next/navigation'
 
+// このページは /dashboard にリダイレクトされます
+// LINE通知などの外部リンクからのアクセスに対応するため、削除せずに残しています
 export default async function Account() {
     const supabase = await createClient()
 
@@ -14,16 +14,6 @@ export default async function Account() {
         redirect('/')
     }
 
-    const {
-        data: { session },
-    } = await supabase.auth.getSession()
-
-    return (
-        <div>
-            <AccountForm session={session} />
-            {/* 既存のパスワード変更フォームは一時的に無効化されています */}
-            {/* 将来的に再度有効化する可能性があるため、コードは保持されています */}
-            {/* <PasswordForm session={session} /> */}
-        </div>
-    )
+    // ダッシュボードにリダイレクト
+    redirect('/dashboard')
 }
