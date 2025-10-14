@@ -7,9 +7,6 @@ import { createClient } from '@/utils/supabase/client'
 interface Profile {
   full_name: string | null
   github_username: string | null
-  job_interest: string | null
-  skill_level: string | null
-  learning_goal: string | null
 }
 
 export default function SettingsPage() {
@@ -18,10 +15,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false)
   const [profile, setProfile] = useState<Profile>({
     full_name: '',
-    github_username: '',
-    job_interest: '',
-    skill_level: '',
-    learning_goal: ''
+    github_username: ''
   })
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
 
@@ -42,7 +36,7 @@ export default function SettingsPage() {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('full_name, github_username, job_interest, skill_level, learning_goal')
+        .select('full_name, github_username')
         .eq('id', user.id)
         .single()
 
@@ -78,9 +72,6 @@ export default function SettingsPage() {
         .update({
           full_name: profile.full_name,
           github_username: profile.github_username,
-          job_interest: profile.job_interest,
-          skill_level: profile.skill_level,
-          learning_goal: profile.learning_goal,
           updated_at: new Date().toISOString()
         })
         .eq('id', user.id)
@@ -176,58 +167,6 @@ export default function SettingsPage() {
               <p className="mt-2 text-sm text-gray-500">
                 GitHubでログインした場合は自動的に設定されます
               </p>
-            </div>
-
-            {/* 興味のある職種 */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                興味のある職種
-              </label>
-              <select
-                value={profile.job_interest || ''}
-                onChange={(e) => setProfile({ ...profile, job_interest: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">選択してください</option>
-                <option value="frontend">フロントエンド開発</option>
-                <option value="backend">バックエンド開発</option>
-                <option value="fullstack">フルスタック開発</option>
-                <option value="mobile">モバイルアプリ開発</option>
-                <option value="devops">DevOps/インフラ</option>
-                <option value="data">データサイエンス/ML</option>
-                <option value="other">その他</option>
-              </select>
-            </div>
-
-            {/* スキルレベル */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                スキルレベル
-              </label>
-              <select
-                value={profile.skill_level || ''}
-                onChange={(e) => setProfile({ ...profile, skill_level: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="">選択してください</option>
-                <option value="beginner">初心者</option>
-                <option value="intermediate">中級者</option>
-                <option value="advanced">上級者</option>
-              </select>
-            </div>
-
-            {/* 学習目標 */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                学習目標
-              </label>
-              <textarea
-                value={profile.learning_goal || ''}
-                onChange={(e) => setProfile({ ...profile, learning_goal: e.target.value })}
-                rows={4}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                placeholder="例：Webアプリケーション開発のスキルを習得し、実務で活躍できるエンジニアを目指しています"
-              />
             </div>
 
             {/* 保存ボタン */}
