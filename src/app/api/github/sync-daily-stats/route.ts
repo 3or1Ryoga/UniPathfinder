@@ -39,6 +39,7 @@ interface GitHubEvent {
   created_at: string
   payload?: {
     commits?: { sha: string }[]
+    size?: number  // PushEventのコミット数
   }
 }
 
@@ -69,10 +70,18 @@ function aggregateDailyStats(events: GitHubEvent[]): Map<string, DailyStats> {
     switch (event.type) {
       case 'PushEvent':
         stats.pushEventCount++
-        // PushEventにはcommitsの配列が含まれる
-        if (event.payload?.commits) {
-          stats.commitCount += event.payload.commits.length
+        // PushEventのコミット数を取得
+        // 優先順位: 1. payload.size, 2. payload.commits.length, 3. 最低1
+        let commitCount = 0
+        if (event.payload?.size !== undefined && event.payload.size > 0) {
+          commitCount = event.payload.size
+        } else if (event.payload?.commits && event.payload.commits.length > 0) {
+          commitCount = event.payload.commits.length
+        } else {
+          // PushEventがあれば最低1コミットとカウント
+          commitCount = 1
         }
+        stats.commitCount += commitCount
         break
       case 'IssuesEvent':
       case 'IssueCommentEvent':
