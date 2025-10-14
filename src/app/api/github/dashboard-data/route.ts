@@ -1,5 +1,5 @@
 import { createClient } from '@/utils/supabase/server'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { DashboardData, WeeklyCommitData, Badge } from '@/types/dashboard'
 import { BADGE_DEFINITIONS } from '@/constants/badges'
 
@@ -15,7 +15,7 @@ interface DailyStatsRow {
  * GitHub Activity Dashboard Data APIエンドポイント
  * キャッシュされたGitHubアクティビティデータを集計し、ダッシュボード表示用のデータを返す
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // 1. 認証チェック
     const supabase = await createClient()

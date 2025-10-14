@@ -1,17 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
 
-// Supabaseクライアントを作成（サービスロールキーを使用）
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
+// Supabaseクライアントを遅延初期化する関数
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error('Supabase URL or Service Role Key is missing')
+  }
+
+  return createClient(supabaseUrl, supabaseKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false
     }
-  }
-)
+  })
+}
 
 interface DailyStats {
   date: string // YYYY-MM-DD (JST)
@@ -29,8 +34,16 @@ interface SyncResult {
   error?: string
 }
 
+interface GitHubEvent {
+  type: string
+  created_at: string
+  payload?: {
+    commits?: { sha: string }[]
+  }
+}
+
 // GitHubイベントから日次統計を集計
-function aggregateDailyStats(events: any[]): Map<string, DailyStats> {
+function aggregateDailyStats(events: GitHubEvent[]): Map<string, DailyStats> {
   const dailyStatsMap = new Map<string, DailyStats>()
 
   for (const event of events) {
@@ -84,7 +97,7 @@ async function syncUserStats(
 ): Promise<{ success: boolean; daysSynced: number; error?: string }> {
   try {
     // GitHubイベントを取得（最大300件 = 3ページ）
-    const allEvents: any[] = []
+    const allEvents: GitHubEvent[] = []
 
     for (let page = 1; page <= 3; page++) {
       const response = await fetch(
@@ -119,7 +132,8 @@ async function syncUserStats(
 
     // データベースに保存（upsert）
     let successCount = 0
-    for (const [_, stats] of dailyStatsMap) {
+    const supabaseAdmin = getSupabaseAdmin()
+    for (const stats of dailyStatsMap.values()) {
       const { error } = await supabaseAdmin
         .from('github_daily_stats')
         .upsert(
@@ -175,6 +189,8 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
+
+    const supabaseAdmin = getSupabaseAdmin()
 
     // GitHubユーザー名が設定されている全ユーザーを取得
     const { data: profiles, error: profilesError } = await supabaseAdmin

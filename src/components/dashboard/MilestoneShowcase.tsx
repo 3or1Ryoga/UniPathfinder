@@ -1,6 +1,6 @@
 'use client'
 
-import { Milestones, Badge } from '@/types/dashboard'
+import { Milestones } from '@/types/dashboard'
 
 interface MilestoneShowcaseProps {
   data: Milestones
