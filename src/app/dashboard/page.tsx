@@ -23,8 +23,12 @@ export default function DashboardPage() {
   const router = useRouter()
 
   useEffect(() => {
-    async function fetchUserProfile() {
+    async function fetchDashboardData() {
       try {
+        setLoading(true)
+        setError(null)
+
+        // ユーザープロフィールを取得
         const supabase = createClient()
         const { data: { user } } = await supabase.auth.getUser()
 
@@ -41,22 +45,11 @@ export default function DashboardPage() {
 
         if (profile) {
           setUserProfile({
-            email: user.email,
+            email: user.email || null,
             github_username: profile.github_username,
             line_user_id: profile.line_user_id
           })
         }
-      } catch (err) {
-        console.error('Error fetching user profile:', err)
-      }
-    }
-
-    async function fetchDashboardData() {
-      try {
-        setLoading(true)
-        setError(null)
-
-        await fetchUserProfile()
 
         const response = await fetch('/api/github/dashboard-data')
 
