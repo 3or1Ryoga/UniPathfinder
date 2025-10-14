@@ -56,14 +56,57 @@ export async function GET(request: NextRequest) {
             if (data?.user) {
                 const userId = data.user.id
 
+                // GitHubのユーザー名を取得
+                const githubUsername = data.user.user_metadata?.user_name ||
+                                      data.user.user_metadata?.preferred_username ||
+                                      null
+
                 // Check if user profile exists and has LINE connection
                 const { data: profile, error: profileError } = await supabase
                     .from('profiles')
-                    .select('line_user_id')
+                    .select('line_user_id, github_username')
                     .eq('id', userId)
                     .single()
 
-                // If profile doesn't exist or LINE is not connected, redirect to LINE linking page
+                // プロフィールが存在する場合、GitHub情報を更新
+                if (profile && githubUsername) {
+                    // github_usernameが未設定、または異なる場合は更新
+                    if (!profile.github_username || profile.github_username !== githubUsername) {
+                        const { error: updateError } = await supabase
+                            .from('profiles')
+                            .update({
+                                github_username: githubUsername,
+                                updated_at: new Date().toISOString()
+                            })
+                            .eq('id', userId)
+
+                        if (updateError) {
+                            console.error('Error updating GitHub username:', updateError)
+                        } else {
+                            console.log('GitHub username updated successfully:', githubUsername)
+                        }
+                    }
+                } else if (githubUsername) {
+                    // プロフィールが存在しない場合は作成
+                    const { error: insertError } = await supabase
+                        .from('profiles')
+                        .insert({
+                            id: userId,
+                            email: data.user.email,
+                            github_username: githubUsername,
+                            full_name: data.user.user_metadata?.name || null,
+                            avatar_url: data.user.user_metadata?.avatar_url || null,
+                            updated_at: new Date().toISOString()
+                        })
+
+                    if (insertError) {
+                        console.error('Error creating profile with GitHub username:', insertError)
+                    } else {
+                        console.log('Profile created with GitHub username:', githubUsername)
+                    }
+                }
+
+                // Check if LINE is connected
                 if (profileError || !profile || !profile.line_user_id) {
                     console.log('New user or LINE not connected, redirecting to /link-line')
                     return NextResponse.redirect(`${origin}/link-line`)

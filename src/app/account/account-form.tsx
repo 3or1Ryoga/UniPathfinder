@@ -300,6 +300,51 @@ function AccountFormContent({ session }: { session: Session | null }) {
                 )}
             </div>
 
+            {/* ダッシュボードへのリンク */}
+            <a
+                href="/dashboard"
+                style={{
+                    display: 'block',
+                    backgroundColor: '#5ce1e6',
+                    color: '#000000',
+                    padding: '1.5rem 2rem',
+                    borderRadius: '12px',
+                    marginBottom: '2rem',
+                    textDecoration: 'none',
+                    border: '2px solid #5ce1e6',
+                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    transition: 'all 0.2s ease',
+                    textAlign: 'center'
+                }}
+                onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = '#4dd4d9'
+                    e.currentTarget.style.transform = 'translateY(-2px)'
+                    e.currentTarget.style.boxShadow = '0 6px 12px rgba(0, 0, 0, 0.15)'
+                }}
+                onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = '#5ce1e6'
+                    e.currentTarget.style.transform = 'translateY(0)'
+                    e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)'
+                }}
+            >
+                <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>📊</div>
+                <h3 style={{
+                    margin: 0,
+                    fontSize: '1.5rem',
+                    fontWeight: '700',
+                    marginBottom: '0.5rem'
+                }}>
+                    ダッシュボードを見る
+                </h3>
+                <p style={{
+                    margin: 0,
+                    fontSize: '1rem',
+                    opacity: 0.9
+                }}>
+                    あなたの成長の軌跡を確認しよう
+                </p>
+            </a>
+
             {/* Stressless Profile 機能構築中のお知らせ */}
             <div style={{
                 backgroundColor: '#E3F2FD',

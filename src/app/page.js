@@ -295,6 +295,22 @@ export default function Home() {
                 boxShadow: menuOpen ? '2px 0 8px rgba(0, 0, 0, 0.1)' : 'none'
             }}>
                 <nav>
+                    <a href="/dashboard" style={{
+                        display: 'block',
+                        padding: '1rem 2rem',
+                        color: '#222222',
+                        textDecoration: 'none',
+                        fontSize: '1rem',
+                        fontWeight: '500',
+                        transition: 'background-color 0.2s ease',
+                        borderBottom: '1px solid #F5F5F5'
+                    }}
+                    onMouseOver={(e) => e.target.style.backgroundColor = '#F0F9FF'}
+                    onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}
+                    onClick={() => setMenuOpen(false)}
+                    >
+                        📊 ダッシュボード
+                    </a>
                     <a href="#features" style={{
                         display: 'block',
                         padding: '1rem 2rem',
