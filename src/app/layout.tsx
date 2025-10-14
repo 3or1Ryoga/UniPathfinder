@@ -18,9 +18,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "TechMight",
-  description: "GitHubリポジトリを分析し、あなたの現在のスキルレベルを客観的に評価。AIが自動でプロジェクトを履歴書にします。初心者から上級者まで学生エンジニアの孤立をなくすサポートサービス。",
-  keywords: ["プログラミング学習", "GitHub分析", "AI自動履歴書", "コーディング", "開発者", "初心者", "キャリアパス", "技術スキル"],
+  title: "TechMight - 学生エンジニアのキャリア成長サポート",
+  description: "GitHubの活動を可視化し、学生エンジニアのキャリア成長をサポート。毎日のコミットを記録・分析し、成長の軌跡を追いながら、就職活動に活かせる実績を自動で蓄積します。",
+  keywords: ["GitHub", "活動可視化", "キャリア支援", "学生エンジニア", "就活", "成長トラッキング", "コミット記録", "技術スキル", "ポートフォリオ"],
   authors: [{ name: "TechMight Team" }],
   creator: "TechMight",
   publisher: "TechMight",
@@ -34,26 +34,26 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   openGraph: {
-    title: "TechMight - コーディング学習AIコンシェルジュ",
-    description: "GitHubリポジトリを分析し、AIが最適化された学習パスを提案。初心者開発者のスキルアップを完全無料でサポートします。",
+    title: "TechMight - 学生エンジニアのキャリア成長サポート",
+    description: "GitHubの活動を可視化し、学生エンジニアのキャリア成長をサポート。毎日のコミットを記録・分析し、成長の軌跡を追いながら、就職活動に活かせる実績を自動で蓄積します。",
     url: 'https://techmight.com',
     siteName: 'TechMight',
     locale: 'ja_JP',
     type: 'website',
     images: [
       {
-        url: '/og-image.jpg',
-        width: 1200,
-        height: 630,
-        alt: 'TechMight - コーディング学習AIコンシェルジュ',
+        url: '/TechMight_icon.png',
+        width: 500,
+        height: 500,
+        alt: 'TechMight - 学生エンジニアのキャリア成長サポート',
       },
     ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: "TechMight - コーディング学習AIコンシェルジュ",
-    description: "GitHubリポジトリを分析し、AIが最適化された学習パスを提案。初心者開発者のスキルアップを完全無料でサポートします。",
-    images: ['/og-image.jpg'],
+    card: 'summary',
+    title: "TechMight - 学生エンジニアのキャリア成長サポート",
+    description: "GitHubの活動を可視化し、学生エンジニアのキャリア成長をサポート。毎日のコミットを記録・分析し、成長の軌跡を追いながら、就職活動に活かせる実績を自動で蓄積します。",
+    images: ['/TechMight_icon.png'],
   },
   robots: {
     index: true,
