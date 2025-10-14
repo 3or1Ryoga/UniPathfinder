@@ -192,11 +192,12 @@ export async function POST(request: NextRequest) {
 
     const supabaseAdmin = getSupabaseAdmin()
 
-    // GitHubユーザー名が設定されている全ユーザーを取得
+    // GitHubユーザー名とアクセストークンが設定されている全ユーザーを取得
     const { data: profiles, error: profilesError } = await supabaseAdmin
       .from('profiles')
-      .select('id, github_username')
+      .select('id, github_username, github_access_token')
       .not('github_username', 'is', null)
+      .not('github_access_token', 'is', null)
 
     if (profilesError) {
       console.error('Failed to fetch profiles:', profilesError)
@@ -208,31 +209,23 @@ export async function POST(request: NextRequest) {
 
     if (!profiles || profiles.length === 0) {
       return NextResponse.json({
-        message: 'No users with GitHub username found',
+        message: 'No users with GitHub username and access token found',
         results: []
       })
     }
 
-    // 各ユーザーのprovider_tokenを取得して同期
+    // 各ユーザーの統計を同期
     const syncResults: SyncResult[] = []
 
     for (const profile of profiles) {
       try {
-        // ユーザーのGitHub provider_tokenを取得
-        const { data: identities, error: identitiesError } = await supabaseAdmin
-          .from('identities')
-          .select('provider_token')
-          .eq('user_id', profile.id)
-          .eq('provider', 'github')
-          .single()
-
-        if (identitiesError || !identities?.provider_token) {
+        if (!profile.github_access_token) {
           syncResults.push({
             userId: profile.id,
             githubUsername: profile.github_username,
             success: false,
             daysSynced: 0,
-            error: 'GitHub token not found'
+            error: 'GitHub token not found in profile'
           })
           continue
         }
@@ -241,7 +234,7 @@ export async function POST(request: NextRequest) {
         const result = await syncUserStats(
           profile.id,
           profile.github_username,
-          identities.provider_token
+          profile.github_access_token
         )
 
         syncResults.push({

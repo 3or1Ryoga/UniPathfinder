@@ -56,10 +56,12 @@ export async function GET(request: NextRequest) {
             if (data?.user) {
                 const userId = data.user.id
 
-                // GitHubのユーザー名を取得
+                // GitHubのユーザー名とアクセストークンを取得
                 const githubUsername = data.user.user_metadata?.user_name ||
                                       data.user.user_metadata?.preferred_username ||
                                       null
+
+                const githubAccessToken = data.session?.provider_token || null
 
                 // Check if user profile exists and has LINE connection
                 const { data: profile, error: profileError } = await supabase
@@ -69,24 +71,33 @@ export async function GET(request: NextRequest) {
                     .single()
 
                 // プロフィールが存在する場合、GitHub情報を更新
-                if (profile && githubUsername) {
-                    // github_usernameが未設定、または異なる場合は更新
-                    if (!profile.github_username || profile.github_username !== githubUsername) {
+                if (profile && (githubUsername || githubAccessToken)) {
+                    // github_usernameまたはgithub_access_tokenが未設定、または異なる場合は更新
+                    if (!profile.github_username || profile.github_username !== githubUsername || githubAccessToken) {
+                        const updateData: Record<string, string> = {
+                            updated_at: new Date().toISOString()
+                        }
+
+                        if (githubUsername) {
+                            updateData.github_username = githubUsername
+                        }
+
+                        if (githubAccessToken) {
+                            updateData.github_access_token = githubAccessToken
+                        }
+
                         const { error: updateError } = await supabase
                             .from('profiles')
-                            .update({
-                                github_username: githubUsername,
-                                updated_at: new Date().toISOString()
-                            })
+                            .update(updateData)
                             .eq('id', userId)
 
                         if (updateError) {
-                            console.error('Error updating GitHub username:', updateError)
+                            console.error('Error updating GitHub info:', updateError)
                         } else {
-                            console.log('GitHub username updated successfully:', githubUsername)
+                            console.log('GitHub info updated successfully:', { username: githubUsername, hasToken: !!githubAccessToken })
                         }
                     }
-                } else if (githubUsername) {
+                } else if (githubUsername || githubAccessToken) {
                     // プロフィールが存在しない場合は作成
                     const { error: insertError } = await supabase
                         .from('profiles')
@@ -94,15 +105,16 @@ export async function GET(request: NextRequest) {
                             id: userId,
                             email: data.user.email,
                             github_username: githubUsername,
+                            github_access_token: githubAccessToken,
                             full_name: data.user.user_metadata?.name || null,
                             avatar_url: data.user.user_metadata?.avatar_url || null,
                             updated_at: new Date().toISOString()
                         })
 
                     if (insertError) {
-                        console.error('Error creating profile with GitHub username:', insertError)
+                        console.error('Error creating profile with GitHub info:', insertError)
                     } else {
-                        console.log('Profile created with GitHub username:', githubUsername)
+                        console.log('Profile created with GitHub info:', { username: githubUsername, hasToken: !!githubAccessToken })
                     }
                 }
 
