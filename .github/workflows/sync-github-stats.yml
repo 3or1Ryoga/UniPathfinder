@@ -1,0 +1,53 @@
+name: Sync GitHub Daily Stats
+
+# repository_dispatch: 外部から呼び出されたときに実行
+# workflow_dispatch: GitHub UI から手動実行可能
+on:
+  repository_dispatch:
+    types: [sync-daily-stats]
+  workflow_dispatch:
+
+jobs:
+  sync-stats:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Call Vercel Sync API
+        run: |
+          echo "🚀 Starting GitHub stats synchronization..."
+
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            https://uni-pathfinder-lf9w.vercel.app/api/github/sync-daily-stats \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json")
+
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+
+          echo "📊 HTTP Status: $http_code"
+          echo "📦 Response Body:"
+          echo "$body" | jq '.' || echo "$body"
+
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Sync completed successfully!"
+
+            # サマリーを抽出して表示
+            total_users=$(echo "$body" | jq -r '.summary.totalUsers // "N/A"')
+            success_count=$(echo "$body" | jq -r '.summary.successCount // "N/A"')
+            failure_count=$(echo "$body" | jq -r '.summary.failureCount // "N/A"')
+            total_days=$(echo "$body" | jq -r '.summary.totalDaysSynced // "N/A"')
+
+            echo "📈 Summary:"
+            echo "  - Total Users: $total_users"
+            echo "  - Success: $success_count"
+            echo "  - Failure: $failure_count"
+            echo "  - Total Days Synced: $total_days"
+          else
+            echo "❌ Sync failed with status code: $http_code"
+            exit 1
+          fi
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "⚠️ GitHub stats sync failed. Please check the logs."

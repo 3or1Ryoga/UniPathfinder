@@ -6,12 +6,6 @@
   "outputDirectory": ".next",
   "cleanUrls": true,
   "trailingSlash": false,
-  "crons": [
-    {
-      "path": "/api/github/sync-daily-stats",
-      "schedule": "0 18 * * *"
-    }
-  ],
   "functions": {
     "src/app/**": {
       "maxDuration": 10
