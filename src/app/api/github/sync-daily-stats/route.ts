@@ -271,6 +271,8 @@ async function syncUserStats(
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('=== Sync Daily Stats API Called ===')
+
     // 認証チェック（Cronジョブからの呼び出しを想定）
     const authHeader = request.headers.get('authorization')
     const cronSecret = process.env.CRON_SECRET
@@ -284,13 +286,16 @@ export async function POST(request: NextRequest) {
     }
 
     if (authHeader !== `Bearer ${cronSecret}`) {
+      console.error('Unauthorized: Invalid auth header')
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
       )
     }
 
+    console.log('Auth check passed, initializing Supabase admin client...')
     const supabaseAdmin = getSupabaseAdmin()
+    console.log('Supabase admin client initialized')
 
     // GitHubユーザー名とアクセストークンが設定されている全ユーザーを取得
     const { data: profiles, error: profilesError } = await supabaseAdmin
@@ -385,11 +390,20 @@ export async function POST(request: NextRequest) {
       results: syncResults
     })
   } catch (error) {
-    console.error('Sync batch job failed:', error)
+    console.error('=== Sync batch job failed ===')
+    console.error('Error type:', typeof error)
+    console.error('Error:', error)
+
+    if (error instanceof Error) {
+      console.error('Error message:', error.message)
+      console.error('Error stack:', error.stack)
+    }
+
     return NextResponse.json(
       {
         error: 'Sync batch job failed',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        details: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined
       },
       { status: 500 }
     )
