@@ -196,10 +196,10 @@ async function syncUserStats(
   providerToken: string
 ): Promise<{ success: boolean; daysSynced: number; error?: string }> {
   try {
-    // GitHubイベントを取得（最大200件 = 2ページ、パフォーマンス最適化）
+    // GitHubイベントを取得（最大100件 = 1ページ、Vercel Hobby プラン対応）
     const allEvents: GitHubEvent[] = []
 
-    for (let page = 1; page <= 2; page++) {
+    for (let page = 1; page <= 1; page++) {
       const response = await fetch(
         `https://api.github.com/users/${githubUsername}/events?per_page=100&page=${page}`,
         {
@@ -321,12 +321,14 @@ export async function POST(request: NextRequest) {
 
     console.log(`Found ${profiles.length} users to sync`)
 
-    // タイムアウト対策: 一度に最大20ユーザーまで処理
-    const MAX_USERS_PER_RUN = 20
+    // タイムアウト対策: Hobby プラン (10秒制限) に対応して5ユーザーまで処理
+    // 各ユーザーの処理に約2秒かかるため、5ユーザー = 約10秒
+    const MAX_USERS_PER_RUN = 5
     const profilesToSync = profiles.slice(0, MAX_USERS_PER_RUN)
 
     if (profiles.length > MAX_USERS_PER_RUN) {
       console.log(`Processing first ${MAX_USERS_PER_RUN} users (out of ${profiles.length} total)`)
+      console.log(`Note: To process all users, run this API multiple times or upgrade to Vercel Pro plan`)
     }
 
     // 各ユーザーの統計を同期
@@ -370,8 +372,8 @@ export async function POST(request: NextRequest) {
           engagementStatus
         })
 
-        // レート制限を考慮して少し待機（最適化: 500ms → 200ms）
-        await new Promise(resolve => setTimeout(resolve, 200))
+        // Vercel Hobby プランの10秒制限対応のため、待機時間を削除
+        // 5ユーザーのみ処理するため、GitHubのレート制限には引っかからない
       } catch (error) {
         console.error(`Error processing user ${profile.id}:`, error)
         syncResults.push({
