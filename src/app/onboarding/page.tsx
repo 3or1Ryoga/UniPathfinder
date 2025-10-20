@@ -211,7 +211,6 @@ export default function OnboardingPage() {
 
   // 入力用の一時的な状態
   const [techInput, setTechInput] = useState('')
-  const [workValueInput, setWorkValueInput] = useState('')
   const [aiToolInput, setAiToolInput] = useState('')
 
   const [formData, setFormData] = useState<OnboardingData>({
@@ -238,6 +237,7 @@ export default function OnboardingPage() {
 
   useEffect(() => {
     loadExistingProfile()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function loadExistingProfile() {
@@ -386,22 +386,8 @@ export default function OnboardingPage() {
     })
   }
 
-  function addWorkValue() {
-    if (workValueInput.trim() && !formData.work_values.includes(workValueInput.trim())) {
-      setFormData({
-        ...formData,
-        work_values: [...formData.work_values, workValueInput.trim()]
-      })
-      setWorkValueInput('')
-    }
-  }
-
-  function removeWorkValue(value: string) {
-    setFormData({
-      ...formData,
-      work_values: formData.work_values.filter(v => v !== value)
-    })
-  }
+  // workValueInputは手動入力を削除したため不要
+  // addWorkValue と removeWorkValue も未使用のため削除
 
   function addAITool() {
     if (aiToolInput.trim() && !formData.ai_tools_experience.includes(aiToolInput.trim())) {

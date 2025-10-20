@@ -36,6 +36,7 @@ export default function EngagementDashboardPage() {
 
   useEffect(() => {
     loadEngagementData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function loadEngagementData() {
@@ -69,9 +70,25 @@ export default function EngagementDashboardPage() {
       }
 
       // データを状態別に分類
-      const enrichedData = data?.map((item: any) => ({
+      interface EngagementDataItem {
+        user_id: string
+        status: string
+        commits_last_7days: number
+        commits_last_14days: number
+        last_commit_date: string | null
+        recommended_message_type: string | null
+        updated_at: string
+        profiles?: {
+          full_name: string | null
+          github_username: string | null
+          line_user_id: string | null
+          email: string | null
+        }
+      }
+
+      const enrichedData = data?.map((item: EngagementDataItem) => ({
         user_id: item.user_id,
-        status: item.status,
+        status: item.status as 'active' | 'stagnant' | 'normal',
         commits_last_7days: item.commits_last_7days,
         commits_last_14days: item.commits_last_14days,
         last_commit_date: item.last_commit_date,
