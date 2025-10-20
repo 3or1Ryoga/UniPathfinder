@@ -210,7 +210,7 @@ export default function HomePage() {
                   <span className="text-sm text-gray-500">キャリアの関心</span>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {Array.isArray(profile.career_interests) && profile.career_interests.length > 0 ? (
-                      profile.career_interests.map((interest) => (
+                      (profile.career_interests as string[]).map((interest) => (
                         <span key={interest} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
                           {interest}
                         </span>
@@ -230,7 +230,7 @@ export default function HomePage() {
                   <span className="text-sm text-gray-500">重視する価値観</span>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {Array.isArray(profile.work_values) && profile.work_values.length > 0 ? (
-                      profile.work_values.map((value) => (
+                      (profile.work_values as string[]).map((value) => (
                         <span key={value} className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
                           {value}
                         </span>
@@ -252,7 +252,7 @@ export default function HomePage() {
                   <span className="text-sm text-gray-500">使用経験のある技術スタック・言語</span>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {Array.isArray(profile.tech_stack_experienced) && profile.tech_stack_experienced.length > 0 ? (
-                      profile.tech_stack_experienced.map((tech) => (
+                      (profile.tech_stack_experienced as string[]).map((tech) => (
                         <span key={tech} className="px-3 py-1 bg-blue-700 text-white rounded-full text-sm font-medium">
                           {tech}
                         </span>
@@ -268,8 +268,8 @@ export default function HomePage() {
                   <span className="text-sm text-gray-500">興味のある技術スタック・言語</span>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {Array.isArray(profile.tech_stack) && profile.tech_stack.length > 0 ? (
-                      profile.tech_stack
-                        .filter(tech => !Array.isArray(profile.tech_stack_experienced) || !profile.tech_stack_experienced.includes(tech))
+                      (profile.tech_stack as string[])
+                        .filter(tech => !Array.isArray(profile.tech_stack_experienced) || !(profile.tech_stack_experienced as string[]).includes(tech))
                         .map((tech) => (
                           <span key={tech} className="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">
                             {tech}
@@ -284,7 +284,7 @@ export default function HomePage() {
                   <span className="text-sm text-gray-500">ハードスキル（開発手法）</span>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {Array.isArray(profile.hard_skills) && profile.hard_skills.length > 0 ? (
-                      profile.hard_skills.map((skill) => (
+                      (profile.hard_skills as string[]).map((skill) => (
                         <span key={skill} className="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-sm font-medium">
                           {skill}
                         </span>
@@ -298,7 +298,7 @@ export default function HomePage() {
                   <span className="text-sm text-gray-500">ソフトスキル</span>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {Array.isArray(profile.soft_skills) && profile.soft_skills.length > 0 ? (
-                      profile.soft_skills.map((skill) => (
+                      (profile.soft_skills as string[]).map((skill) => (
                         <span key={skill} className="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-medium">
                           {skill}
                         </span>
@@ -349,7 +349,7 @@ export default function HomePage() {
                   <span className="text-sm text-gray-500">日常的な使用用途</span>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {Array.isArray(profile.ai_usage_scenarios) && profile.ai_usage_scenarios.length > 0 ? (
-                      profile.ai_usage_scenarios.map((scenario) => (
+                      (profile.ai_usage_scenarios as string[]).map((scenario) => (
                         <span key={scenario} className="px-3 py-1 bg-cyan-100 text-cyan-800 rounded-full text-sm font-medium">
                           {scenario}
                         </span>
@@ -363,7 +363,7 @@ export default function HomePage() {
                   <span className="text-sm text-gray-500">使用経験のあるAIツール</span>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {Array.isArray(profile.ai_tools_experience) && profile.ai_tools_experience.length > 0 ? (
-                      profile.ai_tools_experience.map((tool) => (
+                      (profile.ai_tools_experience as string[]).map((tool) => (
                         <span key={tool} className="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm font-medium">
                           {tool}
                         </span>
