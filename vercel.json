@@ -7,6 +7,9 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "functions": {
+    "src/app/api/github/sync-daily-stats/route": {
+      "maxDuration": 60
+    },
     "src/app/**": {
       "maxDuration": 10
     }
