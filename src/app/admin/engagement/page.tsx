@@ -50,55 +50,61 @@ export default function EngagementDashboardPage() {
         return
       }
 
-      // エンゲージメント状態とプロフィール情報を取得
-      const { data, error } = await supabase
+      // エンゲージメント状態を取得
+      const { data: engagementData, error: engagementError } = await supabase
         .from('user_engagement_status')
-        .select(`
-          *,
-          profiles!user_engagement_status_user_id_fkey (
-            full_name,
-            github_username,
-            line_user_id,
-            email
-          )
-        `)
+        .select('*')
         .order('updated_at', { ascending: false })
 
-      if (error) {
-        console.error('Supabase query error:', error)
-        throw error
+      if (engagementError) {
+        console.error('Supabase query error:', engagementError)
+        throw engagementError
       }
 
-      // データを状態別に分類
-      interface EngagementDataItem {
-        user_id: string
-        status: string
-        commits_last_7days: number
-        commits_last_14days: number
-        last_commit_date: string | null
-        recommended_message_type: string | null
-        updated_at: string
-        profiles?: {
-          full_name: string | null
-          github_username: string | null
-          line_user_id: string | null
-          email: string | null
+      if (!engagementData || engagementData.length === 0) {
+        setActiveUsers([])
+        setStagnantUsers([])
+        setNormalUsers([])
+        setLoading(false)
+        return
+      }
+
+      // ユーザーIDを抽出
+      const userIds = engagementData.map(item => item.user_id)
+
+      // プロフィール情報を取得
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, full_name, github_username, line_user_id, email')
+        .in('id', userIds)
+
+      if (profilesError) {
+        console.error('Profiles query error:', profilesError)
+        throw profilesError
+      }
+
+      // プロフィール情報をマップ化
+      const profilesMap = new Map(
+        profilesData?.map(profile => [profile.id, profile]) || []
+      )
+
+      // データをプロフィール情報と結合
+      const enrichedData = engagementData.map((item) => {
+        const profile = profilesMap.get(item.user_id)
+        return {
+          user_id: item.user_id,
+          status: item.status as 'active' | 'stagnant' | 'normal',
+          commits_last_7days: item.commits_last_7days,
+          commits_last_14days: item.commits_last_14days,
+          last_commit_date: item.last_commit_date,
+          recommended_message_type: item.recommended_message_type,
+          updated_at: item.updated_at,
+          full_name: profile?.full_name || null,
+          github_username: profile?.github_username || null,
+          line_user_id: profile?.line_user_id || null,
+          email: profile?.email || null
         }
-      }
-
-      const enrichedData = data?.map((item: EngagementDataItem) => ({
-        user_id: item.user_id,
-        status: item.status as 'active' | 'stagnant' | 'normal',
-        commits_last_7days: item.commits_last_7days,
-        commits_last_14days: item.commits_last_14days,
-        last_commit_date: item.last_commit_date,
-        recommended_message_type: item.recommended_message_type,
-        updated_at: item.updated_at,
-        full_name: item.profiles?.full_name || null,
-        github_username: item.profiles?.github_username || null,
-        line_user_id: item.profiles?.line_user_id || null,
-        email: item.profiles?.email || null
-      })) || []
+      })
 
       setActiveUsers(enrichedData.filter((u: EngagementUser) => u.status === 'active'))
       setStagnantUsers(enrichedData.filter((u: EngagementUser) => u.status === 'stagnant'))
