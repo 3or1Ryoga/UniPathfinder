@@ -321,14 +321,33 @@ export async function POST(request: NextRequest) {
 
     console.log(`Found ${profiles.length} users to sync`)
 
-    // タイムアウト対策: Hobby プラン (10秒制限) に対応して5ユーザーまで処理
-    // 各ユーザーの処理に約2秒かかるため、5ユーザー = 約10秒
-    const MAX_USERS_PER_RUN = 5
-    const profilesToSync = profiles.slice(0, MAX_USERS_PER_RUN)
+    // タイムアウト対策: Hobby プラン (10秒制限) に対応
+    // 各ユーザーの処理に約1秒かかるため、8ユーザー = 約8秒（余裕を持って10秒以内）
+    const MAX_USERS_PER_RUN = 8
+
+    // 既に処理済みのユーザーをスキップ（updated_atが最近のものを除外）
+    // user_engagement_statusテーブルで最近更新されたユーザーをチェック
+    const oneDayAgo = new Date()
+    oneDayAgo.setDate(oneDayAgo.getDate() - 1)
+
+    const { data: recentlyUpdated } = await supabaseAdmin
+      .from('user_engagement_status')
+      .select('user_id')
+      .gte('updated_at', oneDayAgo.toISOString())
+
+    const recentlyUpdatedIds = new Set(recentlyUpdated?.map(r => r.user_id) || [])
+
+    // 未処理または更新が古いユーザーを優先
+    const unprocessedProfiles = profiles.filter(p => !recentlyUpdatedIds.has(p.id))
+    const profilesToProcess = unprocessedProfiles.length > 0 ? unprocessedProfiles : profiles
+    const profilesToSync = profilesToProcess.slice(0, MAX_USERS_PER_RUN)
 
     if (profiles.length > MAX_USERS_PER_RUN) {
-      console.log(`Processing first ${MAX_USERS_PER_RUN} users (out of ${profiles.length} total)`)
-      console.log(`Note: To process all users, run this API multiple times or upgrade to Vercel Pro plan`)
+      console.log(`Processing ${profilesToSync.length} users (out of ${profiles.length} total)`)
+      console.log(`Unprocessed users: ${unprocessedProfiles.length}`)
+      if (unprocessedProfiles.length > MAX_USERS_PER_RUN) {
+        console.log(`Note: Run this API again to process remaining ${unprocessedProfiles.length - MAX_USERS_PER_RUN} users`)
+      }
     }
 
     // 各ユーザーの統計を同期
