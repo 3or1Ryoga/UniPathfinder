@@ -3,6 +3,8 @@
 import { useEffect, useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
+import MainLayout from '@/components/layout/MainLayout'
+import { calculateProfileCompletion } from '@/utils/profileCompletion'
 
 interface Profile {
   // 基本情報
@@ -31,6 +33,7 @@ export default function SettingsPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [profileCompletion, setProfileCompletion] = useState(0)
   const [profile, setProfile] = useState<Profile>({
     // 基本情報
     full_name: '',
@@ -72,7 +75,7 @@ export default function SettingsPage() {
 
       const { data, error } = await supabase
         .from('profiles')
-        .select('full_name, username, bio, location, website, portfolio_url, twitter_username, linkedin_url, instagram_username, discord_username, youtube_url, facebook_url, skills, interests, job_interest, skill_level, learning_goal')
+        .select('*')
         .eq('id', user.id)
         .single()
 
@@ -80,6 +83,9 @@ export default function SettingsPage() {
 
       if (data) {
         setProfile(data)
+        // Calculate and set profile completion
+        const completion = calculateProfileCompletion(data)
+        setProfileCompletion(completion)
       }
     } catch (error) {
       console.error('Error loading profile:', error)
@@ -153,29 +159,13 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* ヘッダー */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-10 shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <button
-                onClick={() => router.push('/dashboard')}
-                className="text-gray-600 hover:text-gray-800 transition-colors flex items-center gap-2"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                <span className="font-medium">ダッシュボードに戻る</span>
-              </button>
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900">設定</h1>
-          </div>
+    <MainLayout profileCompletion={profileCompletion}>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* ヘッダー */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">設定</h1>
+          <p className="text-gray-600 mt-2">アカウント情報とSNS連携</p>
         </div>
-      </header>
-
-      {/* メインコンテンツ */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* メッセージ */}
         {message && (
           <div className={`mb-6 p-4 rounded-lg ${
@@ -485,7 +475,7 @@ export default function SettingsPage() {
             </button>
           </form>
         </div>
-      </main>
-    </div>
+      </div>
+    </MainLayout>
   )
 }

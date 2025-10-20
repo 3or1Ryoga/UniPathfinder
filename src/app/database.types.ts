@@ -14,6 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
+      user_engagement_status: {
+        Row: {
+          id: string
+          user_id: string
+          status: string
+          commits_last_7days: number
+          commits_last_14days: number
+          last_commit_date: string | null
+          recommended_message_type: string | null
+          last_notified_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          status: string
+          commits_last_7days?: number
+          commits_last_14days?: number
+          last_commit_date?: string | null
+          recommended_message_type?: string | null
+          last_notified_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          status?: string
+          commits_last_7days?: number
+          commits_last_14days?: number
+          last_commit_date?: string | null
+          recommended_message_type?: string | null
+          last_notified_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -40,6 +79,29 @@ export type Database = {
           username: string | null
           website: string | null
           youtube_url: string | null
+          github_access_token: string | null
+          job_interest: string | null
+          skill_level: string | null
+          learning_goal: string | null
+          graduation_year: number | null
+          education: string | null
+          career_interests: Json | null
+          tech_stack: Json | null
+          tech_stack_experienced: Json | null
+          career_goal: string | null
+          work_values: Json | null
+          preferred_locations: Json | null
+          experience: string | null
+          portfolio_projects: Json | null
+          awards: string | null
+          ai_perspective: string | null
+          hard_skills: Json | null
+          soft_skills: Json | null
+          ai_usage_scenarios: Json | null
+          ai_tools_experience: Json | null
+          ai_interest_direction: string | null
+          onboarding_completed: boolean | null
+          profile_completion: number | null
         }
         Insert: {
           avatar_url?: string | null
@@ -66,6 +128,29 @@ export type Database = {
           username?: string | null
           website?: string | null
           youtube_url?: string | null
+          github_access_token?: string | null
+          job_interest?: string | null
+          skill_level?: string | null
+          learning_goal?: string | null
+          graduation_year?: number | null
+          education?: string | null
+          career_interests?: Json | null
+          tech_stack?: Json | null
+          tech_stack_experienced?: Json | null
+          career_goal?: string | null
+          work_values?: Json | null
+          preferred_locations?: Json | null
+          experience?: string | null
+          portfolio_projects?: Json | null
+          awards?: string | null
+          ai_perspective?: string | null
+          hard_skills?: Json | null
+          soft_skills?: Json | null
+          ai_usage_scenarios?: Json | null
+          ai_tools_experience?: Json | null
+          ai_interest_direction?: string | null
+          onboarding_completed?: boolean | null
+          profile_completion?: number | null
         }
         Update: {
           avatar_url?: string | null
@@ -92,6 +177,29 @@ export type Database = {
           username?: string | null
           website?: string | null
           youtube_url?: string | null
+          github_access_token?: string | null
+          job_interest?: string | null
+          skill_level?: string | null
+          learning_goal?: string | null
+          graduation_year?: number | null
+          education?: string | null
+          career_interests?: Json | null
+          tech_stack?: Json | null
+          tech_stack_experienced?: Json | null
+          career_goal?: string | null
+          work_values?: Json | null
+          preferred_locations?: Json | null
+          experience?: string | null
+          portfolio_projects?: Json | null
+          awards?: string | null
+          ai_perspective?: string | null
+          hard_skills?: Json | null
+          soft_skills?: Json | null
+          ai_usage_scenarios?: Json | null
+          ai_tools_experience?: Json | null
+          ai_interest_direction?: string | null
+          onboarding_completed?: boolean | null
+          profile_completion?: number | null
         }
         Relationships: []
       }

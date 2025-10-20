@@ -32,6 +32,7 @@ interface SyncResult {
   success: boolean
   daysSynced: number
   error?: string
+  engagementStatus?: 'active' | 'stagnant' | 'normal'
 }
 
 interface GitHubEvent {
@@ -96,6 +97,96 @@ function aggregateDailyStats(events: GitHubEvent[]): Map<string, DailyStats> {
   }
 
   return dailyStatsMap
+}
+
+// ユーザーのエンゲージメント状態を計算・更新
+async function updateEngagementStatus(userId: string): Promise<'active' | 'stagnant' | 'normal'> {
+  try {
+    const supabaseAdmin = getSupabaseAdmin()
+    const now = new Date()
+
+    // 過去7日間の日付範囲
+    const sevenDaysAgo = new Date(now)
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+
+    // 過去14日間の日付範囲
+    const fourteenDaysAgo = new Date(now)
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14)
+
+    // 過去7日間のコミット数を集計
+    const { data: last7DaysStats, error: error7 } = await supabaseAdmin
+      .from('github_daily_stats')
+      .select('commit_count')
+      .eq('user_id', userId)
+      .gte('date', sevenDaysAgo.toISOString().split('T')[0])
+      .lte('date', now.toISOString().split('T')[0])
+
+    if (error7) {
+      console.error('Error fetching 7 days stats:', error7)
+      return 'normal'
+    }
+
+    const commits7Days = last7DaysStats?.reduce((sum, stat) => sum + stat.commit_count, 0) || 0
+
+    // 過去14日間のコミット数を集計
+    const { data: last14DaysStats, error: error14 } = await supabaseAdmin
+      .from('github_daily_stats')
+      .select('commit_count, date')
+      .eq('user_id', userId)
+      .gte('date', fourteenDaysAgo.toISOString().split('T')[0])
+      .lte('date', now.toISOString().split('T')[0])
+      .order('date', { ascending: false })
+
+    if (error14) {
+      console.error('Error fetching 14 days stats:', error14)
+      return 'normal'
+    }
+
+    const commits14Days = last14DaysStats?.reduce((sum, stat) => sum + stat.commit_count, 0) || 0
+    const lastCommitDate = last14DaysStats?.find(stat => stat.commit_count > 0)?.date || null
+
+    // エンゲージメント状態を判定
+    let status: 'active' | 'stagnant' | 'normal' = 'normal'
+    let recommendedMessageType: string | null = null
+
+    if (commits7Days > 10) {
+      status = 'active'
+      recommendedMessageType = 'active_encouragement'
+    } else if (commits14Days === 0) {
+      status = 'stagnant'
+      recommendedMessageType = 'stagnant_reminder'
+    }
+
+    // user_engagement_statusテーブルを更新（テーブルが存在しない場合はスキップ）
+    const { error: upsertError } = await supabaseAdmin
+      .from('user_engagement_status')
+      .upsert(
+        {
+          user_id: userId,
+          status: status,
+          commits_last_7days: commits7Days,
+          commits_last_14days: commits14Days,
+          last_commit_date: lastCommitDate,
+          recommended_message_type: recommendedMessageType,
+          updated_at: now.toISOString()
+        },
+        {
+          onConflict: 'user_id'
+        }
+      )
+
+    if (upsertError) {
+      // テーブルが存在しない場合はログを出力するだけでエラーにしない
+      console.warn('Warning: Could not update engagement status (table may not exist yet):', upsertError.message)
+      console.warn('Please run migration: /migrations/004_add_user_engagement_status.sql')
+      // エラーがあってもstatusは返す
+    }
+
+    return status
+  } catch (error) {
+    console.error('Error in updateEngagementStatus:', error)
+    return 'normal'
+  }
 }
 
 // 単一ユーザーの統計を同期
@@ -246,10 +337,22 @@ export async function POST(request: NextRequest) {
           profile.github_access_token
         )
 
+        // 統計同期が成功した場合、エンゲージメント状態を更新（オプショナル）
+        let engagementStatus: 'active' | 'stagnant' | 'normal' = 'normal'
+        if (result.success) {
+          try {
+            engagementStatus = await updateEngagementStatus(profile.id)
+          } catch (engagementError) {
+            console.warn(`Failed to update engagement status for user ${profile.id}:`, engagementError)
+            // エンゲージメント更新の失敗は全体の処理には影響させない
+          }
+        }
+
         syncResults.push({
           userId: profile.id,
           githubUsername: profile.github_username,
-          ...result
+          ...result,
+          engagementStatus
         })
 
         // レート制限を考慮して少し待機

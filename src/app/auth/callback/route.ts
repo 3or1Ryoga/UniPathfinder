@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
     const requestUrl = new URL(request.url)
     const code = requestUrl.searchParams.get('code')
     const origin = requestUrl.origin
-    const next = requestUrl.searchParams.get('next') ?? '/dashboard'
+    const next = requestUrl.searchParams.get('next') ?? '/home'
 
     // Check for Supabase error parameters
     const error = requestUrl.searchParams.get('error')
@@ -124,8 +124,8 @@ export async function GET(request: NextRequest) {
                     return NextResponse.redirect(`${origin}/link-line`)
                 }
 
-                // Existing user with LINE connection - redirect to dashboard
-                console.log('Existing user with LINE connection, redirecting to /dashboard')
+                // Existing user with LINE connection - redirect to home
+                console.log('Existing user with LINE connection, redirecting to /home')
             }
 
             const redirectUrl = `${origin}${next.startsWith('/') ? next : `/${next}`}`
