@@ -31,7 +31,8 @@ export default function EngagementDashboardPage() {
   const [activeUsers, setActiveUsers] = useState<EngagementUser[]>([])
   const [stagnantUsers, setStagnantUsers] = useState<EngagementUser[]>([])
   const [normalUsers, setNormalUsers] = useState<EngagementUser[]>([])
-  const [selectedTab, setSelectedTab] = useState<'active' | 'stagnant' | 'normal'>('active')
+  const [unconnectedUsers, setUnconnectedUsers] = useState<EngagementUser[]>([])
+  const [selectedTab, setSelectedTab] = useState<'active' | 'stagnant' | 'normal' | 'unconnected'>('active')
   const [copiedUserId, setCopiedUserId] = useState<string | null>(null)
 
   useEffect(() => {
@@ -50,6 +51,16 @@ export default function EngagementDashboardPage() {
         return
       }
 
+      // 全プロフィール情報を取得
+      const { data: allProfiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, full_name, github_username, line_user_id, email')
+
+      if (profilesError) {
+        console.error('Profiles query error:', profilesError)
+        throw profilesError
+      }
+
       // エンゲージメント状態を取得
       const { data: engagementData, error: engagementError } = await supabase
         .from('user_engagement_status')
@@ -61,35 +72,16 @@ export default function EngagementDashboardPage() {
         throw engagementError
       }
 
-      if (!engagementData || engagementData.length === 0) {
-        setActiveUsers([])
-        setStagnantUsers([])
-        setNormalUsers([])
-        setLoading(false)
-        return
-      }
-
-      // ユーザーIDを抽出
-      const userIds = engagementData.map(item => item.user_id)
-
-      // プロフィール情報を取得
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('id, full_name, github_username, line_user_id, email')
-        .in('id', userIds)
-
-      if (profilesError) {
-        console.error('Profiles query error:', profilesError)
-        throw profilesError
-      }
+      // エンゲージメントデータがあるユーザーのIDをセット化
+      const engagementUserIds = new Set(engagementData?.map(item => item.user_id) || [])
 
       // プロフィール情報をマップ化
       const profilesMap = new Map(
-        profilesData?.map(profile => [profile.id, profile]) || []
+        allProfiles?.map(profile => [profile.id, profile]) || []
       )
 
-      // データをプロフィール情報と結合
-      const enrichedData = engagementData.map((item) => {
+      // GitHub連携済みユーザー（エンゲージメントデータあり）
+      const enrichedData = (engagementData || []).map((item) => {
         const profile = profilesMap.get(item.user_id)
         return {
           user_id: item.user_id,
@@ -106,9 +98,27 @@ export default function EngagementDashboardPage() {
         }
       })
 
+      // GitHub未連携ユーザー（エンゲージメントデータなし）
+      const unconnected = (allProfiles || [])
+        .filter(profile => !engagementUserIds.has(profile.id))
+        .map(profile => ({
+          user_id: profile.id,
+          status: 'normal' as const,
+          commits_last_7days: 0,
+          commits_last_14days: 0,
+          last_commit_date: null,
+          recommended_message_type: null,
+          updated_at: new Date().toISOString(),
+          full_name: profile.full_name,
+          github_username: profile.github_username,
+          line_user_id: profile.line_user_id,
+          email: profile.email
+        }))
+
       setActiveUsers(enrichedData.filter((u: EngagementUser) => u.status === 'active'))
       setStagnantUsers(enrichedData.filter((u: EngagementUser) => u.status === 'stagnant'))
       setNormalUsers(enrichedData.filter((u: EngagementUser) => u.status === 'normal'))
+      setUnconnectedUsers(unconnected)
     } catch (error) {
       console.error('Error loading engagement data:', error)
       // エラーの詳細をログに出力
@@ -130,7 +140,7 @@ export default function EngagementDashboardPage() {
     setTimeout(() => setCopiedUserId(null), 2000)
   }
 
-  function renderUserCard(user: EngagementUser) {
+  function renderUserCard(user: EngagementUser, isUnconnected: boolean = false) {
     const messageTemplate = user.recommended_message_type
       ? MESSAGE_TEMPLATES[user.recommended_message_type as keyof typeof MESSAGE_TEMPLATES]
       : null
@@ -171,40 +181,58 @@ export default function EngagementDashboardPage() {
             </div>
           </div>
           <div className="text-right">
-            <span
-              className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                user.status === 'active'
-                  ? 'bg-green-100 text-green-800'
-                  : user.status === 'stagnant'
-                  ? 'bg-red-100 text-red-800'
-                  : 'bg-gray-100 text-gray-800'
-              }`}
-            >
-              {user.status.toUpperCase()}
-            </span>
+            {isUnconnected ? (
+              <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">
+                GitHub未連携
+              </span>
+            ) : (
+              <span
+                className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
+                  user.status === 'active'
+                    ? 'bg-green-100 text-green-800'
+                    : user.status === 'stagnant'
+                    ? 'bg-red-100 text-red-800'
+                    : 'bg-gray-100 text-gray-800'
+                }`}
+              >
+                {user.status.toUpperCase()}
+              </span>
+            )}
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mb-4 p-4 bg-gray-50 rounded-lg">
-          <div>
-            <p className="text-xs text-gray-500">過去7日間</p>
-            <p className="text-2xl font-bold text-gray-900">{user.commits_last_7days}</p>
-            <p className="text-xs text-gray-600">commits</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-500">過去14日間</p>
-            <p className="text-2xl font-bold text-gray-900">{user.commits_last_14days}</p>
-            <p className="text-xs text-gray-600">commits</p>
-          </div>
-          <div>
-            <p className="text-xs text-gray-500">最終コミット</p>
-            <p className="text-sm font-semibold text-gray-900">
-              {user.last_commit_date || 'N/A'}
+        {isUnconnected ? (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-2xl">⚠️</span>
+              <p className="font-semibold text-yellow-900">GitHubアカウントが連携されていません</p>
+            </div>
+            <p className="text-sm text-yellow-800">
+              このユーザーはまだGitHubアカウントを連携していないため、アクティビティデータが取得できません。
             </p>
           </div>
-        </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-4 mb-4 p-4 bg-gray-50 rounded-lg">
+            <div>
+              <p className="text-xs text-gray-500">過去7日間</p>
+              <p className="text-2xl font-bold text-gray-900">{user.commits_last_7days}</p>
+              <p className="text-xs text-gray-600">commits</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500">過去14日間</p>
+              <p className="text-2xl font-bold text-gray-900">{user.commits_last_14days}</p>
+              <p className="text-xs text-gray-600">commits</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500">最終コミット</p>
+              <p className="text-sm font-semibold text-gray-900">
+                {user.last_commit_date || 'N/A'}
+              </p>
+            </div>
+          </div>
+        )}
 
-        {personalizedMessage && (
+        {personalizedMessage && !isUnconnected && (
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
             <p className="text-xs font-semibold text-blue-900 mb-2">推奨メッセージ:</p>
             <p className="text-sm text-blue-800 mb-3 whitespace-pre-line">{personalizedMessage}</p>
@@ -271,7 +299,7 @@ export default function EngagementDashboardPage() {
     )
   }
 
-  const currentUsers = selectedTab === 'active' ? activeUsers : selectedTab === 'stagnant' ? stagnantUsers : normalUsers
+  const currentUsers = selectedTab === 'active' ? activeUsers : selectedTab === 'stagnant' ? stagnantUsers : selectedTab === 'unconnected' ? unconnectedUsers : normalUsers
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8 px-4 sm:px-6 lg:px-8">
@@ -283,7 +311,7 @@ export default function EngagementDashboardPage() {
         </div>
 
         {/* サマリーカード */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
             <div className="flex items-center justify-between">
               <div>
@@ -315,6 +343,17 @@ export default function EngagementDashboardPage() {
               <div className="text-4xl">📊</div>
             </div>
             <p className="text-xs text-gray-500 mt-2">通常のアクティビティ</p>
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-gray-600 mb-1">GitHub未連携</p>
+                <p className="text-3xl font-bold text-gray-900">{unconnectedUsers.length}</p>
+              </div>
+              <div className="text-4xl">⚠️</div>
+            </div>
+            <p className="text-xs text-gray-500 mt-2">GitHub未連携のユーザー</p>
           </div>
         </div>
 
@@ -351,6 +390,16 @@ export default function EngagementDashboardPage() {
             >
               通常 ({normalUsers.length})
             </button>
+            <button
+              onClick={() => setSelectedTab('unconnected')}
+              className={`flex-1 px-6 py-4 text-center font-semibold transition-colors ${
+                selectedTab === 'unconnected'
+                  ? 'text-yellow-600 border-b-2 border-yellow-600'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              未連携 ({unconnectedUsers.length})
+            </button>
           </div>
         </div>
 
@@ -361,7 +410,7 @@ export default function EngagementDashboardPage() {
               <p className="text-gray-500">該当するユーザーがいません</p>
             </div>
           ) : (
-            currentUsers.map(renderUserCard)
+            currentUsers.map(user => renderUserCard(user, selectedTab === 'unconnected'))
           )}
         </div>
       </div>
