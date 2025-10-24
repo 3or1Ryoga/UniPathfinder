@@ -9,17 +9,17 @@ interface WeeklySnapshotProps {
 }
 
 export default function WeeklySnapshot({ data }: WeeklySnapshotProps) {
-  const { currentWeekCommits, todayCommits, previousWeekDailyAverage, streakDays } = data
+  const { currentWeekCommits, previousWeekCommits, todayCommits, previousWeekDailyAverage, streakDays } = data
 
   // 週次目標に対する進捗率
   const progressPercentage = Math.min((currentWeekCommits / WEEKLY_COMMIT_GOAL) * 100, 100)
 
-  // 今日のコミット数 vs 先週の1日平均（増減率）
-  const dailyChange = previousWeekDailyAverage > 0
-    ? ((todayCommits - previousWeekDailyAverage) / previousWeekDailyAverage) * 100
-    : todayCommits > 0 ? 100 : 0
+  // 今週のコミット数 vs 先週のコミット数（増減率）
+  const weeklyChange = previousWeekCommits > 0
+    ? ((currentWeekCommits - previousWeekCommits) / previousWeekCommits) * 100
+    : currentWeekCommits > 0 ? 100 : 0
 
-  const isPositiveChange = dailyChange >= 0
+  const isPositiveChange = weeklyChange >= 0
 
   // RadialBarChart用のデータ
   const chartData = [
@@ -82,20 +82,20 @@ export default function WeeklySnapshot({ data }: WeeklySnapshotProps) {
 
         {/* 右側：統計情報 */}
         <div className="flex flex-col justify-center space-y-6">
-          {/* 今日のコミット vs 先週の1日平均 */}
+          {/* 今週のコミット vs 先週のコミット */}
           <div className="bg-gray-50 rounded-xl p-6">
-            <div className="text-sm text-gray-600 mb-2">今日の活動</div>
+            <div className="text-sm text-gray-600 mb-2">今週の活動</div>
             <div className="flex items-baseline gap-3">
               <div className={`text-3xl font-bold ${isPositiveChange ? 'text-green-600' : 'text-red-600'}`}>
-                {isPositiveChange ? '+' : ''}{dailyChange.toFixed(1)}%
+                {isPositiveChange ? '+' : ''}{weeklyChange.toFixed(1)}%
               </div>
               <div className="text-sm text-gray-500">
-                vs 先週平均
+                vs 先週
               </div>
             </div>
             <div className="mt-2 text-sm text-gray-600">
-              今日: <span className="font-semibold">{todayCommits}</span> コミット /
-              先週平均: <span className="font-semibold">{previousWeekDailyAverage.toFixed(1)}</span> コミット
+              今週: <span className="font-semibold">{currentWeekCommits}</span> コミット /
+              先週: <span className="font-semibold">{previousWeekCommits}</span> コミット
             </div>
             <div className="mt-3">
               {isPositiveChange ? (
