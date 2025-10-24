@@ -105,25 +105,16 @@ export async function GET(request: NextRequest) {
         // まず、同じLINE user IDが別のユーザーに紐付いていないかチェック
         const { data: existingProfiles } = await supabase
             .from('profiles')
-            .select('id')
+            .select('id, email')
             .eq('line_user_id', profileData.userId)
             .neq('id', userId)
 
-        // 既存の紐付けがあれば、それをクリア
+        // 既存の紐付けがあれば、エラーを返す（オプションB: 拒否）
         if (existingProfiles && existingProfiles.length > 0) {
-            console.log('Clearing existing LINE association for other users:', existingProfiles)
-            for (const profile of existingProfiles) {
-                await supabase
-                    .from('profiles')
-                    .update({
-                        line_user_id: null,
-                        line_display_name: null,
-                        line_avatar_url: null,
-                        line_friend_added: false,
-                        line_friend_added_at: null,
-                    })
-                    .eq('id', profile.id)
-            }
+            console.log('LINE account already in use by another user:', existingProfiles)
+            return NextResponse.redirect(
+                `${origin}/link-line?error=${encodeURIComponent('このLINEアカウントは既に別のアカウントで使用されています。別のLINEアカウントを使用するか、既存のアカウントでログインしてください。')}`
+            )
         }
 
         // 現在のユーザーにLINE情報を紐付け
