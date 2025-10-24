@@ -9,7 +9,7 @@ interface WeeklySnapshotProps {
 }
 
 export default function WeeklySnapshot({ data }: WeeklySnapshotProps) {
-  const { currentWeekCommits, previousWeekCommits, todayCommits, previousWeekDailyAverage, streakDays } = data
+  const { currentWeekCommits, previousWeekCommits, streakDays } = data
 
   // 週次目標に対する進捗率
   const progressPercentage = Math.min((currentWeekCommits / WEEKLY_COMMIT_GOAL) * 100, 100)

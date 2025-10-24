@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
                 // Check if user profile exists and has LINE connection
                 const { data: profile, error: profileError } = await supabase
                     .from('profiles')
-                    .select('line_user_id, github_username')
+                    .select('line_user_id, github_username, email, full_name, avatar_url')
                     .eq('id', userId)
                     .single()
 
