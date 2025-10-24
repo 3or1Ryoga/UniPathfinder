@@ -82,12 +82,6 @@ export default function HomePage() {
   return (
     <MainLayout profileCompletion={completion}>
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* ヘッダー */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">マイプロフィール</h1>
-          <p className="text-gray-600 mt-2">あなたのプロフィールと企業からの見え方</p>
-        </div>
-
         {/* プロフィール完成度カード */}
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
           <div className="flex items-center justify-between mb-6">

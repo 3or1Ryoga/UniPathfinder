@@ -51,17 +51,13 @@ export async function GET(request: NextRequest) {
                 return NextResponse.redirect(`${origin}/?error=${encodeURIComponent(errorMessage)}`)
             }
 
-            // === 新規追加: GitHub認証後の処理 ===
+            // === OAuth認証後の処理（GitHub / Google） ===
             // Successfully exchanged code for session
             if (data?.user) {
                 const userId = data.user.id
+                const provider = data.user.app_metadata?.provider || 'unknown'
 
-                // GitHubのユーザー名とアクセストークンを取得
-                const githubUsername = data.user.user_metadata?.user_name ||
-                                      data.user.user_metadata?.preferred_username ||
-                                      null
-
-                const githubAccessToken = data.session?.provider_token || null
+                console.log('OAuth provider:', provider)
 
                 // Check if user profile exists and has LINE connection
                 const { data: profile, error: profileError } = await supabase
@@ -70,20 +66,87 @@ export async function GET(request: NextRequest) {
                     .eq('id', userId)
                     .single()
 
-                // プロフィールが存在する場合、GitHub情報を更新
-                if (profile && (githubUsername || githubAccessToken)) {
-                    // github_usernameまたはgithub_access_tokenが未設定、または異なる場合は更新
-                    if (!profile.github_username || profile.github_username !== githubUsername || githubAccessToken) {
-                        const updateData: Record<string, string> = {
+                // プロバイダーに応じた情報取得と保存
+                if (provider === 'github') {
+                    // GitHubのユーザー名とアクセストークンを取得
+                    const githubUsername = data.user.user_metadata?.user_name ||
+                                          data.user.user_metadata?.preferred_username ||
+                                          null
+
+                    const githubAccessToken = data.session?.provider_token || null
+
+                    // プロフィールが存在する場合、GitHub情報を更新
+                    if (profile && (githubUsername || githubAccessToken)) {
+                        // github_usernameまたはgithub_access_tokenが未設定、または異なる場合は更新
+                        if (!profile.github_username || profile.github_username !== githubUsername || githubAccessToken) {
+                            const updateData: Record<string, string> = {
+                                updated_at: new Date().toISOString()
+                            }
+
+                            if (githubUsername) {
+                                updateData.github_username = githubUsername
+                            }
+
+                            if (githubAccessToken) {
+                                updateData.github_access_token = githubAccessToken
+                            }
+
+                            const { error: updateError } = await supabase
+                                .from('profiles')
+                                .update(updateData)
+                                .eq('id', userId)
+
+                            if (updateError) {
+                                console.error('Error updating GitHub info:', updateError)
+                            } else {
+                                console.log('GitHub info updated successfully:', { username: githubUsername, hasToken: !!githubAccessToken })
+                            }
+                        }
+                    } else if (githubUsername || githubAccessToken) {
+                        // プロフィールが存在しない場合は作成
+                        const { error: insertError } = await supabase
+                            .from('profiles')
+                            .insert({
+                                id: userId,
+                                email: data.user.email,
+                                github_username: githubUsername,
+                                github_access_token: githubAccessToken,
+                                full_name: data.user.user_metadata?.name || data.user.user_metadata?.full_name || null,
+                                avatar_url: data.user.user_metadata?.avatar_url || null,
+                                updated_at: new Date().toISOString()
+                            })
+
+                        if (insertError) {
+                            console.error('Error creating profile with GitHub info:', insertError)
+                        } else {
+                            console.log('Profile created with GitHub info:', { username: githubUsername, hasToken: !!githubAccessToken })
+                        }
+                    }
+                } else if (provider === 'google') {
+                    // Googleから取得できる情報
+                    const googleEmail = data.user.email || null
+                    const googleName = data.user.user_metadata?.name || data.user.user_metadata?.full_name || null
+                    const googleAvatarUrl = data.user.user_metadata?.avatar_url || data.user.user_metadata?.picture || null
+
+                    // プロフィールが存在する場合、Google情報で更新
+                    if (profile) {
+                        const updateData: Record<string, string | null> = {
                             updated_at: new Date().toISOString()
                         }
 
-                        if (githubUsername) {
-                            updateData.github_username = githubUsername
+                        // メールアドレスがない場合のみ更新
+                        if (!profile.email && googleEmail) {
+                            updateData.email = googleEmail
                         }
 
-                        if (githubAccessToken) {
-                            updateData.github_access_token = githubAccessToken
+                        // 名前がない場合のみ更新
+                        if (googleName) {
+                            updateData.full_name = googleName
+                        }
+
+                        // アバター画像がない場合のみ更新
+                        if (googleAvatarUrl) {
+                            updateData.avatar_url = googleAvatarUrl
                         }
 
                         const { error: updateError } = await supabase
@@ -92,33 +155,31 @@ export async function GET(request: NextRequest) {
                             .eq('id', userId)
 
                         if (updateError) {
-                            console.error('Error updating GitHub info:', updateError)
+                            console.error('Error updating Google info:', updateError)
                         } else {
-                            console.log('GitHub info updated successfully:', { username: githubUsername, hasToken: !!githubAccessToken })
+                            console.log('Google info updated successfully:', { email: googleEmail, name: googleName })
                         }
-                    }
-                } else if (githubUsername || githubAccessToken) {
-                    // プロフィールが存在しない場合は作成
-                    const { error: insertError } = await supabase
-                        .from('profiles')
-                        .insert({
-                            id: userId,
-                            email: data.user.email,
-                            github_username: githubUsername,
-                            github_access_token: githubAccessToken,
-                            full_name: data.user.user_metadata?.name || null,
-                            avatar_url: data.user.user_metadata?.avatar_url || null,
-                            updated_at: new Date().toISOString()
-                        })
-
-                    if (insertError) {
-                        console.error('Error creating profile with GitHub info:', insertError)
                     } else {
-                        console.log('Profile created with GitHub info:', { username: githubUsername, hasToken: !!githubAccessToken })
+                        // プロフィールが存在しない場合は作成
+                        const { error: insertError } = await supabase
+                            .from('profiles')
+                            .insert({
+                                id: userId,
+                                email: googleEmail,
+                                full_name: googleName,
+                                avatar_url: googleAvatarUrl,
+                                updated_at: new Date().toISOString()
+                            })
+
+                        if (insertError) {
+                            console.error('Error creating profile with Google info:', insertError)
+                        } else {
+                            console.log('Profile created with Google info:', { email: googleEmail, name: googleName })
+                        }
                     }
                 }
 
-                // Check if LINE is connected
+                // Check if LINE is connected (共通処理)
                 if (profileError || !profile || !profile.line_user_id) {
                     console.log('New user or LINE not connected, redirecting to /link-line')
                     return NextResponse.redirect(`${origin}/link-line`)

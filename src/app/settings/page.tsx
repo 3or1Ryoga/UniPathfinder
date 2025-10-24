@@ -161,11 +161,6 @@ export default function SettingsPage() {
   return (
     <MainLayout profileCompletion={profileCompletion}>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* ヘッダー */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">設定</h1>
-          <p className="text-gray-600 mt-2">アカウント情報とSNS連携</p>
-        </div>
         {/* メッセージ */}
         {message && (
           <div className={`mb-6 p-4 rounded-lg ${

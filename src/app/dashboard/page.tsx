@@ -161,11 +161,6 @@ export default function DashboardPage() {
   return (
     <MainLayout profileCompletion={profileCompletion}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* ヘッダー */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">GitHubダッシュボード</h1>
-          <p className="text-gray-600 mt-2">あなたの成長の軌跡</p>
-        </div>
         {/* 連携アカウント情報 */}
         {userProfile && (
           <div className="mb-8 bg-white rounded-2xl shadow-lg p-6 border border-gray-100">

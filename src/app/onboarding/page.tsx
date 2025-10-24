@@ -541,7 +541,7 @@ export default function OnboardingPage() {
             {[1, 2, 3, 4, 5].map((step) => (
               <div key={step} className="flex items-center">
                 <div
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold ${
+                  className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center font-semibold text-sm sm:text-base ${
                     step <= currentStep
                       ? 'bg-blue-600 text-white'
                       : 'bg-gray-300 text-gray-600'
@@ -551,7 +551,7 @@ export default function OnboardingPage() {
                 </div>
                 {step < 5 && (
                   <div
-                    className={`w-16 h-1 mx-2 ${
+                    className={`w-8 sm:w-16 h-1 mx-1 sm:mx-2 ${
                       step < currentStep ? 'bg-blue-600' : 'bg-gray-300'
                     }`}
                   />
