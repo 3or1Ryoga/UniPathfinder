@@ -272,30 +272,21 @@ export default function LandingPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              {/* メインモックアップ（縦長スマホ） */}
-              <div className="relative z-10 mx-auto w-64 h-[500px] bg-gradient-to-br from-gray-800 to-gray-900 rounded-[2.5rem] p-4 shadow-2xl">
-                <div className="w-full h-full bg-white rounded-[1.5rem] overflow-hidden">
-                  <div className="h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-50 to-cyan-50">
-                    <div className="text-center space-y-4">
-                      <div className="w-16 h-16 bg-blue-600 rounded-full mx-auto flex items-center justify-center">
-                        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                      </div>
-                      <p className="text-sm font-medium text-gray-700">TechMight</p>
-                      <div className="space-y-2">
-                        <div className="h-2 bg-blue-200 rounded-full w-full"></div>
-                        <div className="h-2 bg-cyan-200 rounded-full w-3/4"></div>
-                        <div className="h-2 bg-green-200 rounded-full w-5/6"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+              {/* メインモックアップ（実際のアプリ画像） */}
+              <div className="relative z-10 mx-auto w-full max-w-sm sm:max-w-md lg:max-w-lg">
+                <Image
+                  src="/techmight_photo.png"
+                  alt="TechMight アプリ画面"
+                  width={400}
+                  height={800}
+                  className="w-full h-auto drop-shadow-2xl"
+                  priority
+                />
               </div>
 
               {/* 浮かぶスカウトメッセージ - 左上 */}
               <motion.div
-                className="absolute -left-8 top-12 bg-white rounded-xl p-4 shadow-xl max-w-xs z-20"
+                className="hidden md:block absolute -left-8 top-12 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-xl max-w-xs z-20"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 1 }}
@@ -309,15 +300,15 @@ export default function LandingPage() {
                     className="rounded-full"
                   />
                   <div>
-                    <p className="font-semibold text-sm text-gray-900">TechMight Engineering</p>
-                    <p className="text-xs text-gray-600 mt-1">あなたの学習意欲に目が止まりました。弊社のミッションとも通じる部分も多いので、ぜひお話ししたいです！！</p>
+                    <p className="font-semibold text-sm text-gray-900 dark:text-white">TechMight Engineering</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">あなたの学習意欲に目が止まりました。弊社のミッションとも通じる部分も多いので、ぜひお話ししたいです！！</p>
                   </div>
                 </div>
               </motion.div>
 
               {/* 浮かぶスカウトメッセージ - 右下 */}
               <motion.div
-                className="absolute -right-8 bottom-24 bg-white rounded-xl p-4 shadow-xl max-w-xs z-20"
+                className="hidden md:block absolute -right-8 bottom-24 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-xl max-w-xs z-20"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 1.2 }}
@@ -327,8 +318,8 @@ export default function LandingPage() {
                     A
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-gray-900">AI Startup</p>
-                    <p className="text-xs text-gray-600 mt-1">私たちもAIベースで開発をしています<br></br>あなたと知見を共有したいです！！</p>
+                    <p className="font-semibold text-sm text-gray-900 dark:text-white">AI Startup</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">私たちもAIベースで開発をしています<br></br>あなたと知見を共有したいです！！</p>
                   </div>
                 </div>
               </motion.div>
