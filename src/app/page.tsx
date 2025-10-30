@@ -286,40 +286,40 @@ export default function LandingPage() {
 
               {/* 浮かぶスカウトメッセージ - 左上 */}
               <motion.div
-                className="hidden md:block absolute -left-8 top-12 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-xl max-w-xs z-20"
+                className="absolute left-2 top-8 sm:left-4 sm:top-10 md:-left-8 md:top-12 bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 shadow-xl max-w-[160px] sm:max-w-[180px] md:max-w-xs z-20"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 1 }}
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-2 sm:gap-3">
                   <Image
                     src="/TechMightLogo.jpeg"
                     alt="TechMight Engineering"
                     width={40}
                     height={40}
-                    className="rounded-full"
+                    className="rounded-full w-8 h-8 sm:w-10 sm:h-10 object-contain flex-shrink-0"
                   />
                   <div>
-                    <p className="font-semibold text-sm text-gray-900 dark:text-white">TechMight Engineering</p>
-                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">あなたの学習意欲に目が止まりました。弊社のミッションとも通じる部分も多いので、ぜひお話ししたいです！！</p>
+                    <p className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-white">TechMight Engineering</p>
+                    <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-300 mt-1">あなたの学習意欲に目が止まりました。弊社のミッションとも通じる部分も多いので、ぜひお話ししたいです！！</p>
                   </div>
                 </div>
               </motion.div>
 
               {/* 浮かぶスカウトメッセージ - 右下 */}
               <motion.div
-                className="hidden md:block absolute -right-8 bottom-24 bg-white dark:bg-gray-800 rounded-xl p-4 shadow-xl max-w-xs z-20"
+                className="absolute right-2 bottom-16 sm:right-4 sm:bottom-20 md:-right-8 md:bottom-24 bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 shadow-xl max-w-[160px] sm:max-w-[180px] md:max-w-xs z-20"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 1.2 }}
               >
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-sm sm:text-base flex-shrink-0">
                     A
                   </div>
                   <div>
-                    <p className="font-semibold text-sm text-gray-900 dark:text-white">AI Startup</p>
-                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">私たちもAIベースで開発をしています<br></br>あなたと知見を共有したいです！！</p>
+                    <p className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-white">AI Startup</p>
+                    <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-300 mt-1">私たちもAIベースで開発をしています<br></br>あなたと知見を共有したいです！！</p>
                   </div>
                 </div>
               </motion.div>
