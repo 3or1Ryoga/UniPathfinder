@@ -14,6 +14,52 @@ export type Database = {
   }
   public: {
     Tables: {
+      tech_blog_posts: {
+        Row: {
+          id: string
+          user_id: string
+          topic: string
+          title: string
+          content: string
+          reference_url: string | null
+          cover_image_url: string | null
+          is_public: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          topic: string
+          title: string
+          content: string
+          reference_url?: string | null
+          cover_image_url?: string | null
+          is_public?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          topic?: string
+          title?: string
+          content?: string
+          reference_url?: string | null
+          cover_image_url?: string | null
+          is_public?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tech_blog_posts_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       user_engagement_status: {
         Row: {
           id: string
@@ -53,6 +99,126 @@ export type Database = {
         }
         Relationships: []
       }
+      post_likes: {
+        Row: {
+          id: string
+          post_id: string
+          user_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          post_id: string
+          user_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          post_id?: string
+          user_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_likes_post_id_fkey"
+            columns: ["post_id"]
+            referencedRelation: "tech_blog_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_likes_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      post_comments: {
+        Row: {
+          id: string
+          post_id: string
+          user_id: string
+          content: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          post_id: string
+          user_id: string
+          content: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          post_id?: string
+          user_id?: string
+          content?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_comments_post_id_fkey"
+            columns: ["post_id"]
+            referencedRelation: "tech_blog_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_comments_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_connections: {
+        Row: {
+          id: string
+          user_id: string
+          connected_user_id: string | null
+          connected_company_id: string | null
+          connection_type: string
+          status: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          connected_user_id?: string | null
+          connected_company_id?: string | null
+          connection_type: string
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          connected_user_id?: string | null
+          connected_company_id?: string | null
+          connection_type?: string
+          status?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_connections_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_connections_connected_user_id_fkey"
+            columns: ["connected_user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -85,6 +251,7 @@ export type Database = {
           learning_goal: string | null
           graduation_year: number | null
           education: string | null
+          main_role: string | null
           career_interests: Json | null
           tech_stack: Json | null
           tech_stack_experienced: Json | null
@@ -134,6 +301,7 @@ export type Database = {
           learning_goal?: string | null
           graduation_year?: number | null
           education?: string | null
+          main_role?: string | null
           career_interests?: Json | null
           tech_stack?: Json | null
           tech_stack_experienced?: Json | null
@@ -183,6 +351,7 @@ export type Database = {
           learning_goal?: string | null
           graduation_year?: number | null
           education?: string | null
+          main_role?: string | null
           career_interests?: Json | null
           tech_stack?: Json | null
           tech_stack_experienced?: Json | null

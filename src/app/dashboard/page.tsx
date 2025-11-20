@@ -8,7 +8,6 @@ import MilestoneShowcase from '@/components/dashboard/MilestoneShowcase'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import MainLayout from '@/components/layout/MainLayout'
-import { calculateProfileCompletion } from '@/utils/profileCompletion'
 
 interface UserProfile {
   email: string | null
@@ -22,7 +21,6 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null)
   const [rateLimitInfo, setRateLimitInfo] = useState<{ remaining: string | null, reset: string | null }>({ remaining: null, reset: null })
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
-  const [profileCompletion, setProfileCompletion] = useState(0)
   const router = useRouter()
 
   useEffect(() => {
@@ -52,9 +50,6 @@ export default function DashboardPage() {
             github_username: profile.github_username,
             line_user_id: profile.line_user_id
           })
-          // Calculate and set profile completion
-          const completion = calculateProfileCompletion(profile)
-          setProfileCompletion(completion)
         }
 
         const response = await fetch('/api/github/dashboard-data')
@@ -159,7 +154,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <MainLayout profileCompletion={profileCompletion}>
+    <MainLayout>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 連携アカウント情報 */}
         {userProfile && (

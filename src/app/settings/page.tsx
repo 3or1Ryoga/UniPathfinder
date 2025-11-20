@@ -4,7 +4,6 @@ import { useEffect, useState, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import MainLayout from '@/components/layout/MainLayout'
-import { calculateProfileCompletion } from '@/utils/profileCompletion'
 
 interface Profile {
   // 基本情報
@@ -33,7 +32,6 @@ export default function SettingsPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [profileCompletion, setProfileCompletion] = useState(0)
   const [profile, setProfile] = useState<Profile>({
     // 基本情報
     full_name: '',
@@ -83,9 +81,6 @@ export default function SettingsPage() {
 
       if (data) {
         setProfile(data)
-        // Calculate and set profile completion
-        const completion = calculateProfileCompletion(data)
-        setProfileCompletion(completion)
       }
     } catch (error) {
       console.error('Error loading profile:', error)
@@ -159,7 +154,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <MainLayout profileCompletion={profileCompletion}>
+    <MainLayout>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* メッセージ */}
         {message && (
