@@ -203,8 +203,8 @@ export default function HomePage() {
 
     // シャッフルしてから左右に分ける
     const shuffled = [...publicPosts].sort(() => Math.random() - 0.5)
-    const left = []
-    const right = []
+    const left: BlogPost[] = []
+    const right: BlogPost[] = []
 
     shuffled.forEach((post, index) => {
       if (index % 2 === 0) {
@@ -2395,7 +2395,7 @@ export default function HomePage() {
                           {comment.profiles?.avatar_url ? (
                             <img
                               src={comment.profiles.avatar_url}
-                              alt={comment.profiles.full_name}
+                              alt={comment.profiles.full_name ?? 'User avatar'}
                               className="w-10 h-10 rounded-full object-cover"
                             />
                           ) : (
