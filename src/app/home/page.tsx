@@ -7,6 +7,8 @@ import MainLayout from '@/components/layout/MainLayout'
 import { Tables } from '@/app/database.types'
 
 type Profile = Tables<'profiles'>
+type BlogPost = Tables<'tech_blog_posts'> & { profiles?: Profile }
+type Comment = Tables<'post_comments'> & { profiles?: Profile }
 
 export default function HomePage() {
   const router = useRouter()
@@ -28,10 +30,10 @@ export default function HomePage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // テックブログ用のstate
-  const [blogPosts, setBlogPosts] = useState<any[]>([])
-  const [publicPosts, setPublicPosts] = useState<any[]>([])
-  const [leftPosts, setLeftPosts] = useState<any[]>([])
-  const [rightPosts, setRightPosts] = useState<any[]>([])
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
+  const [publicPosts, setPublicPosts] = useState<BlogPost[]>([])
+  const [leftPosts, setLeftPosts] = useState<BlogPost[]>([])
+  const [rightPosts, setRightPosts] = useState<BlogPost[]>([])
   const [isCreatingPost, setIsCreatingPost] = useState(false)
   const [isEditingPost, setIsEditingPost] = useState(false)
   const [editingPostId, setEditingPostId] = useState<string | null>(null)
@@ -48,7 +50,7 @@ export default function HomePage() {
   const [postComments, setPostComments] = useState<{ [postId: string]: number }>({})
 
   // コメント管理用のstate
-  const [commentsData, setCommentsData] = useState<{ [postId: string]: any[] }>({})
+  const [commentsData, setCommentsData] = useState<{ [postId: string]: Comment[] }>({})
   const [newComment, setNewComment] = useState<{ [postId: string]: string }>({})
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null)
   const [editingCommentContent, setEditingCommentContent] = useState<string>('')
@@ -738,7 +740,7 @@ export default function HomePage() {
     }
   }
 
-  function handleStartEdit(post: any) {
+  function handleStartEdit(post: BlogPost) {
     setEditingPostId(post.id)
     setEditPost({
       topic: post.topic,
@@ -1734,7 +1736,7 @@ export default function HomePage() {
                           }}
                         >
                           {/* 左列の投稿（2回繰り返して無限スクロール） */}
-                          {[...leftPosts, ...leftPosts].map((post: any, index: number) => (
+                          {[...leftPosts, ...leftPosts].map((post: BlogPost, index: number) => (
                             <div
                               key={`left-${post.id}-${index}`}
                               className="relative bg-white rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer"
@@ -1859,7 +1861,7 @@ export default function HomePage() {
                               }}
                             >
                               {/* 右列の投稿（2回繰り返して無限スクロール） */}
-                              {[...rightPosts, ...rightPosts].map((post: any, index: number) => (
+                              {[...rightPosts, ...rightPosts].map((post: BlogPost, index: number) => (
                                 <div
                                   key={`right-${post.id}-${index}`}
                                   className="relative bg-white rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer"
@@ -2386,7 +2388,7 @@ export default function HomePage() {
                   <p className="text-center text-gray-500 py-8">まだコメントがありません</p>
                 ) : (
                   <div className="space-y-4">
-                    {commentsData[commentModalPostId]?.map((comment: any) => (
+                    {commentsData[commentModalPostId]?.map((comment: Comment) => (
                       <div key={comment.id} className="flex gap-3">
                         {/* アバター */}
                         <div className="flex-shrink-0">
