@@ -44,14 +44,16 @@ export default function Sidebar() {
         <div className="flex items-center justify-between h-16">
           {/* ロゴ */}
           <div className="flex-shrink-0">
-            <Image
-              src="/TechMightLogo.jpeg"
-              alt="TechMight Logo"
-              width={180}
-              height={180}
-              className="h-[35px] w-auto"
-              style={{ objectFit: 'contain' }}
-            />
+            <Link href="/home" className="cursor-pointer">
+              <Image
+                src="/TechMightLogo.jpeg"
+                alt="TechMight Logo"
+                width={180}
+                height={180}
+                className="h-[35px] w-auto"
+                style={{ objectFit: 'contain' }}
+              />
+            </Link>
           </div>
 
           {/* ナビゲーション */}

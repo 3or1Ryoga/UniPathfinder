@@ -174,20 +174,20 @@ export default function LandingPage() {
             {/* 左側：テキストコンテンツ（PCのみ表示） */}
             <div className="hidden lg:block">
               <motion.h1
-                className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white leading-tight mb-6"
+                className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight mb-6"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                AIがあなたの
+                エンジニアを目指す・<br></br>成長したい
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-cyan-400 dark:to-blue-400">
-                  「技術スタック」
+                  20代
                 </span>
-                と
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-cyan-400 dark:to-blue-400">
-                  「キャリアビジョン」
+                のための
+                <br />
+                <span className="text-2xl sm:text-2xl lg:text-3xl">
+                  ポテンシャル就活/キャリア支援サービス
                 </span>
-                を引き出し、技術価値観で企業とマッチング
               </motion.h1>
 
               <motion.p
@@ -196,7 +196,7 @@ export default function LandingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                GitHub連携であなたの成長を可視化。現役エンジニアのメンタリングで、理想のキャリアパスを実現しよう。
+                バイト・インターン・イベント探しにも対応
               </motion.p>
 
               <motion.div
@@ -284,10 +284,10 @@ export default function LandingPage() {
                 />
               </div>
 
-              {/* 浮かぶスカウトメッセージ - 左上 */}
+              {/* 浮かぶスカウトメッセージ - 右上 */}
               <motion.div
-                className="absolute left-2 top-8 sm:left-4 sm:top-10 md:-left-8 md:top-12 bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 shadow-xl max-w-[160px] sm:max-w-[180px] md:max-w-xs z-20"
-                initial={{ opacity: 0, x: -20 }}
+                className="absolute right-2 top-8 sm:right-4 sm:top-10 md:-right-8 md:top-12 bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 shadow-xl max-w-[160px] sm:max-w-[180px] md:max-w-xs z-20"
+                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 1 }}
               >
@@ -306,10 +306,10 @@ export default function LandingPage() {
                 </div>
               </motion.div>
 
-              {/* 浮かぶスカウトメッセージ - 右下 */}
+              {/* 浮かぶスカウトメッセージ - 左下 */}
               <motion.div
-                className="absolute right-2 bottom-16 sm:right-4 sm:bottom-20 md:-right-8 md:bottom-24 bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 shadow-xl max-w-[160px] sm:max-w-[180px] md:max-w-xs z-20"
-                initial={{ opacity: 0, x: 20 }}
+                className="absolute left-2 bottom-16 sm:left-4 sm:bottom-20 md:-left-8 md:bottom-24 bg-white dark:bg-gray-800 rounded-xl p-3 sm:p-4 shadow-xl max-w-[160px] sm:max-w-[180px] md:max-w-xs z-20"
+                initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8, delay: 1.2 }}
               >
@@ -386,21 +386,21 @@ export default function LandingPage() {
               </div>
 
               {/* キャッチコピー */}
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white leading-tight">
-                AIがあなたの
+              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white leading-tight">
+                エンジニアを目指す・成長したい
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-cyan-400 dark:to-blue-400">
-                  「技術スタック」
+                  20代
                 </span>
-                と
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-cyan-400 dark:to-blue-400">
-                  「キャリアビジョン」
+                のための
+                <br />
+                <span className="text-xl sm:text-2xl">
+                  ポテンシャル就活/キャリア支援サービス
                 </span>
-                を引き出し、技術価値観で企業とマッチング
               </h1>
 
               {/* サブコピー */}
               <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-                GitHub連携であなたの成長を可視化。現役エンジニアのメンタリングで、理想のキャリアパスを実現しよう。
+                バイト・インターン・イベント探しにも対応
               </p>
             </div>
           </div>
@@ -761,7 +761,7 @@ export default function LandingPage() {
                 className="h-8 w-auto mb-4"
               />
               <p className="text-gray-400">
-                AIがあなたの「技術スタック」と「キャリアビジョン」を引き出し、技術価値観で企業とマッチング
+                エンジニアを目指す・成長したい20代のためのポテンシャル就活/キャリア支援サービス。バイト・インターン・イベント探しにも対応。
               </p>
             </div>
             <div>

@@ -58,6 +58,9 @@ function HomePageContent() {
   // コメントモーダル用のstate
   const [commentModalPostId, setCommentModalPostId] = useState<string | null>(null)
 
+  // 投稿詳細モーダル用のstate
+  const [viewingPostId, setViewingPostId] = useState<string | null>(null)
+
   // 無限スクロール用のstate（2列表示用）
   const [isLeftPaused, setIsLeftPaused] = useState(false)
   const [isRightPaused, setIsRightPaused] = useState(false)
@@ -85,7 +88,7 @@ function HomePageContent() {
     '開発',
     '募集',
     '報告',
-    'デープ',
+    'ディープ',
     'ホビー',
     'ウェルネス・健康',
     '失敗と内省',
@@ -110,7 +113,7 @@ function HomePageContent() {
         gradient: 'from-amber-400 to-amber-600',
         icon: '🪧'
       },
-      'デープ': {
+      'ディープ': {
         gradient: 'from-purple-400 to-purple-600',
         icon: '💬'
       },
@@ -152,7 +155,7 @@ function HomePageContent() {
       '開発': '💻',
       '募集': '📢',
       '報告': '🪧',
-      'デープ': '💬',
+      'ディープ': '💬',
       'ホビー': '🎨',
       'ウェルネス・健康': '🌿',
       '失敗と内省': '💭',
@@ -448,6 +451,36 @@ function HomePageContent() {
     setCommentModalPostId(null)
     setEditingCommentId(null)
     setEditingCommentContent('')
+  }
+
+  // 投稿詳細モーダルを開く
+  async function openPostDetail(postId: string) {
+    setViewingPostId(postId)
+
+    // コメントがまだ読み込まれていない場合は読み込む
+    if (!commentsData[postId]) {
+      await loadComments(postId)
+    }
+  }
+
+  // 投稿詳細モーダルを閉じる
+  function closePostDetail() {
+    setViewingPostId(null)
+    setEditingCommentId(null)
+    setEditingCommentContent('')
+  }
+
+  // 同じお題で投稿する（投稿詳細を閉じて、同じトピックで新規投稿モーダルを開く）
+  function handleCreateSameTopic(topic: string) {
+    closePostDetail()
+    setNewPost({
+      topic: topic,
+      title: '',
+      content: '',
+      reference_url: '',
+      cover_image_url: ''
+    })
+    setIsCreatingPost(true)
   }
 
   // 特定の投稿のコメント一覧を取得
@@ -1163,63 +1196,87 @@ function HomePageContent() {
           </div>
         </div>
 
-        {/* 連携ボタン */}
+        {/* 連携セクション */}
         {isOwnProfile && (
-          <div className="flex items-center gap-4 sm:gap-6 mb-8">
-            {/* GitHub連携ボタン */}
-            <div className="flex flex-col items-center gap-2">
-              <button
-                onClick={() => {
-                  if (displayProfile?.github_username) {
-                    // 連携済み：GitHubデータページへ遷移
-                    router.push('/dashboard')
-                  } else {
-                    // 未連携：連携画面へ遷移
-                    router.push('/settings')
-                  }
-                }}
-                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all ${
-                  displayProfile?.github_username
-                    ? 'bg-blue-600 hover:bg-blue-700'
-                    : 'bg-gray-400 hover:bg-gray-500 animate-ripple'
-                }`}
-              >
-                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
-                </svg>
-              </button>
-              <span className="text-xs sm:text-sm font-medium text-gray-700">GitHub</span>
-              <span className={`text-[10px] sm:text-xs ${displayProfile?.github_username ? 'text-blue-600' : 'text-gray-400'}`}>
-                {displayProfile?.github_username ? '連携済み' : '未連携'}
-              </span>
-            </div>
+          <div className="mb-8">
+            {/* 見出し */}
+            <p className="text-xs sm:text-sm text-gray-600 mb-4 text-center">
+              サービス連携でポテンシャルを可視化し、企業とつながる
+            </p>
 
-            {/* LINE連携ボタン */}
-            <div className="flex flex-col items-center gap-2">
-              <button
-                onClick={() => {
-                  if (displayProfile?.line_user_id) {
-                    // 連携済み：公式LINEに遷移
-                    window.open('https://line.me/R/ti/p/@409fwjcr', '_blank')
-                  } else {
-                    // 未連携：連携画面へ遷移
+            {/* 連携ボタン */}
+            <div className="flex items-center justify-center gap-4 sm:gap-6">
+              {/* GitHub連携ボタン */}
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (displayProfile?.github_username) {
+                      // 連携済み：GitHubデータページへ遷移
+                      router.push('/dashboard')
+                    } else {
+                      // 未連携：連携画面へ遷移
+                      router.push('/settings')
+                    }
+                  }}
+                  className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all ${
+                    displayProfile?.github_username
+                      ? 'bg-blue-600 hover:bg-blue-700'
+                      : 'bg-gray-400 hover:bg-gray-500 animate-ripple'
+                  }`}
+                >
+                  <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                <span className="text-xs sm:text-sm font-medium text-gray-700">GitHub</span>
+                <span className={`text-[10px] sm:text-xs ${displayProfile?.github_username ? 'text-blue-600' : 'text-gray-400'}`}>
+                  {displayProfile?.github_username ? '連携済み' : '未連携'}
+                </span>
+              </div>
+
+              {/* LINE連携ボタン */}
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (displayProfile?.line_user_id) {
+                      // 連携済み：公式LINEに遷移
+                      window.open('https://line.me/R/ti/p/@409fwjcr', '_blank')
+                    } else {
+                      // 未連携：連携画面へ遷移
+                      router.push('/settings')
+                    }
+                  }}
+                  className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all ${
+                    displayProfile?.line_user_id
+                      ? 'bg-blue-600 hover:bg-blue-700'
+                      : 'bg-gray-400 hover:bg-gray-500 animate-ripple'
+                  }`}
+                >
+                  <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+                  </svg>
+                </button>
+                <span className="text-xs sm:text-sm font-medium text-gray-700">LINE</span>
+                <span className={`text-[10px] sm:text-xs ${displayProfile?.line_user_id ? 'text-blue-600' : 'text-gray-400'}`}>
+                  {displayProfile?.line_user_id ? '連携済み' : '未連携'}
+                </span>
+              </div>
+
+              {/* プラスアイコン（追加連携用） */}
+              <div className="flex flex-col items-center gap-2">
+                <button
+                  onClick={() => {
                     router.push('/settings')
-                  }
-                }}
-                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center transition-all ${
-                  displayProfile?.line_user_id
-                    ? 'bg-blue-600 hover:bg-blue-700'
-                    : 'bg-gray-400 hover:bg-gray-500 animate-ripple'
-                }`}
-              >
-                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
-                </svg>
-              </button>
-              <span className="text-xs sm:text-sm font-medium text-gray-700">LINE</span>
-              <span className={`text-[10px] sm:text-xs ${displayProfile?.line_user_id ? 'text-blue-600' : 'text-gray-400'}`}>
-                {displayProfile?.line_user_id ? '連携済み' : '未連携'}
-              </span>
+                  }}
+                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center transition-all hover:border-gray-400 hover:bg-gray-50"
+                >
+                  <svg className="w-8 h-8 sm:w-10 sm:h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+                <span className="text-xs sm:text-sm font-medium text-gray-500">追加</span>
+                <span className="text-[10px] sm:text-xs text-transparent">　</span>
+              </div>
             </div>
           </div>
         )}
@@ -1556,7 +1613,7 @@ function HomePageContent() {
                   >
                     {/* 編集・削除ボタン */}
                     {isOwnProfile && (
-                      <div className="absolute top-3 right-3 z-20 hidden sm:flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="absolute top-3 right-3 z-20 flex items-center gap-2">
                         <button
                           onClick={() => handleStartEdit(post)}
                           className="bg-white text-blue-600 rounded-full p-2 shadow-lg hover:bg-blue-50 transition-colors"
@@ -1742,7 +1799,14 @@ function HomePageContent() {
                               className="relative bg-white rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer"
                               onMouseEnter={() => setHoveredPostId(`left-${post.id}-${index}`)}
                               onMouseLeave={() => setHoveredPostId(null)}
-                              onClick={() => router.push(`/home?user=${post.profiles?.id || post.user_id}`)}
+                              onClick={() => {
+                                // 自分の投稿ならプロフィールに遷移、他人の投稿なら詳細モーダルを開く
+                                if (post.user_id === profile?.id) {
+                                  router.push(`/home?user=${post.user_id}`)
+                                } else {
+                                  openPostDetail(post.id)
+                                }
+                              }}
                             >
                               {/* 正方形の写真 or 本文プレビュー */}
                               <div className="relative w-full aspect-square">
@@ -1867,7 +1931,14 @@ function HomePageContent() {
                                   className="relative bg-white rounded-lg overflow-hidden hover:shadow-xl transition-all duration-300 group cursor-pointer"
                                   onMouseEnter={() => setHoveredPostId(`right-${post.id}-${index}`)}
                                   onMouseLeave={() => setHoveredPostId(null)}
-                                  onClick={() => router.push(`/home?user=${post.profiles?.id || post.user_id}`)}
+                                  onClick={() => {
+                                    // 自分の投稿ならプロフィールに遷移、他人の投稿なら詳細モーダルを開く
+                                    if (post.user_id === profile?.id) {
+                                      router.push(`/home?user=${post.user_id}`)
+                                    } else {
+                                      openPostDetail(post.id)
+                                    }
+                                  }}
                                 >
                                   {/* 正方形の写真 or 本文プレビュー */}
                                   <div className="relative w-full aspect-square">
@@ -2515,6 +2586,287 @@ function HomePageContent() {
             </div>
           </div>
         )}
+
+        {/* 投稿詳細モーダル（他人の投稿用） */}
+        {viewingPostId && (() => {
+          // viewingPostIdから投稿データを取得
+          const viewingPost = [...publicPosts, ...leftPosts, ...rightPosts].find(p => p.id === viewingPostId)
+
+          if (!viewingPost) return null
+
+          return (
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+              onClick={closePostDetail}
+            >
+              <div
+                className="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* ヘッダー */}
+                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                  <div className="flex items-center gap-3">
+                    {/* 投稿者アバター */}
+                    {viewingPost.profiles?.avatar_url ? (
+                      <img
+                        src={viewingPost.profiles.avatar_url}
+                        alt={viewingPost.profiles.full_name ?? 'User avatar'}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                        {viewingPost.profiles?.full_name?.charAt(0) || '?'}
+                      </div>
+                    )}
+                    <div>
+                      <h3 className="font-bold text-gray-900">{viewingPost.profiles?.full_name || '匿名ユーザー'}</h3>
+                      <p className="text-xs text-gray-500">
+                        {new Date(viewingPost.created_at).toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={closePostDetail}
+                    className="text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* 投稿内容 */}
+                <div className="flex-1 overflow-y-auto">
+                  <div className="p-6">
+                    {/* お題タグ */}
+                    <div className="mb-4">
+                      <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-500/60 backdrop-blur-sm text-white">
+                        {viewingPost.topic}
+                      </span>
+                    </div>
+
+                    {/* 投稿画像（中程度サイズ） */}
+                    {viewingPost.cover_image_url && (
+                      <div className="mb-4 rounded-lg overflow-hidden">
+                        <img
+                          src={viewingPost.cover_image_url}
+                          alt={viewingPost.title}
+                          className="w-full max-h-96 object-cover"
+                        />
+                      </div>
+                    )}
+
+                    {/* タイトル */}
+                    <h2 className="text-2xl font-bold text-gray-900 mb-3">{viewingPost.title}</h2>
+
+                    {/* 本文 */}
+                    <div className="prose max-w-none mb-4">
+                      <p className="text-gray-700 whitespace-pre-wrap break-words">{viewingPost.content}</p>
+                    </div>
+
+                    {/* 参考リンク */}
+                    {viewingPost.reference_url && (
+                      <a
+                        href={viewingPost.reference_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block mb-4 p-3 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                          </svg>
+                          <span className="text-sm text-blue-600 truncate font-medium">{new URL(viewingPost.reference_url).hostname}</span>
+                        </div>
+                      </a>
+                    )}
+
+                    {/* いいね・コメント数と「同じお題で投稿」ボタン */}
+                    <div className="flex items-center justify-between py-4 border-t border-gray-200">
+                      <div className="flex items-center gap-4">
+                        {/* いいね */}
+                        <button
+                          onClick={() => handleLike(viewingPost.id)}
+                          className="flex items-center gap-2 text-gray-600 hover:text-red-500 transition-colors"
+                        >
+                          <svg
+                            className={`w-6 h-6 transition-colors ${
+                              postLikes[viewingPost.id]?.hasLiked ? 'fill-red-500 text-red-500' : 'text-gray-600'
+                            }`}
+                            fill={postLikes[viewingPost.id]?.hasLiked ? 'currentColor' : 'none'}
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                            />
+                          </svg>
+                          <span className="font-semibold">{postLikes[viewingPost.id]?.count || 0}</span>
+                        </button>
+
+                        {/* コメント */}
+                        <div className="flex items-center gap-2 text-gray-600">
+                          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                            />
+                          </svg>
+                          <span className="font-semibold">{postComments[viewingPost.id] || 0}</span>
+                        </div>
+                      </div>
+
+                      {/* 同じお題で投稿ボタン */}
+                      <button
+                        onClick={() => handleCreateSameTopic(viewingPost.topic)}
+                        className="px-4 py-2 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all font-medium text-sm shadow-lg"
+                      >
+                        同じお題で投稿
+                      </button>
+                    </div>
+
+                    {/* コメント一覧 */}
+                    <div className="mt-6 border-t border-gray-200 pt-6">
+                      <h4 className="font-bold text-gray-800 mb-4">コメント</h4>
+                      {commentsData[viewingPostId]?.length === 0 ? (
+                        <p className="text-center text-gray-500 py-8">まだコメントがありません</p>
+                      ) : (
+                        <div className="space-y-4 mb-6">
+                          {commentsData[viewingPostId]?.map((comment: Comment) => (
+                            <div key={comment.id} className="flex gap-3">
+                              {/* アバター */}
+                              <div className="flex-shrink-0">
+                                {comment.profiles?.avatar_url ? (
+                                  <img
+                                    src={comment.profiles.avatar_url}
+                                    alt={comment.profiles.full_name ?? 'User avatar'}
+                                    className="w-10 h-10 rounded-full object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                                    {comment.profiles?.full_name?.charAt(0) || '?'}
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* コメント内容 */}
+                              <div className="flex-1 bg-gray-50 rounded-lg p-4">
+                                <div className="flex items-center justify-between mb-2">
+                                  <span className="font-semibold text-gray-900">
+                                    {comment.profiles?.full_name || '名前未設定'}
+                                  </span>
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(comment.created_at).toLocaleDateString('ja-JP')}
+                                  </span>
+                                </div>
+
+                                {/* 編集モード */}
+                                {editingCommentId === comment.id ? (
+                                  <div className="space-y-2">
+                                    <textarea
+                                      value={editingCommentContent}
+                                      onChange={(e) => setEditingCommentContent(e.target.value)}
+                                      className="w-full p-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                      rows={3}
+                                      autoFocus
+                                    />
+                                    <div className="flex gap-2">
+                                      <button
+                                        onClick={() => handleUpdateComment(viewingPostId, comment.id)}
+                                        className="px-3 py-1 bg-blue-600 text-white text-sm rounded-lg hover:bg-blue-700 transition-colors"
+                                      >
+                                        保存
+                                      </button>
+                                      <button
+                                        onClick={cancelEditComment}
+                                        className="px-3 py-1 bg-gray-200 text-gray-700 text-sm rounded-lg hover:bg-gray-300 transition-colors"
+                                      >
+                                        キャンセル
+                                      </button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <>
+                                    <p className="text-gray-700 whitespace-pre-wrap break-words">
+                                      {comment.content}
+                                    </p>
+
+                                    {/* 編集・削除ボタン（自分のコメントのみ） */}
+                                    {comment.user_id === profile?.id && (
+                                      <div className="flex gap-3 mt-2">
+                                        <button
+                                          onClick={() => startEditComment(comment.id, comment.content)}
+                                          className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                                        >
+                                          編集
+                                        </button>
+                                        <button
+                                          onClick={() => handleDeleteComment(viewingPostId, comment.id)}
+                                          className="text-xs text-red-600 hover:text-red-700 font-medium"
+                                        >
+                                          削除
+                                        </button>
+                                      </div>
+                                    )}
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* 新規コメント入力欄 */}
+                      <div className="border-t border-gray-200 pt-4">
+                        <div className="flex gap-3">
+                          {/* アバター */}
+                          <div className="flex-shrink-0">
+                            {profile?.avatar_url ? (
+                              <img
+                                src={profile.avatar_url}
+                                alt="あなた"
+                                className="w-10 h-10 rounded-full object-cover"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold">
+                                {profile?.full_name?.charAt(0) || '?'}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* 入力欄 */}
+                          <div className="flex-1">
+                            <textarea
+                              value={newComment[viewingPostId] || ''}
+                              onChange={(e) => setNewComment(prev => ({ ...prev, [viewingPostId]: e.target.value }))}
+                              placeholder="コメントを入力..."
+                              className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              rows={3}
+                            />
+                            <div className="flex justify-end mt-2">
+                              <button
+                                onClick={() => handleAddComment(viewingPostId)}
+                                disabled={!newComment[viewingPostId]?.trim()}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                              >
+                                投稿
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        })()}
       </div>
     </MainLayout>
   )
