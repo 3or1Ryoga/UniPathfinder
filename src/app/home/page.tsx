@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import MainLayout from '@/components/layout/MainLayout'
 import { Tables } from '@/app/database.types'
+import IcebergVisualization from '@/components/growth/IcebergVisualization'
 
 type Profile = Tables<'profiles'>
 type BlogPost = Tables<'tech_blog_posts'> & { profiles?: Profile }
@@ -1289,6 +1290,38 @@ function HomePageContent() {
                 </button>
                 <span className="text-xs sm:text-sm font-medium text-gray-500">追加</span>
                 <span className="text-[10px] sm:text-xs text-transparent">　</span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 氷山ビジュアライゼーション */}
+        {isOwnProfile && (
+          <div className="mb-8">
+            <div
+              onClick={() => router.push('/growth')}
+              style={{
+                cursor: 'pointer',
+                transition: 'transform 0.3s ease, box-shadow 0.3s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-4px)'
+                e.currentTarget.style.boxShadow = '0 20px 60px rgba(6, 182, 212, 0.3)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)'
+                e.currentTarget.style.boxShadow = 'none'
+              }}
+            >
+              <IcebergVisualization compact={true} />
+              <div style={{
+                textAlign: 'center',
+                marginTop: '12px',
+                fontSize: '12px',
+                color: '#64748b',
+                fontWeight: '500'
+              }}>
+                クリックして詳細を見る →
               </div>
             </div>
           </div>
