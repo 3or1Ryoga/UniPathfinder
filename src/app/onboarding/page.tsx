@@ -96,6 +96,32 @@ const PREFECTURES = [
   '福岡県', '佐賀県', '長崎県', '熊本県', '大分県', '宮崎県', '鹿児島県', '沖縄県'
 ]
 
+// 技術スタック
+const TECH_STACK = [
+  'Swift',
+  'JavaScript',
+  'TypeScript',
+  'React',
+  'Next.js',
+  'COBOL',
+  'Python',
+  'Flask',
+  'Django',
+  'PHP',
+  'Go',
+  'Git'
+]
+
+// キャリアで重視すること
+const CAREER_VALUES = [
+  '技術的挑戦',
+  'プロダクトへの貢献',
+  '社会的インパクト',
+  'ワークライフバランス',
+  'チーム文化',
+  '給与・待遇'
+]
+
 interface OnboardingData {
   // ステップ1: 主な役割
   main_role: string
@@ -105,11 +131,16 @@ interface OnboardingData {
   experience_level: string
   experience_detail: string
 
-  // ステップ3: 興味のある分野
+  // ステップ3: Tech Stack & Career Values（新規追加）
+  tech_stack: string[]
+  career_values: string[]
+  career_goal: string
+
+  // ステップ4: 興味のある分野
   interest_areas: string[]
   hackathon_experience: string
 
-  // ステップ4: 参加資格
+  // ステップ5: 参加資格
   country: string
   birth_year: string
   birth_month: string
@@ -118,14 +149,14 @@ interface OnboardingData {
   graduation_year: number | null
   receive_emails: boolean
 
-  // ステップ5: 働き方の希望
+  // ステップ6: 働き方の希望
   availability_start: string
   weekly_hours: string
   work_styles: string[]
   preferred_locations: string[]
   hourly_rate: string
 
-  // ステップ6: 連絡先
+  // ステップ7: 連絡先
   github_username: string
   portfolio_url: string
   self_intro: string
@@ -146,6 +177,9 @@ export default function OnboardingPage() {
     main_role_other: '',
     experience_level: '',
     experience_detail: '',
+    tech_stack: [],
+    career_values: [],
+    career_goal: '',
     interest_areas: [],
     hackathon_experience: '',
     country: '日本',
@@ -165,7 +199,7 @@ export default function OnboardingPage() {
     self_intro: ''
   })
 
-  const totalSteps = 6
+  const totalSteps = 7
 
   // ダークモード検知
   useEffect(() => {
@@ -214,6 +248,7 @@ export default function OnboardingPage() {
           availability_start?: string
           weekly_hours?: string
           hourly_rate?: string
+          work_styles?: string[]
         } = {}
         try {
           if (data.bio) {
@@ -225,6 +260,8 @@ export default function OnboardingPage() {
         }
 
         const careerInterests = Array.isArray(data.career_interests) ? data.career_interests : []
+        const techStack = Array.isArray(data.tech_stack) ? data.tech_stack : []
+        const careerValues = Array.isArray(data.work_values) ? data.work_values : []
 
         // main_roleが既存の選択肢にない場合は「その他」として扱う
         const isStandardRole = MAIN_ROLES.includes(data.main_role || '')
@@ -234,6 +271,9 @@ export default function OnboardingPage() {
           main_role_other: !isStandardRole ? (data.main_role || '') : '',
           experience_level: data.skill_level || '',
           experience_detail: data.learning_goal || data.experience || '',
+          tech_stack: techStack,
+          career_values: careerValues,
+          career_goal: data.career_goal || '',
           interest_areas: careerInterests,
           hackathon_experience: data.awards || '',
           country: data.location || '日本',
@@ -245,7 +285,7 @@ export default function OnboardingPage() {
           receive_emails: true,
           availability_start: bioData.availability_start || '',
           weekly_hours: bioData.weekly_hours || '',
-          work_styles: Array.isArray(data.work_values) ? data.work_values : [],
+          work_styles: Array.isArray(bioData.work_styles) ? bioData.work_styles : [],
           preferred_locations: Array.isArray(data.preferred_locations) ? data.preferred_locations : [],
           hourly_rate: bioData.hourly_rate || '',
           github_username: data.github_username || '',
@@ -270,12 +310,15 @@ export default function OnboardingPage() {
       case 2:
         return !!(formData.experience_level && formData.experience_detail)
       case 3:
-        return formData.interest_areas.length > 0
+        // Tech Stack & Career Values - 技術スタックとキャリア価値観は必須
+        return formData.tech_stack.length > 0 && formData.career_values.length > 0
       case 4:
-        return !!(formData.country && formData.occupation && formData.school_name && formData.graduation_year)
+        return formData.interest_areas.length > 0
       case 5:
-        return !!(formData.availability_start && formData.weekly_hours && formData.work_styles.length > 0)
+        return !!(formData.country && formData.occupation && formData.school_name && formData.graduation_year)
       case 6:
+        return !!(formData.availability_start && formData.weekly_hours && formData.work_styles.length > 0)
+      case 7:
         return true // 任意項目のみ
       default:
         return false
@@ -334,11 +377,15 @@ export default function OnboardingPage() {
         birth_month: formData.birth_month ? parseInt(formData.birth_month) : null,
         availability_start: formData.availability_start,
         weekly_hours: formData.weekly_hours,
-        hourly_rate: formData.hourly_rate
+        hourly_rate: formData.hourly_rate,
+        work_styles: formData.work_styles
       }
 
       const updateData = {
         main_role: formData.main_role === 'その他' ? formData.main_role_other : formData.main_role,
+        tech_stack: formData.tech_stack,
+        work_values: formData.career_values,
+        career_goal: formData.career_goal,
         career_interests: formData.interest_areas,
         skill_level: formData.experience_level,
         learning_goal: formData.experience_detail,
@@ -347,7 +394,6 @@ export default function OnboardingPage() {
         job_interest: formData.occupation,
         education: formData.school_name,
         graduation_year: formData.graduation_year,
-        work_values: formData.work_styles,
         preferred_locations: formData.preferred_locations,
         github_username: formData.github_username,
         portfolio_url: formData.portfolio_url,
@@ -597,8 +643,95 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              {/* ステップ3: 興味のある分野 */}
+              {/* ステップ3: Tech Stack & Career Values（新規追加） */}
               {currentStep === 3 && (
+                <div className="space-y-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+                      技術とキャリアについて
+                    </h2>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                      あなたの興味と価値観を教えてください
+                    </p>
+                  </div>
+
+                  {/* 技術スタック */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                      興味のある技術スタック・言語<span className="text-red-500">*</span>（複数選択可）
+                    </label>
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                      {TECH_STACK.map(tech => (
+                        <motion.button
+                          key={tech}
+                          type="button"
+                          onClick={() => setFormData({
+                            ...formData,
+                            tech_stack: toggleArrayValue(formData.tech_stack, tech)
+                          })}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`px-4 py-3 rounded-lg font-medium transition-all text-sm ${
+                            formData.tech_stack.includes(tech)
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          }`}
+                        >
+                          {tech}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* キャリアで重視すること */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                      キャリアで重視すること<span className="text-red-500">*</span>（複数選択可）
+                    </label>
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                      {CAREER_VALUES.map(value => (
+                        <motion.button
+                          key={value}
+                          type="button"
+                          onClick={() => setFormData({
+                            ...formData,
+                            career_values: toggleArrayValue(formData.career_values, value)
+                          })}
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          className={`px-4 py-3 rounded-lg font-medium transition-all text-sm ${
+                            formData.career_values.includes(value)
+                              ? 'bg-green-600 text-white shadow-md'
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          }`}
+                        >
+                          {value}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* 仕事を通して実現したいこと */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                      仕事を通して実現したいこと（任意）
+                    </label>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                      例：Webのパフォーマンスチューニングが好きなので、大規模サービスの速度改善に貢献し、数百万人のユーザー体験を向上させたいです。
+                    </p>
+                    <textarea
+                      value={formData.career_goal}
+                      onChange={(e) => setFormData({ ...formData, career_goal: e.target.value })}
+                      rows={4}
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      placeholder="あなたのキャリアビジョンを教えてください..."
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* ステップ4: 興味のある分野 */}
+              {currentStep === 4 && (
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
@@ -646,8 +779,8 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              {/* ステップ4: 参加資格 */}
-              {currentStep === 4 && (
+              {/* ステップ5: 参加資格 */}
+              {currentStep === 5 && (
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
@@ -776,8 +909,8 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              {/* ステップ5: 働き方の希望 */}
-              {currentStep === 5 && (
+              {/* ステップ6: 働き方の希望 */}
+              {currentStep === 6 && (
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
@@ -925,8 +1058,8 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              {/* ステップ6: 連絡先 */}
-              {currentStep === 6 && (
+              {/* ステップ7: 連絡先 */}
+              {currentStep === 7 && (
                 <div className="space-y-6">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
