@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { analyzeGitHubActivityAndNotify } from '@/lib/ai-mentor'
+import { analyzeDailyCommits } from '@/lib/github-commit-analyzer'
+import { generateDailySummary } from '@/lib/github-summary-generator'
+import { detectRepositoriesForAllUsers } from '@/lib/github-repo-detector'
 
 // Supabaseクライアントを遅延初期化する関数
 function getSupabaseAdmin() {
@@ -97,6 +101,69 @@ function aggregateDailyStats(events: GitHubEvent[]): Map<string, DailyStats> {
   }
 
   return dailyStatsMap
+}
+
+// ユーザーの日次サマリーを生成・更新
+async function generateDailySummaryForUser(
+  userId: string,
+  date: string,  // YYYY-MM-DD
+  accessToken: string
+): Promise<void> {
+  try {
+    const supabaseAdmin = getSupabaseAdmin()
+
+    // ユーザーのプライマリリポジトリを取得
+    const { data: repos, error: repoError } = await supabaseAdmin
+      .from('user_github_repos')
+      .select('repo_owner, repo_name')
+      .eq('user_id', userId)
+      .eq('is_primary', true)
+      .limit(1)
+
+    if (repoError || !repos || repos.length === 0) {
+      console.log(`[Daily Summary] No primary repo found for user ${userId}, skipping`)
+      return
+    }
+
+    const { repo_owner, repo_name } = repos[0]
+
+    // GitHub Commit Analyzerでその日のコミットを分析
+    const analyzedCommit = await analyzeDailyCommits(
+      repo_owner,
+      repo_name,
+      date,
+      accessToken
+    )
+
+    if (!analyzedCommit) {
+      console.warn(`[Daily Summary] Failed to analyze commits for ${repo_owner}/${repo_name} on ${date}`)
+      return
+    }
+
+    // GPT-4oでサマリー生成
+    const summary = await generateDailySummary(analyzedCommit, date)
+
+    // github_daily_statsを更新
+    const { error: updateError } = await supabaseAdmin
+      .from('github_daily_stats')
+      .update({
+        commit_summary: summary.commitSummary,
+        activity_description: summary.activityDescription,
+        files_changed: summary.filesChanged,
+        code_highlights: summary.codeHighlights
+      })
+      .eq('user_id', userId)
+      .eq('date', date)
+
+    if (updateError) {
+      console.error(`[Daily Summary] Failed to update github_daily_stats:`, updateError)
+    } else {
+      console.log(`[Daily Summary] Successfully generated summary for user ${userId} on ${date}`)
+    }
+  } catch (error) {
+    console.error('[Daily Summary] Error:', error)
+    // エラーが発生してもメイン処理には影響させない
+  }
 }
 
 // ユーザーのエンゲージメント状態を計算・更新
@@ -321,6 +388,16 @@ export async function POST(request: NextRequest) {
 
     console.log(`Found ${profiles.length} users to sync`)
 
+    // リポジトリ自動検出（リポジトリが未登録のユーザーのみ）
+    console.log('[Repo Auto-Detect] Running repository auto-detection...')
+    try {
+      const repoDetectionResult = await detectRepositoriesForAllUsers()
+      console.log(`[Repo Auto-Detect] Completed: ${repoDetectionResult.success} success, ${repoDetectionResult.failed} failed out of ${repoDetectionResult.processed} processed`)
+    } catch (repoError) {
+      console.warn('[Repo Auto-Detect] Failed:', repoError)
+      // リポジトリ検出の失敗は全体の処理には影響させない
+    }
+
     // タイムアウト対策: Hobby プラン (10秒制限) に対応
     // 各ユーザーの処理に約1秒かかるため、8ユーザー = 約8秒（余裕を持って10秒以内）
     const MAX_USERS_PER_RUN = 8
@@ -381,6 +458,23 @@ export async function POST(request: NextRequest) {
           } catch (engagementError) {
             console.warn(`Failed to update engagement status for user ${profile.id}:`, engagementError)
             // エンゲージメント更新の失敗は全体の処理には影響させない
+          }
+
+          // AI分析とLINE通知を実行（非同期、エラーが発生しても処理は続行）
+          try {
+            await analyzeGitHubActivityAndNotify(profile.id)
+          } catch (aiError) {
+            console.warn(`Failed to run AI analysis for user ${profile.id}:`, aiError)
+            // AI分析の失敗は全体の処理には影響させない
+          }
+
+          // 日次サマリー生成（非同期、エラーが発生しても処理は続行）
+          try {
+            const today = new Date().toISOString().split('T')[0]  // YYYY-MM-DD
+            await generateDailySummaryForUser(profile.id, today, profile.github_access_token)
+          } catch (summaryError) {
+            console.warn(`Failed to generate daily summary for user ${profile.id}:`, summaryError)
+            // サマリー生成の失敗は全体の処理には影響させない
           }
         }
 

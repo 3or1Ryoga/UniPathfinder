@@ -745,11 +745,24 @@ function HomePageContent() {
         is_public: true // 常に公開
       }
 
-      const { error } = await supabase
+      const { data: insertedPost, error } = await supabase
         .from('tech_blog_posts')
         .insert([postData])
+        .select('id')
+        .single()
 
       if (error) throw error
+
+      // AI分析を非同期で実行（エラーが発生しても投稿処理には影響させない）
+      if (insertedPost?.id) {
+        fetch('/api/ai-mentor/analyze-post', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ postId: insertedPost.id })
+        }).catch((error) => {
+          console.error('AI analysis request failed:', error)
+        })
+      }
 
       // リセット
       setNewPost({

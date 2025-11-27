@@ -1,5 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
+import { detectAndRegisterRepositories } from '@/lib/github-repo-detector'
 
 export async function GET(request: NextRequest) {
     const requestUrl = new URL(request.url)
@@ -120,6 +121,22 @@ export async function GET(request: NextRequest) {
                             console.error('Error creating profile with GitHub info:', insertError)
                         } else {
                             console.log('Profile created with GitHub info:', { username: githubUsername, hasToken: !!githubAccessToken })
+                        }
+                    }
+
+                    // GitHub OAuth成功後、リポジトリを自動検出（非同期、エラーが発生しても処理は続行）
+                    if (githubAccessToken) {
+                        try {
+                            console.log('[Repo Auto-Detect] Detecting repositories after GitHub OAuth for user:', userId)
+                            const repoResult = await detectAndRegisterRepositories(userId, githubAccessToken)
+                            if (repoResult.success) {
+                                console.log(`[Repo Auto-Detect] Successfully registered ${repoResult.repoCount} repositories. Primary: ${repoResult.primaryRepo}`)
+                            } else {
+                                console.warn('[Repo Auto-Detect] No repositories found or registration failed')
+                            }
+                        } catch (repoError) {
+                            console.warn('[Repo Auto-Detect] Failed to detect repositories:', repoError)
+                            // リポジトリ検出の失敗は全体の処理には影響させない
                         }
                     }
                 } else if (provider === 'google') {
