@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import MainLayout from '@/components/layout/MainLayout'
 import { Tables } from '@/app/database.types'
-import IcebergVisualization from '@/components/growth/IcebergVisualization'
+// import IcebergVisualization from '@/components/growth/IcebergVisualization' // 氷山ビジュアライゼーション - デザインが分かりづらいためコメントアウト
 
 type Profile = Tables<'profiles'>
 type BlogPost = Tables<'tech_blog_posts'> & { profiles?: Profile }
@@ -1295,7 +1295,11 @@ function HomePageContent() {
           </div>
         )}
 
-        {/* 氷山ビジュアライゼーション */}
+        {/* =========================================== */}
+        {/* 氷山ビジュアライゼーション（コメントアウト） */}
+        {/* デザインが分かりづらいため非表示 */}
+        {/* =========================================== */}
+        {/*
         {isOwnProfile && (
           <div className="mb-8">
             <div
@@ -1326,6 +1330,7 @@ function HomePageContent() {
             </div>
           </div>
         )}
+        */}
 
         {/* =========================================== */}
         {/* プロフィール完成度カード（コメントアウト） */}
