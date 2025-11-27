@@ -65,7 +65,7 @@ export default function GrowthPage() {
 
       const { data: stats, error } = await supabase
         .from('github_daily_stats')
-        .select('date, commit_count, lines_added, lines_deleted, commit_summary, activity_description')
+        .select('date, commit_count, files_changed, commit_summary, activity_description')
         .eq('user_id', user.id)
         .gte('date', thirtyDaysAgo.toISOString().split('T')[0])
         .order('date', { ascending: false })
@@ -73,7 +73,26 @@ export default function GrowthPage() {
       if (error) {
         console.error('Error fetching daily stats:', error)
       } else {
-        setDailyStats(stats || [])
+        // files_changedから行数を集計
+        const statsWithLines = stats?.map(day => {
+          let lines_added = 0
+          let lines_deleted = 0
+
+          if (day.files_changed && Array.isArray(day.files_changed)) {
+            day.files_changed.forEach((file: { additions?: number; deletions?: number }) => {
+              lines_added += file.additions || 0
+              lines_deleted += file.deletions || 0
+            })
+          }
+
+          return {
+            ...day,
+            lines_added,
+            lines_deleted
+          }
+        }) || []
+
+        setDailyStats(statsWithLines)
       }
 
       setLoading(false)

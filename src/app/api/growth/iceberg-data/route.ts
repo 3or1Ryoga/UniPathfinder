@@ -27,7 +27,7 @@ export async function GET() {
     // ========================================
     const { data: githubStats, error: githubError } = await supabase
       .from('github_daily_stats')
-      .select('commit_count, lines_added, lines_deleted, code_highlights')
+      .select('commit_count, files_changed, code_highlights')
       .eq('user_id', userId)
 
     if (githubError) {
@@ -37,8 +37,20 @@ export async function GET() {
 
     // 統計を集計
     const totalCommits = githubStats?.reduce((sum, day) => sum + (day.commit_count || 0), 0) || 0
-    const totalAdditions = githubStats?.reduce((sum, day) => sum + (day.lines_added || 0), 0) || 0
-    const totalDeletions = githubStats?.reduce((sum, day) => sum + (day.lines_deleted || 0), 0) || 0
+
+    // files_changedから追加/削除行数を集計
+    let totalAdditions = 0
+    let totalDeletions = 0
+
+    githubStats?.forEach(day => {
+      if (day.files_changed && Array.isArray(day.files_changed)) {
+        day.files_changed.forEach((file: { additions?: number; deletions?: number }) => {
+          totalAdditions += file.additions || 0
+          totalDeletions += file.deletions || 0
+        })
+      }
+    })
+
     const developmentDays = githubStats?.filter(day => day.commit_count && day.commit_count > 0).length || 0
 
     // ========================================
