@@ -105,7 +105,7 @@ function LinkLineContent() {
                     }}>
                         TechMightでは、学習リソースの通知や<br />
                         パーソナライズされた情報提供のため、<br />
-                        LINEとの連携が必須となります。
+                        LINEとの連携を推奨しています。
                     </p>
                 </div>
 
@@ -152,6 +152,30 @@ function LinkLineContent() {
                     </svg>
                     {loading ? '処理中...' : 'LINEと連携する'}
                 </button>
+
+                {/* スキップリンク - 小さく目立たないように */}
+                <div style={{
+                    textAlign: 'center',
+                    marginBottom: '1.5rem'
+                }}>
+                    <button
+                        onClick={() => router.push('/home')}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#a0aec0',
+                            fontSize: '0.75rem',
+                            cursor: 'pointer',
+                            textDecoration: 'underline',
+                            padding: '0',
+                            opacity: 0.6
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.opacity = '0.8'}
+                        onMouseOut={(e) => e.currentTarget.style.opacity = '0.6'}
+                    >
+                        LINEをお持ちでない場合でもご利用いただけます
+                    </button>
+                </div>
 
                 <div style={{
                     padding: '1rem',
