@@ -450,6 +450,20 @@ export default function SettingsPage() {
           </div>
         </form>
 
+        {/* オンボーディング再表示セクション */}
+        <div className="mt-8 bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">オンボーディング</h2>
+          <p className="text-gray-600 mb-6">
+            サービスの使い方を再確認したい場合は、オンボーディング画面を表示できます。
+          </p>
+          <button
+            onClick={() => router.push('/onboarding')}
+            className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold"
+          >
+            オンボーディングを表示
+          </button>
+        </div>
+
         {/* ログアウトセクション */}
         <div className="mt-8 bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">アカウント</h2>
