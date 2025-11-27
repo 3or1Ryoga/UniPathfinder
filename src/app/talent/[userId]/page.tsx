@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server'
 import { notFound } from 'next/navigation'
 import { Tables } from '@/app/database.types'
+import MainLayout from '@/components/layout/MainLayout'
 
 type Profile = Tables<'profiles'>
 
@@ -182,9 +183,10 @@ export default async function TalentProfilePage({ params }: { params: Promise<{ 
   const preferredLocations = (profile.preferred_locations as string[]) || []
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* ヘッダー */}
-      <div className="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200">
+    <MainLayout>
+      <div className="min-h-screen bg-white">
+        {/* ヘッダー */}
+        <div className="bg-gradient-to-r from-slate-50 to-slate-100 border-b border-slate-200">
         <div className="max-w-5xl mx-auto px-8 py-12">
           <div className="flex items-start gap-6">
             {/* アバター */}
@@ -484,7 +486,8 @@ export default async function TalentProfilePage({ params }: { params: Promise<{ 
             )}
           </div>
         )}
+        </div>
       </div>
-    </div>
+    </MainLayout>
   )
 }
