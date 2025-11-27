@@ -76,6 +76,14 @@ export async function GET(request: NextRequest) {
 
                     const githubAccessToken = data.session?.provider_token || null
 
+                    // デバッグログ
+                    console.log('[DEBUG] GitHub OAuth data:', {
+                        hasSession: !!data.session,
+                        hasProviderToken: !!data.session?.provider_token,
+                        providerTokenLength: data.session?.provider_token?.length || 0,
+                        username: githubUsername
+                    })
+
                     // プロフィールが存在する場合、GitHub情報を更新
                     if (profile && (githubUsername || githubAccessToken)) {
                         // github_usernameまたはgithub_access_tokenが未設定、または異なる場合は更新
