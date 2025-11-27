@@ -84,6 +84,13 @@ export async function GET(request: NextRequest) {
                         username: githubUsername
                     })
 
+                    // アラート形式でも出力（デバッグ用）
+                    console.error('=== CRITICAL DEBUG ===')
+                    console.error('Provider Token exists:', !!data.session?.provider_token)
+                    console.error('Token length:', data.session?.provider_token?.length || 0)
+                    console.error('Token preview:', data.session?.provider_token?.substring(0, 20) || 'null')
+                    console.error('======================')
+
                     // プロフィールが存在する場合、GitHub情報を更新
                     if (profile && (githubUsername || githubAccessToken)) {
                         // github_usernameまたはgithub_access_tokenが未設定、または異なる場合は更新
