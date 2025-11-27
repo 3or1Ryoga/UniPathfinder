@@ -119,7 +119,7 @@ const CODE_PATTERNS: CodePattern[] = [
       /return\s*\(/,
       /<[A-Z]\w+/,  // JSX Component
     ],
-    description: (match) => 'React Componentを実装'
+    description: () => 'React Componentを実装'
   },
   {
     type: 'hook',
@@ -143,7 +143,7 @@ const CODE_PATTERNS: CodePattern[] = [
       /z\.object/,  // Zod validation
       /enum\s+\w+/,
     ],
-    description: (match) => '型定義を追加'
+    description: () => '型定義を追加'
   },
   {
     type: 'logic',
@@ -156,7 +156,7 @@ const CODE_PATTERNS: CodePattern[] = [
       /try\s*\{/,
       /catch\s*\(/,
     ],
-    description: (match) => 'ロジックを実装'
+    description: () => 'ロジックを実装'
   }
 ]
 
@@ -362,8 +362,8 @@ async function fetchCommitsByDate(
       return []
     }
 
-    const commits = await response.json()
-    return commits.map((c: any) => c.sha)
+    const commits = await response.json() as Array<{ sha: string }>
+    return commits.map((c) => c.sha)
   } catch (error) {
     console.error('Error fetching commits by date:', error)
     return []

@@ -93,7 +93,7 @@ export async function generateDailySummary(
 - ファイル数や行数は具体的に記載しない（冗長になるため）`
 
     // ユーザープロンプト構築
-    let userPrompt = `【日付】
+    const userPrompt = `【日付】
 ${date}
 
 【コミットメッセージ】
@@ -167,8 +167,14 @@ export async function generateWeeklySummary(
   weekEnd: string
 ): Promise<{
   growthSummary: string
-  achievements: any
-  technicalProgress: any
+  achievements: {
+    mainAchievements?: string[]
+    technicalSkills?: string[]
+  }
+  technicalProgress: {
+    strongPoints?: string[]
+    growthAreas?: string[]
+  }
 }> {
   try {
     const openai = getOpenAIClient()
