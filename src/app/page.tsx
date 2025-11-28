@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { createClient } from '@/utils/supabase/client'
+import { Browser } from '@capacitor/browser'
+import { Capacitor } from '@capacitor/core'
 
 export default function LandingPage() {
   const [loading, setLoading] = useState(false)
@@ -33,17 +35,44 @@ export default function LandingPage() {
       setError(null)
       const supabase = createClient()
 
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'github',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        }
-      })
+      // Capacitorネイティブアプリかどうかを判定
+      const isNative = Capacitor.isNativePlatform()
 
-      if (error) {
-        console.error('GitHub login error:', error)
-        setError('GitHubログインに失敗しました。もう一度お試しください。')
-        setLoading(false)
+      if (isNative) {
+        // ネイティブアプリの場合: 外部ブラウザで開く
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'github',
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+            skipBrowserRedirect: true,
+          }
+        })
+
+        if (error) {
+          console.error('GitHub login error:', error)
+          setError('GitHubログインに失敗しました。もう一度お試しください。')
+          setLoading(false)
+          return
+        }
+
+        if (data?.url) {
+          // 外部ブラウザで認証URLを開く
+          await Browser.open({ url: data.url })
+        }
+      } else {
+        // Webブラウザの場合: 通常のリダイレクト
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'github',
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+          }
+        })
+
+        if (error) {
+          console.error('GitHub login error:', error)
+          setError('GitHubログインに失敗しました。もう一度お試しください。')
+          setLoading(false)
+        }
       }
     } catch (err) {
       console.error('Unexpected error:', err)
@@ -58,17 +87,53 @@ export default function LandingPage() {
       setError(null)
       const supabase = createClient()
 
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        }
-      })
+      // Capacitorネイティブアプリかどうかを判定
+      const isNative = Capacitor.isNativePlatform()
 
-      if (error) {
-        console.error('Google login error:', error)
-        setError('Googleログインに失敗しました。もう一度お試しください。')
-        setGoogleLoading(false)
+      if (isNative) {
+        // ネイティブアプリの場合: 外部ブラウザで開く
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+            skipBrowserRedirect: true,
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'consent',
+            }
+          }
+        })
+
+        if (error) {
+          console.error('Google login error:', error)
+          setError('Googleログインに失敗しました。もう一度お試しください。')
+          setGoogleLoading(false)
+          return
+        }
+
+        if (data?.url) {
+          // 外部ブラウザで認証URLを開く
+          await Browser.open({ url: data.url })
+        }
+      } else {
+        // Webブラウザの場合: 通常のリダイレクト
+        const { error } = await supabase.auth.signInWithOAuth({
+          provider: 'google',
+          options: {
+            redirectTo: `${window.location.origin}/auth/callback`,
+            skipBrowserRedirect: false,
+            queryParams: {
+              access_type: 'offline',
+              prompt: 'consent',
+            }
+          }
+        })
+
+        if (error) {
+          console.error('Google login error:', error)
+          setError('Googleログインに失敗しました。もう一度お試しください。')
+          setGoogleLoading(false)
+        }
       }
     } catch (err) {
       console.error('Unexpected error:', err)
@@ -180,7 +245,7 @@ export default function LandingPage() {
                 transition={{ duration: 0.8, delay: 0.1 }}
               >
                 <Image
-                  src="/gakusei_engineer_com.jpeg"
+                  src="/gakusei_engineer_com_trans.png"
                   alt="学生エンジニア.com Logo"
                   width={400}
                   height={400}
@@ -413,7 +478,7 @@ export default function LandingPage() {
               {/* ロゴ画像 */}
               <div className="mb-6">
                 <Image
-                  src="/gakusei_engineer_com.jpeg"
+                  src="/gakusei_engineer_com_trans.png"
                   alt="学生エンジニア.com Logo"
                   width={400}
                   height={400}
@@ -758,7 +823,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-4xl sm:text-5xl font-bold text-white mb-6"
           >
-            あなたのエンジニアキャリアをTechMightで始めよう！
+            あなたのエンジニアキャリアを学生エンジニア.comで始めよう！
           </motion.h2>
           <motion.p
             initial={{ opacity: 0, y: 30 }}

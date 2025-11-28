@@ -3,6 +3,7 @@
 import { useEffect, useState, createContext, useCallback } from 'react'
 import Cookies from 'js-cookie'
 import { ThemeType } from '@/types/theme'
+import AuthDeepLinkHandler from '@/components/AuthDeepLinkHandler'
 
 interface Theme {
   theme: ThemeType
@@ -56,5 +57,10 @@ export default function ThemeProvider({
     setTheme(selectedTheme)
   }, [selectedTheme])
 
-  return <ThemeContext.Provider value={{ theme, changer }}>{children}</ThemeContext.Provider>
+  return (
+    <ThemeContext.Provider value={{ theme, changer }}>
+      <AuthDeepLinkHandler />
+      {children}
+    </ThemeContext.Provider>
+  )
 }

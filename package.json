@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.74",
+    "@capacitor/browser": "^7.0.2",
+    "@capacitor/core": "^7.4.4",
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/auth-ui-shared": "^0.1.8",
@@ -25,6 +27,7 @@
     "recharts": "^3.2.1"
   },
   "devDependencies": {
+    "@capacitor/cli": "^7.4.4",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/js-cookie": "^3.0.6",
