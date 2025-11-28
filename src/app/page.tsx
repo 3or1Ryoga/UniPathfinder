@@ -93,7 +93,7 @@ export default function LandingPage() {
                 alt="学生エンジニア.com Logo"
                 width={180}
                 height={180}
-                className="h-8 w-auto"
+                className="h-12 w-auto"
               />
             </motion.div>
 
@@ -182,9 +182,9 @@ export default function LandingPage() {
                 <Image
                   src="/gakusei_engineer_com.jpeg"
                   alt="学生エンジニア.com Logo"
-                  width={300}
-                  height={300}
-                  className="w-auto h-16 object-contain"
+                  width={400}
+                  height={400}
+                  className="w-auto h-32 object-contain"
                 />
               </motion.div>
 
@@ -198,7 +198,7 @@ export default function LandingPage() {
                 <span className="block whitespace-nowrap">
                   成長したい
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500 dark:from-cyan-400 dark:to-blue-400">
-                    20代
+                    学生
                   </span>
                   のための
                 </span>
@@ -415,9 +415,9 @@ export default function LandingPage() {
                 <Image
                   src="/gakusei_engineer_com.jpeg"
                   alt="学生エンジニア.com Logo"
-                  width={300}
-                  height={300}
-                  className="w-auto h-12 object-contain"
+                  width={400}
+                  height={400}
+                  className="w-auto h-24 object-contain"
                 />
               </div>
 
