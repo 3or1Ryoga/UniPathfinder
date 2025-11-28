@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import { calculateProfileCompletion } from '@/utils/profileCompletion'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTheme } from 'next-themes'
 
 // 主な役割の選択肢
 const MAIN_ROLES = [
@@ -170,11 +171,11 @@ interface OnboardingData {
 
 export default function OnboardingPage() {
   const router = useRouter()
+  const { theme, setTheme } = useTheme()
   const [currentStep, setCurrentStep] = useState(1)
   const [direction, setDirection] = useState(1) // 1: 次へ, -1: 戻る
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
 
@@ -206,21 +207,6 @@ export default function OnboardingPage() {
   })
 
   const totalSteps = 7
-
-  // ダークモード検知
-  useEffect(() => {
-    const systemDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
-    setDarkMode(systemDarkMode)
-  }, [])
-
-  // ダークモードの適用
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [darkMode])
 
   useEffect(() => {
     loadExistingProfile()
@@ -474,10 +460,10 @@ export default function OnboardingPage() {
             あなたのことを教えてください
           </h1>
           <button
-            onClick={() => setDarkMode(!darkMode)}
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             className="p-2 rounded-lg bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow"
           >
-            {darkMode ? (
+            {theme === 'dark' ? (
               <svg className="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
               </svg>
