@@ -25,6 +25,7 @@ export default function AiChatPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
 
@@ -57,6 +58,7 @@ export default function AiChatPage() {
         content: msg.content
       })))
       setCurrentSessionId(sessionId)
+      setIsSidebarOpen(false) // モバイルでサイドバーを閉じる
     }
   }
 
@@ -64,6 +66,7 @@ export default function AiChatPage() {
   const createNewSession = () => {
     setCurrentSessionId(null)
     setMessages([])
+    setIsSidebarOpen(false) // モバイルでサイドバーを閉じる
   }
 
   // セッションの削除
@@ -159,9 +162,42 @@ export default function AiChatPage() {
   return (
     <>
       <Sidebar />
-      <div className="flex h-screen pt-16 bg-gray-50 dark:bg-gray-900">
+      <div className="flex h-screen pt-16 bg-gray-50 dark:bg-gray-900 relative">
+        {/* モバイル用サイドバートグルボタン */}
+        <button
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="lg:hidden fixed bottom-6 right-6 z-50 p-4 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            {isSidebarOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
+
+        {/* オーバーレイ（モバイル時） */}
+        {isSidebarOpen && (
+          <div
+            className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-30"
+            onClick={() => setIsSidebarOpen(false)}
+          />
+        )}
+
         {/* 左サイドバー: 会話の履歴 */}
-        <aside className="w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+        <aside className={`
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:translate-x-0
+          fixed lg:static
+          inset-y-16 left-0
+          w-80
+          bg-white dark:bg-gray-800
+          border-r border-gray-200 dark:border-gray-700
+          flex flex-col
+          transition-transform duration-300 ease-in-out
+          z-40
+        `}>
         {/* サイドバーヘッダー */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">会話の履歴</h2>
@@ -236,16 +272,16 @@ export default function AiChatPage() {
       </aside>
 
       {/* メインコンテンツエリア */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col min-w-0">
         {/* メッセージエリア */}
-        <div className="flex-1 overflow-y-auto px-6 py-8">
+        <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-8">
           {messages.length === 0 ? (
             <div className="max-w-3xl mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
                   何でも聞いてみてください
                 </h2>
-                <p className="text-gray-600 dark:text-gray-400">
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
                   学習の相談、技術的な質問、キャリアの悩みなど、お気軽にどうぞ
                 </p>
               </div>
@@ -287,31 +323,31 @@ export default function AiChatPage() {
                     exit={{ opacity: 0 }}
                     className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`flex gap-3 max-w-[80%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                    <div className={`flex gap-2 sm:gap-3 max-w-[90%] sm:max-w-[80%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                       {/* アバター */}
-                      <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
+                      <div className={`flex-shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center ${
                         message.role === 'user'
                           ? 'bg-blue-600'
                           : 'bg-gradient-to-br from-purple-500 to-pink-500'
                       }`}>
                         {message.role === 'user' ? (
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                           </svg>
                         ) : (
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                           </svg>
                         )}
                       </div>
 
                       {/* メッセージバブル */}
-                      <div className={`px-4 py-3 rounded-2xl ${
+                      <div className={`px-3 sm:px-4 py-2 sm:py-3 rounded-2xl ${
                         message.role === 'user'
                           ? 'bg-blue-600 text-white'
                           : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700'
                       }`}>
-                        <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+                        <p className="text-xs sm:text-sm whitespace-pre-wrap break-words">{message.content}</p>
                       </div>
                     </div>
                   </motion.div>
@@ -347,15 +383,15 @@ export default function AiChatPage() {
         </div>
 
         {/* 入力エリア */}
-        <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-6 py-4">
+        <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 sm:px-6 py-3 sm:py-4">
           <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
             <div className="relative">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="質問してみましょう。(# または Ctrl + Enter で送信されます)"
-                className="w-full px-4 py-3 pr-12 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-                rows={3}
+                placeholder="質問してみましょう..."
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-11 sm:pr-12 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                rows={2}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
                     e.preventDefault()
@@ -366,15 +402,15 @@ export default function AiChatPage() {
               <button
                 type="submit"
                 disabled={isLoading || !input.trim()}
-                className="absolute bottom-3 right-3 p-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
+                className="absolute bottom-2 sm:bottom-3 right-2 sm:right-3 p-1.5 sm:p-2 bg-purple-600 hover:bg-purple-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
                 </svg>
               </button>
             </div>
 
-            <div className="flex items-center gap-4 mt-3 text-xs text-gray-500 dark:text-gray-400">
+            <div className="hidden sm:flex items-center gap-4 mt-3 text-xs text-gray-500 dark:text-gray-400">
               <div className="flex items-center gap-2">
                 <button type="button" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

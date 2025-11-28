@@ -214,6 +214,10 @@ export default function OnboardingPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    console.log('[Onboarding] currentStep changed to:', currentStep, '/', totalSteps)
+  }, [currentStep, totalSteps])
+
   async function loadExistingProfile() {
     try {
       const supabase = createClient()
@@ -312,17 +316,22 @@ export default function OnboardingPage() {
       case 6:
         return !!(formData.availability_start && formData.weekly_hours && formData.work_styles.length > 0)
       case 7:
-        return true // 任意項目のみ
+        return true // 確認ページ - 常にtrue
       default:
         return false
     }
   }
 
   function handleNext() {
+    console.log('[Onboarding] handleNext called - currentStep:', currentStep)
+
     if (!validateStep(currentStep)) {
+      console.log('[Onboarding] Validation failed for step:', currentStep)
       setMessage({ type: 'error', text: '必須項目を入力してください' })
       return
     }
+
+    console.log('[Onboarding] Moving to step:', currentStep + 1)
     setMessage(null)
     setDirection(1)
     setCurrentStep(currentStep + 1)
@@ -347,7 +356,18 @@ export default function OnboardingPage() {
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
 
+    console.log('[Onboarding] handleSubmit called - currentStep:', currentStep, 'totalSteps:', totalSteps)
+
+    // 最終ステップでない場合は送信しない
     if (currentStep !== totalSteps) {
+      console.log('[Onboarding] Not final step, returning early')
+      return
+    }
+
+    // 最終ステップのバリデーションチェック
+    if (!validateStep(currentStep)) {
+      console.log('[Onboarding] Final step validation failed')
+      setMessage({ type: 'error', text: '必須項目を入力してください' })
       return
     }
 
@@ -1067,68 +1087,34 @@ export default function OnboardingPage() {
                 </div>
               )}
 
-              {/* ステップ7: 連絡先 */}
+              {/* ステップ7: 確認ページ */}
               {currentStep === 7 && (
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-                      最後の確認
+                <div className="space-y-6 flex flex-col items-center justify-center min-h-[400px]">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", duration: 0.6 }}
+                    className="w-20 h-20 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mb-4"
+                  >
+                    <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </motion.div>
+
+                  <div className="text-center">
+                    <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-4">
+                      準備完了！
                     </h2>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-                      任意項目ですが、入力するとマッチング率が上がります
+                    <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">
+                      あなたのプロフィール設定が完了します
                     </p>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      GitHubアカウント（任意）
-                    </label>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                      GitHubがなくても全く問題ありません！
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <span className="text-gray-500 dark:text-gray-400">@</span>
-                      <input
-                        type="text"
-                        value={formData.github_username}
-                        onChange={(e) => setFormData({ ...formData, github_username: e.target.value })}
-                        className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="ユーザー名"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      ポートフォリオ・ブログ等（任意）
-                    </label>
-                    <input
-                      type="url"
-                      value={formData.portfolio_url}
-                      onChange={(e) => setFormData({ ...formData, portfolio_url: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="https://"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      自己PR（任意・200文字まで）
-                    </label>
-                    <textarea
-                      value={formData.self_intro}
-                      onChange={(e) => setFormData({ ...formData, self_intro: e.target.value })}
-                      maxLength={200}
-                      rows={4}
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-                      placeholder="あなたの強みや、やりたいことを教えてください"
-                    />
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-right">
-                      {formData.self_intro.length} / 200
+                    <p className="text-sm text-gray-500 dark:text-gray-500">
+                      「完了！」ボタンを押してプロフィールを保存してください
                     </p>
                   </div>
                 </div>
               )}
+
             </motion.div>
           </AnimatePresence>
 
