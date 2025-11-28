@@ -27,7 +27,11 @@ export default function ThemeProvider({
   // テーマ切り替えボタンを押下した時のハンドラー
   const changer = useCallback((theme: ThemeType) => {
     setTheme(theme)
-    Cookies.set('theme', theme, { secure: true, sameSite: 'strict' })
+    // 開発環境ではHTTPなのでsecure: falseにする必要がある
+    Cookies.set('theme', theme, {
+      sameSite: 'lax',
+      expires: 365 // 1年間有効
+    })
 
     // Tailwindのdarkクラスを設定
     if (theme === ThemeType.DARK) {
@@ -37,8 +41,16 @@ export default function ThemeProvider({
     }
   }, [])
 
-  // 初期表示およびテーマ切り替え時のハンドラー
+  // 初期表示時にselectedThemeを適用
   useEffect(() => {
+    // サーバーから渡された初期テーマを適用
+    if (selectedTheme === ThemeType.DARK) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+
+    // Cookieからテーマを読み取って上書き
     const cookieTheme = Cookies.get('theme')
     if (cookieTheme && isThemeType(cookieTheme)) {
       setTheme(cookieTheme)
@@ -50,7 +62,7 @@ export default function ThemeProvider({
         document.documentElement.classList.remove('dark')
       }
     }
-  }, [])
+  }, [selectedTheme])
 
   return <ThemeContext.Provider value={{ theme, changer }}>{children}</ThemeContext.Provider>
 }
