@@ -89,8 +89,8 @@ export default function LandingPage() {
               transition={{ duration: 0.5 }}
             >
               <Image
-                src="/TechMightLogo.jpeg"
-                alt="TechMight Logo"
+                src="/gakusei_engineer_com.jpeg"
+                alt="学生エンジニア.com Logo"
                 width={180}
                 height={180}
                 className="h-8 w-auto"
@@ -173,6 +173,21 @@ export default function LandingPage() {
           <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 items-center">
             {/* 左側：テキストコンテンツ（PCのみ表示） */}
             <div className="hidden lg:block">
+              <motion.div
+                className="mb-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1 }}
+              >
+                <Image
+                  src="/gakusei_engineer_com.jpeg"
+                  alt="学生エンジニア.com Logo"
+                  width={300}
+                  height={300}
+                  className="w-auto h-16 object-contain"
+                />
+              </motion.div>
+
               <motion.h1
                 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-gray-200 leading-tight mb-6"
                 initial={{ opacity: 0, y: 20 }}
@@ -303,14 +318,14 @@ export default function LandingPage() {
               >
                 <div className="flex items-start gap-2 sm:gap-3">
                   <Image
-                    src="/TechMightLogo.jpeg"
-                    alt="TechMight Engineering"
+                    src="/gakusei_engineer_com.jpeg"
+                    alt="学生エンジニア.com"
                     width={40}
                     height={40}
                     className="rounded-full w-8 h-8 sm:w-10 sm:h-10 object-contain flex-shrink-0"
                   />
                   <div>
-                    <p className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-200">TechMight Engineering</p>
+                    <p className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-200">学生エンジニア.com</p>
                     <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-300 mt-1">あなたの学習意欲に目が止まりました。弊社のミッションとも通じる部分も多いので、ぜひお話ししたいです！！</p>
                   </div>
                 </div>
@@ -393,6 +408,17 @@ export default function LandingPage() {
                   </svg>
                   <span className="font-medium">バイトやインターン探しにも</span>
                 </div>
+              </div>
+
+              {/* ロゴ画像 */}
+              <div className="mb-6">
+                <Image
+                  src="/gakusei_engineer_com.jpeg"
+                  alt="学生エンジニア.com Logo"
+                  width={300}
+                  height={300}
+                  className="w-auto h-12 object-contain"
+                />
               </div>
 
               {/* キャッチコピー */}
@@ -766,8 +792,8 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div>
               <Image
-                src="/TechMightLogo.jpeg"
-                alt="TechMight Logo"
+                src="/gakusei_engineer_com.jpeg"
+                alt="学生エンジニア.com Logo"
                 width={180}
                 height={180}
                 className="h-8 w-auto mb-4"
