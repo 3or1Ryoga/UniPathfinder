@@ -2,7 +2,7 @@
 
 import { useEffect, useState, createContext, useCallback } from 'react'
 import Cookies from 'js-cookie'
-import { ThemeType, isThemeType } from '@/types/theme'
+import { ThemeType } from '@/types/theme'
 
 interface Theme {
   theme: ThemeType
@@ -26,42 +26,33 @@ export default function ThemeProvider({
 
   // テーマ切り替えボタンを押下した時のハンドラー
   const changer = useCallback((theme: ThemeType) => {
+    console.log('[ThemeProvider] changer called with theme:', theme)
     setTheme(theme)
-    // 開発環境ではHTTPなのでsecure: falseにする必要がある
+
+    // Cookieに保存
     Cookies.set('theme', theme, {
       sameSite: 'lax',
       expires: 365 // 1年間有効
     })
+    console.log('[ThemeProvider] Cookie set to:', theme)
+    console.log('[ThemeProvider] Cookie read back:', Cookies.get('theme'))
 
     // Tailwindのdarkクラスを設定
     if (theme === ThemeType.DARK) {
       document.documentElement.classList.add('dark')
+      console.log('[ThemeProvider] Added dark class to html')
     } else {
       document.documentElement.classList.remove('dark')
+      console.log('[ThemeProvider] Removed dark class from html')
     }
   }, [])
 
-  // 初期表示時にselectedThemeを適用
+  // 初期表示時にselectedThemeを適用（サーバーから渡された値を信頼）
   useEffect(() => {
-    // サーバーから渡された初期テーマを適用
-    if (selectedTheme === ThemeType.DARK) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-
-    // Cookieからテーマを読み取って上書き
-    const cookieTheme = Cookies.get('theme')
-    if (cookieTheme && isThemeType(cookieTheme)) {
-      setTheme(cookieTheme)
-
-      // Tailwindのdarkクラスを設定
-      if (cookieTheme === ThemeType.DARK) {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
-    }
+    // サーバーサイドで既にHTMLにdarkクラスを設定しているため、
+    // クライアントサイドでは何もしなくてよい
+    // ただし、stateは同期させる必要がある
+    setTheme(selectedTheme)
   }, [selectedTheme])
 
   return <ThemeContext.Provider value={{ theme, changer }}>{children}</ThemeContext.Provider>

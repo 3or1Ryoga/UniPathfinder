@@ -86,8 +86,11 @@ export default async function RootLayout({
   const nowSetTheme = cookieStore.get('theme')?.value
   const theme = nowSetTheme && isThemeType(nowSetTheme) ? nowSetTheme : ThemeType.LIGHT
 
+  console.log('[RootLayout] Cookie value:', nowSetTheme)
+  console.log('[RootLayout] Final theme:', theme)
+
   return (
-    <html lang="ja">
+    <html lang="ja" className={theme === ThemeType.DARK ? 'dark' : ''}>
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
