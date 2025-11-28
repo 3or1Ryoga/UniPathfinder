@@ -39,13 +39,19 @@ function AddFriendContent() {
                 // すでに友だち追加済みかチェック
                 const { data: profile } = await supabase
                     .from('profiles')
-                    .select('line_friend_added')
+                    .select('line_friend_added, onboarding_completed')
                     .eq('id', user.id)
                     .single()
 
                 if (profile?.line_friend_added) {
-                    // 既に友だち追加済みなら /account にリダイレクト
-                    router.push('/account?friend_added=true')
+                    // 既に友だち追加済みの場合
+                    if (!profile.onboarding_completed) {
+                        // オンボーディング未完了なら /onboarding にリダイレクト
+                        router.push('/onboarding')
+                    } else {
+                        // オンボーディング完了済みなら /home にリダイレクト
+                        router.push('/home')
+                    }
                 }
             }
         }
@@ -82,8 +88,8 @@ function AddFriendContent() {
                 throw updateError
             }
 
-            // 完了したら /account にリダイレクト
-            router.push('/account?friend_added=true')
+            // 完了したら /onboarding にリダイレクト
+            router.push('/onboarding')
         } catch (err) {
             console.error('Friend add completion error:', err)
             setError('友だち追加の記録に失敗しました。もう一度お試しください。')

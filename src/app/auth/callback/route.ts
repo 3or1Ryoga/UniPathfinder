@@ -60,8 +60,8 @@ export async function GET(request: NextRequest) {
 
                 console.log('OAuth provider:', provider)
 
-                // Check if user profile exists and has LINE connection
-                const { data: profile, error: profileError } = await supabase
+                // Check if user profile exists
+                const { data: profile } = await supabase
                     .from('profiles')
                     .select('line_user_id, github_username, email, full_name, avatar_url')
                     .eq('id', userId)
@@ -280,27 +280,21 @@ export async function GET(request: NextRequest) {
                     return NextResponse.redirect('https://line.me/R/ti/p/@409fwjcr')
                 }
 
-                // Check if LINE is connected (共通処理)
-                if (profileError || !profile || !profile.line_user_id) {
-                    console.log('New user or LINE not connected, redirecting to /link-line')
-                    return NextResponse.redirect(`${origin}/link-line`)
-                }
-
-                // Existing user with LINE connection - check onboarding status
-                console.log('Existing user with LINE connection, checking onboarding status')
-
-                // オンボーディング完了状態を確認してリダイレクト先を決定
+                // GitHub/Google認証の場合の処理
+                // オンボーディング完了状態を確認
                 const { data: profileData } = await supabase
                     .from('profiles')
                     .select('onboarding_completed')
                     .eq('id', userId)
                     .single()
 
+                // 新規ユーザーまたはオンボーディング未完了の場合
                 if (!profileData?.onboarding_completed) {
-                    console.log('Onboarding not completed, redirecting to /onboarding')
-                    return NextResponse.redirect(`${origin}/onboarding`)
+                    console.log('New user or onboarding not completed, redirecting to /add-friend')
+                    return NextResponse.redirect(`${origin}/add-friend`)
                 }
 
+                // 既存ユーザー（オンボーディング完了済み）
                 console.log('Onboarding completed, redirecting to /home')
             }
 
