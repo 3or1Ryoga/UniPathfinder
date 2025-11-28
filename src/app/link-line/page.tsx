@@ -47,39 +47,17 @@ function LinkLineContent() {
             // Capacitorネイティブアプリかどうかを判定
             const isNative = Capacitor.isNativePlatform()
 
-            // Supabase AuthのLINE Providerを使用
-            const { data, error } = await supabase.auth.signInWithOAuth({
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                provider: 'line' as any, // TypeScript型定義に'line'がないため型アサーション使用
-                options: {
-                    // ネイティブアプリの場合はカスタムスキーム、Webの場合は通常のコールバック
-                    redirectTo: isNative
-                        ? 'com.gakusei.engineer://auth/callback'
-                        : `${window.location.origin}/auth/callback`,
-                    // ネイティブアプリの場合はブラウザリダイレクトをスキップ
-                    skipBrowserRedirect: isNative,
-                    queryParams: {
-                        // 友だち追加を促す設定
-                        bot_prompt: 'aggressive'
-                    }
-                }
-            })
-
-            if (error) {
-                console.error('LINE login error:', error)
-                setError('LINEログインに失敗しました。もう一度お試しください。')
-                setLoading(false)
-                return
-            }
-
-            // ネイティブアプリの場合、外部ブラウザで認証URLを開く
-            if (isNative && data?.url) {
+            if (isNative) {
+                // ネイティブアプリの場合、直接LINE OAuth APIエンドポイントを使用
+                const authUrl = `${window.location.origin}/api/auth/line`
                 await Browser.open({
-                    url: data.url,
+                    url: authUrl,
                     windowName: '_self'
                 })
+            } else {
+                // Webブラウザの場合、直接リダイレクト
+                window.location.href = '/api/auth/line'
             }
-            // Webブラウザの場合は自動的にリダイレクトされる
         } catch (err) {
             console.error('LINE login error:', err)
             setError('予期しないエラーが発生しました。')
