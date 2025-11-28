@@ -37,12 +37,13 @@ function LinkLineContent() {
         checkAuth()
     }, [router, supabase, searchParams])
 
-    const handleLineLogin = async () => {
+    const handleLineLogin = () => {
         try {
             setLoading(true)
             setError(null)
 
-            // LINE OAuth認証を開始（直接LINE APIを使用）
+            // LINE OAuth認証を開始
+            // モバイルの場合、LINEアプリが優先的に開かれる
             window.location.href = '/api/auth/line'
         } catch (err) {
             console.error('LINE login error:', err)

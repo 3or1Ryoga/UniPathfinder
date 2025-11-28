@@ -30,6 +30,13 @@ export async function GET(request: NextRequest) {
         // ランダムなstateを生成（CSRF対策）
         const state = crypto.randomUUID()
 
+        // User-Agentからモバイルデバイスかどうかを判定
+        const userAgent = request.headers.get('user-agent') || ''
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(userAgent)
+
+        // モバイルの場合、bot_prompt=normalを追加してLINEアプリを優先的に開く
+        const botPrompt = isMobile ? '&bot_prompt=normal' : ''
+
         // stateをセッションに保存（クッキーを使用）
         const response = NextResponse.redirect(
             `https://access.line.me/oauth2/v2.1/authorize?` +
@@ -37,7 +44,8 @@ export async function GET(request: NextRequest) {
             `&client_id=${channelId}` +
             `&redirect_uri=${encodeURIComponent(redirectUri)}` +
             `&state=${state}` +
-            `&scope=profile%20openid`
+            `&scope=profile%20openid` +
+            botPrompt
         )
 
         // stateとuserIdをクッキーに保存
