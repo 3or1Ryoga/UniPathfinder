@@ -21,7 +21,7 @@ jobs:
           echo "🚀 Starting GitHub stats synchronization..."
 
           response=$(curl -s -w "\n%{http_code}" -X POST \
-            https://uni-pathfinder-lf9w.vercel.app/api/github/sync-daily-stats \
+            https://gakusei-engineer.com/api/github/sync-daily-stats \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
             -H "Content-Type: application/json")
 

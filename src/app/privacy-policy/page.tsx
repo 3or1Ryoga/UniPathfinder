@@ -131,7 +131,7 @@ export default function PrivacyPolicyPage() {
                 </p>
                 <p style={{ marginTop: '1rem' }}>
                     <strong>サービス名:</strong> TechMight<br />
-                    <strong>URL:</strong> https://uni-pathfinder-lf9w.vercel.app/
+                    <strong>URL:</strong> https://gakusei-engineer.com/
                 </p>
             </section>
 

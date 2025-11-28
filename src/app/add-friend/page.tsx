@@ -58,14 +58,34 @@ function AddFriendContent() {
         checkAuth()
     }, [router, supabase, searchParams])
 
-    const handleOpenLineApp = () => {
+    const handleOpenLineApp = async () => {
         if (!lineAddFriendUrl) {
             setError('友だち追加URLが設定されていません。管理者にお問い合わせください。')
             return
         }
 
-        // LINE公式アカウントの友だち追加URLを新しいタブで開く
-        window.open(lineAddFriendUrl, '_blank')
+        if (!user) return
+
+        try {
+            // ボタンを押した時点でline_friend_addedをtrueに更新
+            await supabase
+                .from('profiles')
+                .update({
+                    line_friend_added: true,
+                    line_friend_added_at: new Date().toISOString()
+                })
+                .eq('id', user.id)
+
+            // LINE公式アカウントの友だち追加URLを開く
+            window.open(lineAddFriendUrl, '_blank')
+
+            // すぐにonboardingにリダイレクト
+            router.push('/onboarding')
+        } catch (err) {
+            console.error('Error updating friend status:', err)
+            // エラーが発生してもLINEアプリは開く
+            window.open(lineAddFriendUrl, '_blank')
+        }
     }
 
     const handleComplete = async () => {

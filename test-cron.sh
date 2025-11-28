@@ -18,7 +18,7 @@ echo "✓ CRON_SECRET is set"
 echo ""
 
 # 本番環境のURL
-PROD_URL="https://uni-pathfinder-lf9w.vercel.app/api/github/sync-daily-stats"
+PROD_URL="https://gakusei-engineer.com/api/github/sync-daily-stats"
 
 echo "Calling: $PROD_URL"
 echo "Timestamp: $(date '+%Y-%m-%d %H:%M:%S')"
