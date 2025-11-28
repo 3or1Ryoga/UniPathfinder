@@ -4,17 +4,9 @@ const config: CapacitorConfig = {
   appId: 'com.gakusei.engineer',
   appName: '学生エンジニア.com',
   webDir: 'public',
-  plugins: {
-    // ディープリンク設定
-    App: {
-      appUrlOpen: {
-        enabled: true
-      }
-    }
-  },
-  // カスタムURLスキーム
+  // カスタムURLスキーム設定
   server: {
-    // 本番環境ではhostname不要だがdev時のホットリロード用
+    // 本番環境のスキーム設定
     androidScheme: 'https',
     iosScheme: 'capacitor'
   }

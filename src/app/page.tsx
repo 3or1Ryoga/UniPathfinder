@@ -249,7 +249,7 @@ export default function LandingPage() {
                   alt="学生エンジニア.com Logo"
                   width={400}
                   height={400}
-                  className="w-auto h-32 object-contain"
+                  className="w-auto h-48 object-contain"
                 />
               </motion.div>
 
@@ -482,7 +482,7 @@ export default function LandingPage() {
                   alt="学生エンジニア.com Logo"
                   width={400}
                   height={400}
-                  className="w-auto h-24 object-contain"
+                  className="w-auto h-36 object-contain"
                 />
               </div>
 
