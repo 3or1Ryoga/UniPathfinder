@@ -69,8 +69,8 @@ export default function Sidebar() {
           <div className="flex-shrink-0">
             <Link href="/home" className="cursor-pointer">
               <Image
-                src="/TechMightLogo.jpeg"
-                alt="TechMight Logo"
+                src="/gakusei_engineer_com.jpeg"
+                alt="学生エンジニア.com Logo"
                 width={180}
                 height={180}
                 className="h-[35px] w-auto"
