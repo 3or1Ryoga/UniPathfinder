@@ -98,18 +98,24 @@ const PREFECTURES = [
 
 // 技術スタック
 const TECH_STACK = [
-  'Swift',
+  'HTML/CSS',
   'JavaScript',
   'TypeScript',
   'React',
-  'Next.js',
-  'COBOL',
+  'Ruby',
   'Python',
-  'Flask',
   'Django',
   'PHP',
   'Go',
-  'Git'
+  'Swift',
+  'Kotlin',
+  'Dart',
+  'C#',
+  'C/C++',
+  'Java',
+  'Rust',
+  'R',
+  'SQL',
 ]
 
 // キャリアで重視すること
@@ -310,8 +316,8 @@ export default function OnboardingPage() {
       case 2:
         return !!(formData.experience_level && formData.experience_detail)
       case 3:
-        // Tech Stack & Career Values - 技術スタックとキャリア価値観は必須
-        return formData.tech_stack.length > 0 && formData.career_values.length > 0
+        // Tech Stack & Career Values - 技術スタックとキャリア価値観は必須（キャリア価値観は1つか2つ）
+        return formData.tech_stack.length > 0 && formData.career_values.length > 0 && formData.career_values.length <= 2
       case 4:
         return formData.interest_areas.length > 0
       case 5:
@@ -465,7 +471,7 @@ export default function OnboardingPage() {
         {/* ヘッダー */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-            おすすめのインターンをご紹介します
+            あなたのことを教えてください
           </h1>
           <button
             onClick={() => setDarkMode(!darkMode)}
@@ -658,7 +664,7 @@ export default function OnboardingPage() {
                   {/* 技術スタック */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                      興味のある技術スタック・言語<span className="text-red-500">*</span>（複数選択可）
+                      得意な言語<span className="text-red-500">*</span>（複数選択可）
                     </label>
                     <div className="grid grid-cols-2 gap-3 mb-6">
                       {TECH_STACK.map(tech => (
@@ -686,28 +692,40 @@ export default function OnboardingPage() {
                   {/* キャリアで重視すること */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">
-                      キャリアで重視すること<span className="text-red-500">*</span>（複数選択可）
+                      キャリアで重視すること<span className="text-red-500">*</span>（1つか2つ選択）
                     </label>
                     <div className="grid grid-cols-2 gap-3 mb-6">
-                      {CAREER_VALUES.map(value => (
-                        <motion.button
-                          key={value}
-                          type="button"
-                          onClick={() => setFormData({
-                            ...formData,
-                            career_values: toggleArrayValue(formData.career_values, value)
-                          })}
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          className={`px-4 py-3 rounded-lg font-medium transition-all text-sm ${
-                            formData.career_values.includes(value)
-                              ? 'bg-green-600 text-white shadow-md'
-                              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
-                          }`}
-                        >
-                          {value}
-                        </motion.button>
-                      ))}
+                      {CAREER_VALUES.map(value => {
+                        const isSelected = formData.career_values.includes(value)
+                        const isDisabled = !isSelected && formData.career_values.length >= 2
+
+                        return (
+                          <motion.button
+                            key={value}
+                            type="button"
+                            onClick={() => {
+                              if (!isDisabled) {
+                                setFormData({
+                                  ...formData,
+                                  career_values: toggleArrayValue(formData.career_values, value)
+                                })
+                              }
+                            }}
+                            whileHover={!isDisabled ? { scale: 1.05 } : {}}
+                            whileTap={!isDisabled ? { scale: 0.95 } : {}}
+                            className={`px-4 py-3 rounded-lg font-medium transition-all text-sm ${
+                              isSelected
+                                ? 'bg-green-600 text-white shadow-md'
+                                : isDisabled
+                                ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-50'
+                                : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                            }`}
+                            disabled={isDisabled}
+                          >
+                            {value}
+                          </motion.button>
+                        )
+                      })}
                     </div>
                   </div>
 
@@ -903,7 +921,7 @@ export default function OnboardingPage() {
                       className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                     />
                     <label htmlFor="receive_emails" className="text-sm text-gray-700 dark:text-gray-300">
-                      インターン情報等のメールを受け取る
+                      情報等のメールを受け取る
                     </label>
                   </div>
                 </div>
