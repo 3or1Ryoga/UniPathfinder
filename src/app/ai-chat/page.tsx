@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { createClient } from '@/utils/supabase/client'
 import { motion, AnimatePresence } from 'framer-motion'
+import Sidebar from '@/components/layout/Sidebar'
 
 interface ChatSession {
   id: string
@@ -156,9 +157,11 @@ export default function AiChatPage() {
   }, [messages])
 
   return (
-    <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      {/* 左サイドバー: 会話の履歴 */}
-      <aside className="w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+    <>
+      <Sidebar />
+      <div className="flex h-screen pt-16 bg-gray-50 dark:bg-gray-900">
+        {/* 左サイドバー: 会話の履歴 */}
+        <aside className="w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col">
         {/* サイドバーヘッダー */}
         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">会話の履歴</h2>
@@ -399,6 +402,7 @@ export default function AiChatPage() {
           </form>
         </div>
       </main>
-    </div>
+      </div>
+    </>
   )
 }
