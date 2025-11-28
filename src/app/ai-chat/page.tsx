@@ -166,7 +166,7 @@ export default function AiChatPage() {
         {/* モバイル用サイドバートグルボタン */}
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="lg:hidden fixed bottom-6 right-6 z-50 p-4 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg transition-colors"
+          className="lg:hidden fixed top-20 left-4 z-50 p-3 bg-purple-600 hover:bg-purple-700 text-white rounded-lg shadow-lg transition-colors"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {isSidebarOpen ? (
