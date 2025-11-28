@@ -6,15 +6,19 @@ export const runtime = 'edge'
 
 export async function POST(req: Request) {
   try {
+    console.log('[Chat API] Request received')
     const supabase = await createClient()
 
     // ユーザー認証確認
     const { data: { user }, error: authError } = await supabase.auth.getUser()
     if (authError || !user) {
+      console.error('[Chat API] Auth error:', authError)
       return new Response('Unauthorized', { status: 401 })
     }
 
+    console.log('[Chat API] User authenticated:', user.id)
     const { messages, sessionId } = await req.json()
+    console.log('[Chat API] Messages:', messages.length, 'SessionId:', sessionId)
 
     // ========================================
     // コンテキスト注入: ユーザーの最新活動を取得
@@ -138,11 +142,15 @@ export async function POST(req: Request) {
     // ========================================
     // AI応答のストリーミング生成
     // ========================================
+    console.log('[Chat API] Starting AI generation with GPT-4o')
+    console.log('[Chat API] System prompt length:', systemPrompt.length)
+
     const result = streamText({
       model: openai('gpt-4o'),
       system: systemPrompt,
       messages,
       async onFinish({ text }) {
+        console.log('[Chat API] AI response finished, saving to DB')
         // AI応答を保存
         await supabase
           .from('chat_messages')
@@ -160,6 +168,7 @@ export async function POST(req: Request) {
       }
     })
 
+    console.log('[Chat API] Returning stream response')
     return result.toTextStreamResponse({
       headers: {
         'X-Session-Id': currentSessionId
@@ -167,8 +176,15 @@ export async function POST(req: Request) {
     })
 
   } catch (error) {
-    console.error('Chat API Error:', error)
-    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
+    console.error('[Chat API] Error:', error)
+    if (error instanceof Error) {
+      console.error('[Chat API] Error message:', error.message)
+      console.error('[Chat API] Error stack:', error.stack)
+    }
+    return new Response(JSON.stringify({
+      error: 'Internal Server Error',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     })

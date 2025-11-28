@@ -129,24 +129,14 @@ export default function AiChatPage() {
           const { done, value } = await reader.read()
           if (done) break
 
-          const chunk = decoder.decode(value)
-          const lines = chunk.split('\n')
+          const chunk = decoder.decode(value, { stream: true })
+          assistantMessage += chunk
 
-          for (const line of lines) {
-            if (line.startsWith('0:')) {
-              try {
-                const content = JSON.parse(line.slice(2))
-                assistantMessage += content
-                setMessages(prev => prev.map(msg =>
-                  msg.id === assistantMsg.id
-                    ? { ...msg, content: assistantMessage }
-                    : msg
-                ))
-              } catch (e) {
-                console.error('Parse error:', e)
-              }
-            }
-          }
+          setMessages(prev => prev.map(msg =>
+            msg.id === assistantMsg.id
+              ? { ...msg, content: assistantMessage }
+              : msg
+          ))
         }
       }
     } catch (error) {
