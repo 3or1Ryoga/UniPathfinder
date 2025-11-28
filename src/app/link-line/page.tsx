@@ -49,6 +49,7 @@ function LinkLineContent() {
 
             // Supabase AuthのLINE Providerを使用
             const { data, error } = await supabase.auth.signInWithOAuth({
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 provider: 'line' as any, // TypeScript型定義に'line'がないため型アサーション使用
                 options: {
                     // ネイティブアプリの場合はカスタムスキーム、Webの場合は通常のコールバック

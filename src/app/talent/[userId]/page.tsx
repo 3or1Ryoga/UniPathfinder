@@ -1,9 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import { notFound } from 'next/navigation'
-import { Tables } from '@/app/database.types'
 import MainLayout from '@/components/layout/MainLayout'
-
-type Profile = Tables<'profiles'>
 
 interface GithubDailyStat {
   id: string
