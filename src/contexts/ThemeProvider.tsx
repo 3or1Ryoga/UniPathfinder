@@ -29,8 +29,9 @@ export default function ThemeProvider({
     console.log('[ThemeProvider] changer called with theme:', theme)
     setTheme(theme)
 
-    // Cookieに保存
+    // Cookieに保存（path: '/'を追加してサイト全体で利用可能にする）
     Cookies.set('theme', theme, {
+      path: '/',
       sameSite: 'lax',
       expires: 365 // 1年間有効
     })
