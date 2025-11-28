@@ -138,8 +138,9 @@ export async function GET(request: NextRequest) {
 
         console.log('LINE info saved successfully for user:', userId)
 
-        // 成功: クッキーをクリアして友だち追加ページにリダイレクト
-        const response = NextResponse.redirect(`${origin}/add-friend`)
+        // LINE友達追加ページに直接リダイレクト
+        // ユーザーはLINE公式アカウントを友達追加し、Botからオンボーディングリンクを受け取る
+        const response = NextResponse.redirect('https://line.me/R/ti/p/@409fwjcr')
 
         // クッキーを削除
         response.cookies.delete('line_oauth_state')

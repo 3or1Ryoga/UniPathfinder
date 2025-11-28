@@ -217,8 +217,22 @@ export async function GET(request: NextRequest) {
                     return NextResponse.redirect(`${origin}/link-line`)
                 }
 
-                // Existing user with LINE connection - redirect to home
-                console.log('Existing user with LINE connection, redirecting to /home')
+                // Existing user with LINE connection - check onboarding status
+                console.log('Existing user with LINE connection, checking onboarding status')
+
+                // オンボーディング完了状態を確認してリダイレクト先を決定
+                const { data: profileData } = await supabase
+                    .from('profiles')
+                    .select('onboarding_completed')
+                    .eq('id', userId)
+                    .single()
+
+                if (!profileData?.onboarding_completed) {
+                    console.log('Onboarding not completed, redirecting to /onboarding')
+                    return NextResponse.redirect(`${origin}/onboarding`)
+                }
+
+                console.log('Onboarding completed, redirecting to /home')
             }
 
             const redirectUrl = `${origin}${next.startsWith('/') ? next : `/${next}`}`

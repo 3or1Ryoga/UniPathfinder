@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, FormEvent, useContext } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import { calculateProfileCompletion } from '@/utils/profileCompletion'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -172,6 +172,7 @@ interface OnboardingData {
 
 export default function OnboardingPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { theme, changer } = useContext(ThemeContext)
   const [currentStep, setCurrentStep] = useState(1)
   const [direction, setDirection] = useState(1) // 1: 次へ, -1: 戻る
@@ -213,6 +214,28 @@ export default function OnboardingPage() {
     loadExistingProfile()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // LINE友達追加フラグの処理
+  useEffect(() => {
+    const lineFriendAdded = searchParams.get('line_friend_added')
+    if (lineFriendAdded === 'true') {
+      const updateLineFriendStatus = async () => {
+        const supabase = createClient()
+        const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+          await supabase
+            .from('profiles')
+            .update({
+              line_friend_added: true,
+              line_friend_added_at: new Date().toISOString()
+            })
+            .eq('id', user.id)
+          console.log('[Onboarding] LINE friend added flag updated')
+        }
+      }
+      updateLineFriendStatus()
+    }
+  }, [searchParams])
 
   useEffect(() => {
     console.log('[Onboarding] currentStep changed to:', currentStep, '/', totalSteps)
