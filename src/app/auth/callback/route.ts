@@ -209,6 +209,75 @@ export async function GET(request: NextRequest) {
                             console.log('Profile created with Google info:', { email: googleEmail, name: googleName })
                         }
                     }
+                } else if (provider === 'line') {
+                    // LINEから取得できる情報
+                    const lineUserId = data.user.user_metadata?.sub || null
+                    const lineName = data.user.user_metadata?.name || null
+                    const lineAvatarUrl = data.user.user_metadata?.picture || null
+
+                    console.log('LINE OAuth data:', { lineUserId, lineName, hasAvatar: !!lineAvatarUrl })
+
+                    // プロフィールが存在する場合、LINE情報で更新
+                    if (profile) {
+                        const updateData: Record<string, string | null> = {
+                            updated_at: new Date().toISOString()
+                        }
+
+                        // LINE情報を更新
+                        if (lineUserId) {
+                            updateData.line_user_id = lineUserId
+                        }
+                        if (lineName) {
+                            updateData.line_display_name = lineName
+                        }
+                        if (lineAvatarUrl) {
+                            updateData.line_avatar_url = lineAvatarUrl
+                        }
+
+                        // 名前がない場合のみLINE名を設定
+                        if (!profile.full_name && lineName) {
+                            updateData.full_name = lineName
+                        }
+
+                        // アバター画像がない場合のみLINE画像を設定
+                        if (!profile.avatar_url && lineAvatarUrl) {
+                            updateData.avatar_url = lineAvatarUrl
+                        }
+
+                        const { error: updateError } = await supabase
+                            .from('profiles')
+                            .update(updateData)
+                            .eq('id', userId)
+
+                        if (updateError) {
+                            console.error('Error updating LINE info:', updateError)
+                        } else {
+                            console.log('LINE info updated successfully:', { lineUserId, lineName })
+                        }
+                    } else {
+                        // プロフィールが存在しない場合は作成
+                        const { error: insertError } = await supabase
+                            .from('profiles')
+                            .insert({
+                                id: userId,
+                                line_user_id: lineUserId,
+                                line_display_name: lineName,
+                                line_avatar_url: lineAvatarUrl,
+                                full_name: lineName,
+                                avatar_url: lineAvatarUrl,
+                                updated_at: new Date().toISOString()
+                            })
+
+                        if (insertError) {
+                            console.error('Error creating profile with LINE info:', insertError)
+                        } else {
+                            console.log('Profile created with LINE info:', { lineUserId, lineName })
+                        }
+                    }
+
+                    // LINE認証の場合、友達追加ページにリダイレクト
+                    console.log('LINE authentication completed, redirecting to add-friend')
+                    return NextResponse.redirect('https://line.me/R/ti/p/@409fwjcr')
                 }
 
                 // Check if LINE is connected (共通処理)
