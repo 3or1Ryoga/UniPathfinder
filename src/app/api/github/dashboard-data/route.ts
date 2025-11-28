@@ -35,11 +35,26 @@ export async function GET() {
       .eq('id', session.user.id)
       .single()
 
+    // GitHubユーザー名がない場合は、空のダッシュボードデータを返す（Googleのみで認証したユーザー向け）
     if (!profile?.github_username) {
-      return NextResponse.json(
-        { error: 'GitHub username not found in profile. Please update your profile.' },
-        { status: 400 }
-      )
+      return NextResponse.json({
+        weeklySnapshot: {
+          currentWeekCommits: 0,
+          previousWeekCommits: 0,
+          todayCommits: 0,
+          previousWeekDailyAverage: 0,
+          streakDays: 0
+        },
+        growthChart: generateEmptyGrowthChart(),
+        milestones: {
+          totalCommits: 0,
+          badges: BADGE_DEFINITIONS.map(badge => ({ ...badge, achievedAt: null }))
+        }
+      }, {
+        headers: {
+          'Cache-Control': 'private, max-age=300',
+        }
+      })
     }
 
     // 3. キャッシュされた統計データを取得（過去90日分）
