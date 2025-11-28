@@ -300,8 +300,8 @@ export default function LandingPage() {
                 }}
               >
                 <Image
-                  src="/TechMight_SmartPhone.png"
-                  alt="TechMight アプリ画面"
+                  src="/gakusei_engineer_phone.png"
+                  alt="学生エンジニア.com アプリ画面"
                   width={1080}
                   height={1920}
                   className="w-full h-auto drop-shadow-2xl"
