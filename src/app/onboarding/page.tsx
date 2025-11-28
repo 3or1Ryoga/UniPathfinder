@@ -316,8 +316,8 @@ export default function OnboardingPage() {
       case 2:
         return !!(formData.experience_level && formData.experience_detail)
       case 3:
-        // Tech Stack & Career Values - 技術スタックとキャリア価値観は必須（キャリア価値観は1つか2つ）
-        return formData.tech_stack.length > 0 && formData.career_values.length > 0 && formData.career_values.length <= 2
+        // Tech Stack & Career Values - 技術スタックとキャリア価値観は必須（UIでは2つまでに制限、既存データで3つ以上でもOK）
+        return formData.tech_stack.length > 0 && formData.career_values.length > 0
       case 4:
         return formData.interest_areas.length > 0
       case 5:
