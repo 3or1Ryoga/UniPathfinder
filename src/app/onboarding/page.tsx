@@ -704,6 +704,10 @@ export default function OnboardingPage() {
                             key={value}
                             type="button"
                             onClick={() => {
+                              // 1つだけ選択されている状態で、そのボタンをクリックした場合は解除しない（最低1つは必須）
+                              if (isSelected && formData.career_values.length === 1) {
+                                return
+                              }
                               if (!isDisabled) {
                                 setFormData({
                                   ...formData,
