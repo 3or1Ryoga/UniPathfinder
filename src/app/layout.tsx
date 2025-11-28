@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import ThemeProvider from "@/contexts/ThemeProvider";
+import { cookies } from "next/headers";
+import { ThemeType, isThemeType } from "@/types/theme";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -74,13 +76,18 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Cookieからテーマの設定値を読み込む
+  const cookieStore = await cookies()
+  const nowSetTheme = cookieStore.get('theme')?.value
+  const theme = nowSetTheme && isThemeType(nowSetTheme) ? nowSetTheme : ThemeType.LIGHT
+
   return (
-    <html lang="ja" suppressHydrationWarning>
+    <html lang="ja">
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
@@ -94,13 +101,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-          storageKey="techmight-theme"
-        >
+        <ThemeProvider selectedTheme={theme}>
           {children}
         </ThemeProvider>
       </body>
