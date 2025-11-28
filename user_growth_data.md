@@ -29,7 +29,7 @@ file_changed
 
 code_highlights
 
-3. 実装コンポーネント仕様
+3. 実装コンポー
 Section 1: The "NOW" Card (現在地の定義)
 ファーストビューで「この人は今、何をしている何者か」を端的に表示する。
 
