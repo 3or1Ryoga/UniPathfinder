@@ -186,10 +186,10 @@ export default function MembersPage() {
     return (
       <>
         <Sidebar />
-        <div className="min-h-screen bg-gray-50 pt-16 flex items-center justify-center">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16 flex items-center justify-center">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
-            <p className="text-gray-600">読み込み中...</p>
+            <p className="text-gray-600 dark:text-gray-400">読み込み中...</p>
           </div>
         </div>
       </>
@@ -199,19 +199,19 @@ export default function MembersPage() {
   return (
     <>
       <Sidebar />
-      <div className="min-h-screen bg-gray-50 pt-16">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
           {/* ヘッダー */}
           <div className="mb-4 sm:mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">登録学生一覧</h1>
-            <p className="text-sm sm:text-base text-gray-600">プラットフォームに登録している学生エンジニアの一覧です</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">登録学生一覧</h1>
+            <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">プラットフォームに登録している学生エンジニアの一覧です</p>
           </div>
 
           {/* モバイル用フィルターボタン */}
           <div className="lg:hidden mb-4">
             <button
               onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-white rounded-lg shadow-md text-gray-700 font-semibold"
+              className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 rounded-lg shadow-md text-gray-700 dark:text-gray-300 font-semibold"
             >
               <span className="flex items-center gap-2">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -228,13 +228,13 @@ export default function MembersPage() {
           <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
             {/* フィルターサイドバー */}
             <aside className={`${isFilterOpen ? 'block' : 'hidden'} lg:block w-full lg:w-72 flex-shrink-0`}>
-              <div className="bg-white rounded-lg shadow-md p-4 sm:p-6 lg:sticky lg:top-24">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 sm:p-6 lg:sticky lg:top-24">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-900">フィルター</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 dark:text-white">フィルター</h2>
                   {(selectedTechStack.length > 0 || selectedRole || selectedGraduationYear || selectedInterest) && (
                     <button
                       onClick={clearFilters}
-                      className="text-sm text-blue-600 hover:text-blue-700"
+                      className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
                     >
                       クリア
                     </button>
@@ -243,17 +243,17 @@ export default function MembersPage() {
 
                 {/* 技術スタック */}
                 <div className="mb-6">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">技術スタック</h3>
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">技術スタック</h3>
                   <div className="space-y-1 max-h-48 overflow-y-auto">
                     {allTechStacks.map(tech => (
-                      <label key={tech} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                      <label key={tech} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 p-1 rounded">
                         <input
                           type="checkbox"
                           checked={selectedTechStack.includes(tech)}
                           onChange={() => toggleTechStack(tech)}
-                          className="w-4 h-4 text-blue-600 rounded"
+                          className="w-4 h-4 text-blue-600 dark:text-blue-400 rounded"
                         />
-                        <span className="text-sm text-gray-700">{tech}</span>
+                        <span className="text-sm text-gray-700 dark:text-gray-300">{tech}</span>
                       </label>
                     ))}
                   </div>
@@ -261,11 +261,11 @@ export default function MembersPage() {
 
                 {/* 役割 */}
                 <div className="mb-6">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">役割</h3>
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">役割</h3>
                   <select
                     value={selectedRole}
                     onChange={(e) => setSelectedRole(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-700 dark:text-white"
                   >
                     <option value="">すべて</option>
                     {allRoles.map(role => (
@@ -276,11 +276,11 @@ export default function MembersPage() {
 
                 {/* 卒業年度 */}
                 <div className="mb-6">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">卒業年度</h3>
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">卒業年度</h3>
                   <select
                     value={selectedGraduationYear}
                     onChange={(e) => setSelectedGraduationYear(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-700 dark:text-white"
                   >
                     <option value="">すべて</option>
                     {allGraduationYears.map(year => (
@@ -291,11 +291,11 @@ export default function MembersPage() {
 
                 {/* 興味のある分野 */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">興味のある分野</h3>
+                  <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">興味のある分野</h3>
                   <select
                     value={selectedInterest}
                     onChange={(e) => setSelectedInterest(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-sm dark:bg-gray-700 dark:text-white"
                   >
                     <option value="">すべて</option>
                     {allInterests.map(interest => (
@@ -308,7 +308,7 @@ export default function MembersPage() {
 
             {/* 学生リスト */}
             <main className="flex-1 min-w-0">
-              <div className="mb-4 text-sm sm:text-base text-gray-600">
+              <div className="mb-4 text-sm sm:text-base text-gray-600 dark:text-gray-400">
                 {filteredMembers.length}名の学生が見つかりました
               </div>
 
@@ -323,7 +323,7 @@ export default function MembersPage() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 sm:p-6"
+                      className="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 sm:p-6"
                     >
                       <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
                         {/* アバター */}
@@ -339,16 +339,16 @@ export default function MembersPage() {
                         <div className="flex-1 min-w-0">
                           {/* 名前と役割 */}
                           <div className="flex flex-wrap items-center gap-2 mb-3">
-                            <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
                               {member.full_name || '名前未設定'}
                             </h3>
                             {isCurrentUser && (
-                              <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded">
+                              <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs font-semibold rounded">
                                 あなた
                               </span>
                             )}
                             {!member.onboarding_completed && (
-                              <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs font-semibold rounded">
+                              <span className="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 text-xs font-semibold rounded">
                                 設定未完了
                               </span>
                             )}
@@ -360,7 +360,7 @@ export default function MembersPage() {
                           </div>
 
                           {/* 学校情報 */}
-                          <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-3 text-xs sm:text-sm text-gray-600">
+                          <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-3 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                             {member.education && (
                               <div className="flex items-center gap-1">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -394,7 +394,7 @@ export default function MembersPage() {
                                 {member.tech_stack.map(tech => (
                                   <span
                                     key={tech}
-                                    className="px-2 py-0.5 sm:py-1 bg-gray-100 text-gray-700 text-xs font-medium rounded"
+                                    className="px-2 py-0.5 sm:py-1 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-xs font-medium rounded"
                                   >
                                     {tech}
                                   </span>
@@ -407,11 +407,11 @@ export default function MembersPage() {
                           {member.work_values && member.work_values.length > 0 && (
                             <div className="mb-2 sm:mb-3">
                               <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                                <span className="text-xs text-gray-500">重視すること:</span>
+                                <span className="text-xs text-gray-500 dark:text-gray-400">重視すること:</span>
                                 {member.work_values.map(value => (
                                   <span
                                     key={value}
-                                    className="px-2 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full"
+                                    className="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 text-xs font-medium rounded-full"
                                   >
                                     {value}
                                   </span>
@@ -423,19 +423,19 @@ export default function MembersPage() {
                           {/* 経験レベル */}
                           {member.skill_level && (
                             <div className="mb-2 sm:mb-3">
-                              <span className="text-xs text-gray-500">経験: </span>
-                              <span className="text-xs sm:text-sm text-gray-700 font-medium">{member.skill_level}</span>
+                              <span className="text-xs text-gray-500 dark:text-gray-400">経験: </span>
+                              <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 font-medium">{member.skill_level}</span>
                               {member.learning_goal && (
-                                <span className="text-xs sm:text-sm text-gray-600 ml-1 sm:ml-2 block sm:inline">- {member.learning_goal}</span>
+                                <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 ml-1 sm:ml-2 block sm:inline">- {member.learning_goal}</span>
                               )}
                             </div>
                           )}
 
                           {/* キャリアゴール */}
                           {member.career_goal && (
-                            <div className="mb-2 sm:mb-3 p-3 bg-blue-50 rounded-lg">
-                              <p className="text-xs sm:text-sm text-gray-700">
-                                <span className="font-semibold text-blue-700">実現したいこと: </span>
+                            <div className="mb-2 sm:mb-3 p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                              <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
+                                <span className="font-semibold text-blue-700 dark:text-blue-400">実現したいこと: </span>
                                 {member.career_goal}
                               </p>
                             </div>
@@ -444,15 +444,15 @@ export default function MembersPage() {
                           {/* 自己PR */}
                           {bioData.self_intro && (
                             <div className="mb-2 sm:mb-3">
-                              <p className="text-xs sm:text-sm text-gray-700">{bioData.self_intro}</p>
+                              <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">{bioData.self_intro}</p>
                             </div>
                           )}
 
                           {/* 興味のある分野 */}
                           {member.career_interests && member.career_interests.length > 0 && (
                             <div className="mb-2 sm:mb-3">
-                              <span className="text-xs text-gray-500">興味: </span>
-                              <span className="text-xs sm:text-sm text-gray-700">
+                              <span className="text-xs text-gray-500 dark:text-gray-400">興味: </span>
+                              <span className="text-xs sm:text-sm text-gray-700 dark:text-gray-300">
                                 {member.career_interests.join(', ')}
                               </span>
                             </div>
@@ -465,7 +465,7 @@ export default function MembersPage() {
                                 <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
                                   <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
                                 </svg>
-                                <span className="text-gray-700 font-medium">{member.awards}</span>
+                                <span className="text-gray-700 dark:text-gray-300 font-medium">{member.awards}</span>
                               </div>
                             </div>
                           )}
@@ -474,7 +474,7 @@ export default function MembersPage() {
                           {bioData.work_styles && bioData.work_styles.length > 0 && (
                             <div className="mb-2 sm:mb-3">
                               <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                                <span className="text-xs text-gray-500">勤務スタイル:</span>
+                                <span className="text-xs text-gray-500 dark:text-gray-400">勤務スタイル:</span>
                                 {bioData.work_styles.map((style: string) => (
                                   <span
                                     key={style}
@@ -494,7 +494,7 @@ export default function MembersPage() {
                                 href={`https://github.com/${member.github_username}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 hover:text-gray-900"
+                                className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-white"
                               >
                                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
                                   <path fillRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clipRule="evenodd" />
@@ -507,7 +507,7 @@ export default function MembersPage() {
                                 href={member.portfolio_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 hover:text-gray-900"
+                                className="flex items-center gap-1 text-xs sm:text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:text-white"
                               >
                                 <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
@@ -524,7 +524,7 @@ export default function MembersPage() {
 
                 {filteredMembers.length === 0 && (
                   <div className="text-center py-8 sm:py-12">
-                    <p className="text-sm sm:text-base text-gray-500">条件に一致する学生が見つかりませんでした</p>
+                    <p className="text-sm sm:text-base text-gray-500 dark:text-gray-400">条件に一致する学生が見つかりませんでした</p>
                   </div>
                 )}
               </div>

@@ -90,7 +90,7 @@ export default async function RootLayout({
   console.log('[RootLayout] Final theme:', theme)
 
   return (
-    <html lang="ja" className={theme === ThemeType.DARK ? 'dark' : ''}>
+    <html lang="ja" className={theme === ThemeType.DARK ? 'dark' : ''} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />

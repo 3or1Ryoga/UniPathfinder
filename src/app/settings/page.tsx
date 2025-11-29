@@ -147,7 +147,7 @@ export default function SettingsPage() {
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-4"></div>
-          <p className="text-gray-600">読み込み中...</p>
+          <p className="text-gray-600 dark:text-gray-400">読み込み中...</p>
         </div>
       </div>
     )
@@ -160,8 +160,8 @@ export default function SettingsPage() {
         {message && (
           <div className={`mb-6 p-4 rounded-lg ${
             message.type === 'success'
-              ? 'bg-green-50 border border-green-200 text-green-800'
-              : 'bg-red-50 border border-red-200 text-red-800'
+              ? 'bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 text-green-800 dark:text-green-200'
+              : 'bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 text-red-800 dark:text-red-200'
           }`}>
             {message.text}
           </div>
@@ -169,65 +169,65 @@ export default function SettingsPage() {
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* 基本情報セクション */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">基本情報</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">基本情報</h2>
             <div className="space-y-6">
               {/* フルネーム */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   フルネーム
                 </label>
                 <input
                   type="text"
                   value={profile.full_name || ''}
                   onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="山田 太郎"
                 />
               </div>
 
               {/* ユーザー名 */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   ユーザー名
                 </label>
                 <input
                   type="text"
                   value={profile.username || ''}
                   onChange={(e) => setProfile({ ...profile, username: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="yamada_taro"
                   minLength={3}
                 />
-                <p className="mt-2 text-sm text-gray-500">
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                   3文字以上の一意なユーザー名を設定してください
                 </p>
               </div>
 
               {/* 自己紹介 */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   自己紹介
                 </label>
                 <textarea
                   value={profile.bio || ''}
                   onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent resize-none dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="簡単な自己紹介を入力してください"
                 />
               </div>
 
               {/* 所在地 */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   所在地
                 </label>
                 <input
                   type="text"
                   value={profile.location || ''}
                   onChange={(e) => setProfile({ ...profile, location: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="東京都"
                 />
               </div>
@@ -235,117 +235,117 @@ export default function SettingsPage() {
           </div>
 
           {/* SNS・リンクセクション */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">SNS・リンク</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">SNS・リンク</h2>
             <div className="space-y-6">
               {/* ウェブサイト */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   ウェブサイト
                 </label>
                 <input
                   type="url"
                   value={profile.website || ''}
                   onChange={(e) => setProfile({ ...profile, website: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="https://example.com"
                 />
               </div>
 
               {/* ポートフォリオURL */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   ポートフォリオURL
                 </label>
                 <input
                   type="url"
                   value={profile.portfolio_url || ''}
                   onChange={(e) => setProfile({ ...profile, portfolio_url: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="https://portfolio.example.com"
                 />
               </div>
 
               {/* Twitter */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Twitterユーザー名
                 </label>
                 <input
                   type="text"
                   value={profile.twitter_username || ''}
                   onChange={(e) => setProfile({ ...profile, twitter_username: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="your_twitter"
                 />
               </div>
 
               {/* LinkedIn */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   LinkedIn URL
                 </label>
                 <input
                   type="url"
                   value={profile.linkedin_url || ''}
                   onChange={(e) => setProfile({ ...profile, linkedin_url: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="https://linkedin.com/in/your-profile"
                 />
               </div>
 
               {/* Instagram */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Instagramユーザー名
                 </label>
                 <input
                   type="text"
                   value={profile.instagram_username || ''}
                   onChange={(e) => setProfile({ ...profile, instagram_username: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="your_instagram"
                 />
               </div>
 
               {/* Discord */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Discordユーザー名
                 </label>
                 <input
                   type="text"
                   value={profile.discord_username || ''}
                   onChange={(e) => setProfile({ ...profile, discord_username: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="YourName#1234"
                 />
               </div>
 
               {/* YouTube */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   YouTube URL
                 </label>
                 <input
                   type="url"
                   value={profile.youtube_url || ''}
                   onChange={(e) => setProfile({ ...profile, youtube_url: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="https://youtube.com/@yourchannel"
                 />
               </div>
 
               {/* Facebook */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   Facebook URL
                 </label>
                 <input
                   type="url"
                   value={profile.facebook_url || ''}
                   onChange={(e) => setProfile({ ...profile, facebook_url: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="https://facebook.com/yourprofile"
                 />
               </div>
@@ -353,46 +353,46 @@ export default function SettingsPage() {
           </div>
 
           {/* スキル・キャリアセクション */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">スキル・キャリア</h2>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">スキル・キャリア</h2>
             <div className="space-y-6">
               {/* スキル */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   スキル
                 </label>
                 <textarea
                   value={profile.skills || ''}
                   onChange={(e) => setProfile({ ...profile, skills: e.target.value })}
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent resize-none dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="例：JavaScript, TypeScript, React, Node.js"
                 />
               </div>
 
               {/* 興味 */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   興味
                 </label>
                 <textarea
                   value={profile.interests || ''}
                   onChange={(e) => setProfile({ ...profile, interests: e.target.value })}
                   rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent resize-none dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="例：Web開発, モバイルアプリ, AI/ML"
                 />
               </div>
 
               {/* 興味のある職種 */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   興味のある職種
                 </label>
                 <select
                   value={profile.job_interest || ''}
                   onChange={(e) => setProfile({ ...profile, job_interest: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 >
                   <option value="">選択してください</option>
                   <option value="frontend">フロントエンド開発</option>
@@ -407,13 +407,13 @@ export default function SettingsPage() {
 
               {/* スキルレベル */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   スキルレベル
                 </label>
                 <select
                   value={profile.skill_level || ''}
                   onChange={(e) => setProfile({ ...profile, skill_level: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 >
                   <option value="">選択してください</option>
                   <option value="beginner">初心者</option>
@@ -424,14 +424,14 @@ export default function SettingsPage() {
 
               {/* 学習目標 */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                   学習目標
                 </label>
                 <textarea
                   value={profile.learning_goal || ''}
                   onChange={(e) => setProfile({ ...profile, learning_goal: e.target.value })}
                   rows={4}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent resize-none dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="例：Webアプリケーション開発のスキルを習得し、実務で活躍できるエンジニアを目指しています"
                 />
               </div>
@@ -439,7 +439,7 @@ export default function SettingsPage() {
           </div>
 
           {/* 保存ボタン */}
-          <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
             <button
               type="submit"
               disabled={saving}
@@ -451,9 +451,9 @@ export default function SettingsPage() {
         </form>
 
         {/* オンボーディング再表示セクション */}
-        <div className="mt-8 bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">オンボーディング</h2>
-          <p className="text-gray-600 mb-6">
+        <div className="mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">オンボーディング</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             サービスの使い方を再確認したい場合は、オンボーディング画面を表示できます。
           </p>
           <button
@@ -465,9 +465,9 @@ export default function SettingsPage() {
         </div>
 
         {/* ログアウトセクション */}
-        <div className="mt-8 bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">アカウント</h2>
-          <p className="text-gray-600 mb-6">
+        <div className="mt-8 bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-8 border border-gray-100 dark:border-gray-700">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">アカウント</h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
             ログアウトすると、再度ログインが必要になります。
           </p>
           <form action="/auth/signout" method="post">

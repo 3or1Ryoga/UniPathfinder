@@ -162,7 +162,7 @@ export default function AiChatPage() {
   return (
     <>
       <Sidebar />
-      <div className="flex h-screen pt-16 bg-gray-50 dark:bg-gray-900 relative">
+      <div className="flex h-screen pt-16 bg-gray-50 dark:bg-gray-900 dark:bg-gray-900 relative">
         {/* モバイル用サイドバートグルボタン */}
         <button
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -199,8 +199,8 @@ export default function AiChatPage() {
           z-40
         `}>
         {/* サイドバーヘッダー */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">会話の履歴</h2>
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 dark:border-gray-700">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white dark:text-gray-100">会話の履歴</h2>
         </div>
 
         {/* 新しい会話ボタン */}
@@ -223,7 +223,7 @@ export default function AiChatPage() {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
             </div>
           ) : sessions.length === 0 ? (
-            <div className="text-center py-8 text-gray-500 dark:text-gray-400 text-sm">
+            <div className="text-center py-8 text-gray-500 dark:text-gray-400 dark:text-gray-400 text-sm">
               まだ会話がありません
             </div>
           ) : (
@@ -239,10 +239,10 @@ export default function AiChatPage() {
                   onClick={() => loadSessionMessages(session.id)}
                 >
                   <div className="pr-8">
-                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white dark:text-gray-100 truncate">
                       {session.title}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-400 mt-1">
                       {new Date(session.updated_at).toLocaleDateString('ja-JP', {
                         month: 'short',
                         day: 'numeric',
@@ -278,10 +278,10 @@ export default function AiChatPage() {
           {messages.length === 0 ? (
             <div className="max-w-3xl mx-auto">
               <div className="text-center mb-8">
-                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 mb-4">
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white dark:text-gray-100 mb-4">
                   何でも聞いてみてください
                 </h2>
-                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400 dark:text-gray-400">
                   学習の相談、技術的な質問、キャリアの悩みなど、お気軽にどうぞ
                 </p>
               </div>
@@ -300,11 +300,11 @@ export default function AiChatPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     onClick={() => setInput(item.text)}
-                    className="p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl hover:border-purple-500 dark:hover:border-purple-400 hover:shadow-md transition-all text-left group"
+                    className="p-4 bg-white dark:bg-gray-800 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 dark:border-gray-700 rounded-xl hover:border-purple-500 dark:hover:border-purple-400 hover:shadow-md transition-all text-left group"
                   >
                     <div className="flex items-start gap-3">
                       <span className="text-2xl">{item.icon}</span>
-                      <span className="text-sm text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">
+                      <span className="text-sm text-gray-700 dark:text-gray-300 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400">
                         {item.text}
                       </span>
                     </div>
@@ -366,7 +366,7 @@ export default function AiChatPage() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                       </svg>
                     </div>
-                    <div className="px-4 py-3 rounded-2xl bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700">
+                    <div className="px-4 py-3 rounded-2xl bg-white dark:bg-gray-800 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 dark:border-gray-700">
                       <div className="flex gap-1">
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -383,14 +383,14 @@ export default function AiChatPage() {
         </div>
 
         {/* 入力エリア */}
-        <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 sm:px-6 py-3 sm:py-4">
+        <div className="border-t border-gray-200 dark:border-gray-700 dark:border-gray-700 bg-white dark:bg-gray-800 dark:bg-gray-800 px-3 sm:px-6 py-3 sm:py-4">
           <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
             <div className="relative">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="質問してみましょう..."
-                className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-11 sm:pr-12 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm sm:text-base text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
+                className="w-full px-3 sm:px-4 py-2 sm:py-3 pr-11 sm:pr-12 rounded-xl border border-gray-300 dark:border-gray-600 dark:border-gray-600 bg-white dark:bg-gray-800 dark:bg-gray-700 text-sm sm:text-base text-gray-900 dark:text-white dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 resize-none"
                 rows={2}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
@@ -410,7 +410,7 @@ export default function AiChatPage() {
               </button>
             </div>
 
-            <div className="hidden sm:flex items-center gap-4 mt-3 text-xs text-gray-500 dark:text-gray-400">
+            <div className="hidden sm:flex items-center gap-4 mt-3 text-xs text-gray-500 dark:text-gray-400 dark:text-gray-400">
               <div className="flex items-center gap-2">
                 <button type="button" className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

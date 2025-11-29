@@ -49,12 +49,30 @@ export default function ThemeProvider({
     }
   }, [])
 
-  // 初期表示時にselectedThemeを適用（サーバーから渡された値を信頼）
+  // 初期表示時にselectedThemeを適用
   useEffect(() => {
-    // サーバーサイドで既にHTMLにdarkクラスを設定しているため、
-    // クライアントサイドでは何もしなくてよい
-    // ただし、stateは同期させる必要がある
-    setTheme(selectedTheme)
+    console.log('[ThemeProvider] useEffect: Initial theme setup with selectedTheme:', selectedTheme)
+
+    // Cookieから最新の値を取得（クライアントサイドで変更された可能性があるため）
+    const cookieTheme = Cookies.get('theme')
+    console.log('[ThemeProvider] useEffect: Cookie theme:', cookieTheme)
+
+    // Cookieの値がある場合はそちらを優先、なければselectedThemeを使用
+    const finalTheme = (cookieTheme && (cookieTheme === ThemeType.DARK || cookieTheme === ThemeType.LIGHT))
+      ? cookieTheme as ThemeType
+      : selectedTheme
+
+    console.log('[ThemeProvider] useEffect: Final theme:', finalTheme)
+    setTheme(finalTheme)
+
+    // darkクラスを確実に適用
+    if (finalTheme === ThemeType.DARK) {
+      document.documentElement.classList.add('dark')
+      console.log('[ThemeProvider] useEffect: Added dark class to html')
+    } else {
+      document.documentElement.classList.remove('dark')
+      console.log('[ThemeProvider] useEffect: Removed dark class from html')
+    }
   }, [selectedTheme])
 
   return (

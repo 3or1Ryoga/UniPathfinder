@@ -80,18 +80,28 @@ export default function Sidebar() {
   ]
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
+    <header className="fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* ロゴ */}
           <div className="flex-shrink-0">
             <Link href="/home" className="cursor-pointer">
+              {/* ライトモード用ロゴ */}
               <Image
                 src="/gakusei_engineer_com.jpeg"
                 alt="学生エンジニア.com Logo"
                 width={240}
                 height={240}
-                className="h-[50px] w-auto"
+                className="h-[50px] w-auto block dark:hidden"
+                style={{ objectFit: 'contain' }}
+              />
+              {/* ダークモード用ロゴ */}
+              <Image
+                src="/gakusei_engineer_com_dark.jpeg"
+                alt="学生エンジニア.com Logo"
+                width={240}
+                height={240}
+                className="h-[50px] w-auto hidden dark:block"
                 style={{ objectFit: 'contain' }}
               />
             </Link>
@@ -107,8 +117,8 @@ export default function Sidebar() {
                   href={item.href}
                   className={`flex flex-col items-center justify-center px-3 py-2 rounded-lg transition-all ${
                     isActive
-                      ? 'text-blue-600 bg-blue-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30'
+                      : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700'
                   }`}
                 >
                   {item.icon}

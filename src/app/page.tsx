@@ -1,33 +1,20 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useContext } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { createClient } from '@/utils/supabase/client'
 import { Browser } from '@capacitor/browser'
 import { Capacitor } from '@capacitor/core'
+import { ThemeContext } from '@/contexts/ThemeProvider'
+import { ThemeType } from '@/types/theme'
 
 export default function LandingPage() {
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [darkMode, setDarkMode] = useState(false)
-
-  // システム設定からダークモードを検知
-  useEffect(() => {
-    const systemDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
-    setDarkMode(systemDarkMode)
-  }, [])
-
-  // ダークモードの切り替え
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [darkMode])
+  const { theme, changer } = useContext(ThemeContext)
 
   const handleGitHubLogin = async () => {
     try {
@@ -153,12 +140,21 @@ export default function LandingPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
+              {/* ライトモード用ロゴ */}
               <Image
                 src="/gakusei_engineer_com.jpeg"
                 alt="学生エンジニア.com Logo"
                 width={180}
                 height={180}
-                className="h-12 w-auto"
+                className="h-12 w-auto block dark:hidden"
+              />
+              {/* ダークモード用ロゴ */}
+              <Image
+                src="/gakusei_engineer_com_dark.jpeg"
+                alt="学生エンジニア.com Logo"
+                width={180}
+                height={180}
+                className="h-12 w-auto hidden dark:block"
               />
             </motion.div>
 
@@ -178,16 +174,16 @@ export default function LandingPage() {
 
               {/* ダークモード切り替えボタン */}
               <button
-                onClick={() => setDarkMode(!darkMode)}
+                onClick={() => changer(theme === ThemeType.DARK ? ThemeType.LIGHT : ThemeType.DARK)}
                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                 aria-label="ダークモード切り替え"
               >
-                {darkMode ? (
+                {theme === ThemeType.DARK ? (
                   <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
                   </svg>
                 ) : (
-                  <svg className="w-5 h-5 text-gray-700" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-gray-700 dark:text-gray-300" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
                   </svg>
                 )}
@@ -233,7 +229,7 @@ export default function LandingPage() {
       </header>
 
       {/* ヒーローセクション */}
-      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 overflow-hidden bg-white dark:bg-gray-950">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:grid lg:grid-cols-2 gap-12 items-center">
             {/* 左側：テキストコンテンツ（PCのみ表示） */}
@@ -244,12 +240,21 @@ export default function LandingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.1 }}
               >
+                {/* ライトモード用ロゴ */}
                 <Image
                   src="/gakusei_engineer_com_trans.png"
                   alt="学生エンジニア.com Logo"
                   width={400}
                   height={400}
-                  className="w-auto h-48 object-contain"
+                  className="w-auto h-48 object-contain block dark:hidden"
+                />
+                {/* ダークモード用ロゴ */}
+                <Image
+                  src="/gakusei_engineer_com_dark_trans.png"
+                  alt="学生エンジニア.com Logo"
+                  width={400}
+                  height={400}
+                  className="w-auto h-48 object-contain hidden dark:block"
                 />
               </motion.div>
 
@@ -477,12 +482,21 @@ export default function LandingPage() {
 
               {/* ロゴ画像 */}
               <div className="mb-6">
+                {/* ライトモード用ロゴ */}
                 <Image
                   src="/gakusei_engineer_com_trans.png"
                   alt="学生エンジニア.com Logo"
                   width={400}
                   height={400}
-                  className="w-auto h-36 object-contain"
+                  className="w-auto h-36 object-contain block dark:hidden"
+                />
+                {/* ダークモード用ロゴ */}
+                <Image
+                  src="/gakusei_engineer_com_dark_trans.png"
+                  alt="学生エンジニア.com Logo"
+                  width={400}
+                  height={400}
+                  className="w-auto h-36 object-contain hidden dark:block"
                 />
               </div>
 
@@ -511,7 +525,7 @@ export default function LandingPage() {
       </section>
 
       {/* ストーリーテリングセクション */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
+      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-950">
         <div className="max-w-7xl mx-auto">
           {/* 課題提起 */}
           <motion.div
@@ -562,7 +576,7 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-20"
           >
-            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-gray-200 mb-6">
               TechMightなら、納得のいくキャリアが見つかる
             </h2>
             {/* <div className="bg-gradient-to-r from-blue-600 to-cyan-500 rounded-3xl p-12 text-white">
@@ -581,24 +595,24 @@ export default function LandingPage() {
           >
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-6">
-                  <span className="text-blue-600">Point:</span> AIが「未来のポテンシャル」を引き出すお手伝い
+                <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-200 mb-6">
+                  <span className="text-blue-600 dark:text-cyan-400">Point:</span> AIが「未来のポテンシャル」を引き出すお手伝い
                 </h3>
-                <p className="text-xl text-gray-700 leading-relaxed">
+                <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
                   AIからの質問に答えるだけで、採用担当者に響く
-                  <span className="font-bold text-blue-600">「技術スタック」</span>と
-                  <span className="font-bold text-cyan-500">「キャリアビジョン」</span>
+                  <span className="font-bold text-blue-600 dark:text-cyan-400">「技術スタック」</span>と
+                  <span className="font-bold text-cyan-500 dark:text-blue-400">「キャリアビジョン」</span>
                   が完成！🗺
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-purple-100 to-pink-100 rounded-3xl p-12 h-80 flex items-center justify-center">
+              <div className="bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 rounded-3xl p-12 h-80 flex items-center justify-center">
                 <div className="text-center">
-                  <div className="w-24 h-24 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full mx-auto mb-6 flex items-center justify-center">
+                  <div className="w-24 h-24 bg-gradient-to-r from-purple-500 to-pink-500 dark:from-purple-400 dark:to-pink-400 rounded-full mx-auto mb-6 flex items-center justify-center">
                     <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
                   </div>
-                  <p className="text-lg font-semibold text-gray-800">AI Based Matching</p>
+                  <p className="text-lg font-semibold text-gray-800 dark:text-gray-200">AI Based Matching</p>
                 </div>
               </div>
             </div>
@@ -614,7 +628,7 @@ export default function LandingPage() {
           >
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div className="order-2 lg:order-1">
-                <div className="bg-gradient-to-br from-blue-100 to-cyan-100 rounded-3xl p-12 h-80 flex items-center justify-center">
+                <div className="bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 rounded-3xl p-12 h-80 flex items-center justify-center">
                   <div className="w-full h-full flex flex-col justify-center">
                     <div className="space-y-4">
                       {[60, 80, 90, 70].map((width, index) => (
@@ -624,7 +638,7 @@ export default function LandingPage() {
                           whileInView={{ width: `${width}%` }}
                           viewport={{ once: true }}
                           transition={{ duration: 1, delay: index * 0.2 }}
-                          className="h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full"
+                          className="h-8 bg-gradient-to-r from-blue-500 to-cyan-500 dark:from-blue-400 dark:to-cyan-400 rounded-full"
                         />
                       ))}
                     </div>
@@ -632,14 +646,14 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="order-1 lg:order-2">
-                <h3 className="text-3xl font-bold text-gray-900 mb-6">
+                <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-200 mb-6">
                   GitHub連携で「あなたの成長」を可視化
                 </h3>
-                <p className="text-xl text-gray-700 leading-relaxed">
+                <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
                   GitHubのコミット履歴や利用言語から生成された
-                  <span className="font-bold text-blue-600">スキル成長グラフ</span>
+                  <span className="font-bold text-blue-600 dark:text-cyan-400">スキル成長グラフ</span>
                   が描画されるアニメーションを表示。学歴や過去の活動経験だけじゃなく、あなたの
-                  <span className="font-bold text-cyan-500">「成長の軌跡」</span>
+                  <span className="font-bold text-cyan-500 dark:text-blue-400">「成長の軌跡」</span>
                   が企業に伝わる！🚀
                 </p>
               </div>
@@ -656,16 +670,16 @@ export default function LandingPage() {
           >
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <h3 className="text-3xl font-bold text-gray-900 mb-6">
+                <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-200 mb-6">
                   あなたのビジョンに共感してもらえる
                 </h3>
-                <p className="text-xl text-gray-700 leading-relaxed">
+                <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed">
                   企業から直接スカウトが来て、
-                  <span className="font-bold text-green-600">現役エンジニアによるメンタリング</span>
+                  <span className="font-bold text-green-600 dark:text-green-400">現役エンジニアによるメンタリング</span>
                   の機会も得られる✨
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-green-100 to-emerald-100 rounded-3xl p-8">
+              <div className="bg-gradient-to-br from-green-100 to-emerald-100 dark:from-green-900/30 dark:to-emerald-900/30 rounded-3xl p-8">
                 <div className="space-y-4">
                   {[
                     { company: 'Mega Venture', message: 'あなたの技術に興味があります' },
@@ -678,10 +692,10 @@ export default function LandingPage() {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.6, delay: index * 0.2 }}
-                      className="bg-white rounded-xl p-4 shadow-md"
+                      className="bg-white dark:bg-gray-800 rounded-xl p-4 shadow-md"
                     >
-                      <p className="font-semibold text-gray-900 text-sm">{item.company}</p>
-                      <p className="text-gray-600 text-xs mt-1">{item.message}</p>
+                      <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm">{item.company}</p>
+                      <p className="text-gray-600 dark:text-gray-400 text-xs mt-1">{item.message}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -692,7 +706,7 @@ export default function LandingPage() {
       </section>
 
       {/* 信頼性・実績セクション */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto">
           {/* 提携企業ロゴ */}
           <motion.div
@@ -702,10 +716,10 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-20"
           >
-            <h3 className="text-2xl font-bold text-gray-900 mb-8">提携企業</h3>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-200 mb-8">提携企業</h3>
             <div className="flex flex-wrap justify-center items-center gap-12 opacity-50">
               {['TechCorp', 'Startup', 'WebDev', 'AILab', 'CloudTech'].map((company, index) => (
-                <div key={index} className="text-2xl font-bold text-gray-600">
+                <div key={index} className="text-2xl font-bold text-gray-600 dark:text-gray-400">
                   {company}
                 </div>
               ))}
@@ -719,7 +733,7 @@ export default function LandingPage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h3 className="text-3xl font-bold text-gray-900 text-center mb-12">ユーザーの声</h3>
+            <h3 className="text-3xl font-bold text-gray-900 dark:text-gray-200 text-center mb-12">ユーザーの声</h3>
             <div className="grid md:grid-cols-3 gap-8">
               {[
                 {
@@ -744,18 +758,18 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.2 }}
-                  className="bg-white rounded-2xl p-8 shadow-lg"
+                  className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg"
                 >
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">
+                    <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 dark:from-cyan-400 dark:to-blue-400 rounded-full flex items-center justify-center text-white font-bold">
                       {testimonial.name.charAt(0)}
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900">{testimonial.name}</p>
-                      <p className="text-sm text-gray-600">{testimonial.role}</p>
+                      <p className="font-semibold text-gray-900 dark:text-gray-100">{testimonial.name}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{testimonial.role}</p>
                     </div>
                   </div>
-                  <p className="text-gray-700 leading-relaxed">{testimonial.comment}</p>
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{testimonial.comment}</p>
                 </motion.div>
               ))}
             </div>
@@ -764,13 +778,13 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+      <section id="faq" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-800">
         <div className="max-w-4xl mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-4xl font-bold text-center text-gray-900 mb-12"
+            className="text-4xl font-bold text-center text-gray-900 dark:text-gray-200 mb-12"
           >
             よくある質問
           </motion.h2>
@@ -856,12 +870,21 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8 mb-8">
             <div>
+              {/* ライトモード用ロゴ */}
               <Image
                 src="/gakusei_engineer_com.jpeg"
                 alt="学生エンジニア.com Logo"
                 width={180}
                 height={180}
-                className="h-8 w-auto mb-4"
+                className="h-8 w-auto mb-4 block dark:hidden"
+              />
+              {/* ダークモード用ロゴ */}
+              <Image
+                src="/gakusei_engineer_com_dark.jpeg"
+                alt="学生エンジニア.com Logo"
+                width={180}
+                height={180}
+                className="h-8 w-auto mb-4 hidden dark:block"
               />
               <p className="text-gray-400">
                 エンジニアを目指す・成長したい20代のためのポテンシャル就活/キャリア支援サービス。バイト・インターン・イベント探しにも対応。
