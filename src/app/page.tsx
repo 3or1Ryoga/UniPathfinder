@@ -273,7 +273,7 @@ export default function LandingPage() {
                   のための
                 </span>
                 <span className="block whitespace-nowrap text-2xl sm:text-2xl lg:text-3xl">
-                  ポテンシャル就活/キャリア支援サービス
+                  エンジニアSNS/検索サービス
                 </span>
               </motion.h1>
 
@@ -283,7 +283,7 @@ export default function LandingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
               >
-                バイト・インターン・イベント探しにも対応
+                バイト・インターン・イベント探しにも対応中
               </motion.p>
 
               <motion.div
@@ -396,7 +396,7 @@ export default function LandingPage() {
                   />
                   <div>
                     <p className="font-semibold text-xs sm:text-sm text-gray-900 dark:text-gray-200">学生エンジニア.com</p>
-                    <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-300 mt-1">あなたの学習意欲に目が止まりました。弊社のミッションとも通じる部分も多いので、ぜひお話ししたいです！！</p>
+                    <p className="text-[10px] sm:text-xs text-gray-600 dark:text-gray-300 mt-1">あなたの学習意欲に目が止まりました。<br />ぜひお話ししたいです！！</p>
                   </div>
                 </div>
               </motion.div>
@@ -524,8 +524,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ストーリーテリングセクション */}
-      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-950">
+      {/* ストーリーテリングセクション - コメントアウト */}
+      {false && <section id="features" className="py-20 px-4 sm:px-6 lg:px-8 bg-white dark:bg-gray-950">
         <div className="max-w-7xl mx-auto">
           {/* 課題提起 */}
           <motion.div
@@ -703,7 +703,7 @@ export default function LandingPage() {
             </div>
           </motion.div>
         </div>
-      </section>
+      </section>}
 
       {/* 信頼性・実績セクション */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-gray-900">
@@ -887,7 +887,7 @@ export default function LandingPage() {
                 className="h-8 w-auto mb-4 hidden dark:block"
               />
               <p className="text-gray-400">
-                エンジニアを目指す・成長したい20代のためのポテンシャル就活/キャリア支援サービス。バイト・インターン・イベント探しにも対応。
+                エンジニアを目指す・成長したい20代のためのSNS/検索サービス。バイト・インターン・イベント探しにも対応。
               </p>
             </div>
             <div>
