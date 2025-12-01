@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
     const requestUrl = new URL(request.url)
     const code = requestUrl.searchParams.get('code')
     const origin = requestUrl.origin
-    const next = requestUrl.searchParams.get('next') ?? '/home'
+    const next = requestUrl.searchParams.get('next') ?? '/members'
 
     // Check for Supabase error parameters
     const error = requestUrl.searchParams.get('error')
@@ -295,7 +295,7 @@ export async function GET(request: NextRequest) {
                 }
 
                 // 既存ユーザー（オンボーディング完了済み）
-                console.log('Onboarding completed, redirecting to /home')
+                console.log('Onboarding completed, redirecting to /members')
             }
 
             const redirectUrl = `${origin}${next.startsWith('/') ? next : `/${next}`}`

@@ -331,7 +331,8 @@ export default function MembersPage() {
                           <img
                             src={member.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.full_name || 'User')}&size=96&background=3B82F6&color=fff`}
                             alt={member.full_name}
-                            className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-blue-100"
+                            onClick={() => router.push(`/home?user=${member.id}`)}
+                            className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-blue-100 cursor-pointer hover:border-blue-400 hover:scale-105 transition-all duration-200"
                           />
                         </div>
 
@@ -339,7 +340,10 @@ export default function MembersPage() {
                         <div className="flex-1 min-w-0">
                           {/* 名前と役割 */}
                           <div className="flex flex-wrap items-center gap-2 mb-3">
-                            <h3 className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white">
+                            <h3
+                              onClick={() => router.push(`/home?user=${member.id}`)}
+                              className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white cursor-pointer hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200"
+                            >
                               {member.full_name || '名前未設定'}
                             </h3>
                             {isCurrentUser && (
