@@ -158,6 +158,7 @@ interface OnboardingData {
   receive_emails: boolean
 
   // ステップ6: 働き方の希望
+  work_status: 'considering' | 'undecided' | ''  // 検討中 or 未定
   availability_start: string
   weekly_hours: string
   work_styles: string[]
@@ -198,6 +199,7 @@ export default function OnboardingPage() {
     school_name: '',
     graduation_year: null,
     receive_emails: true,
+    work_status: '',
     availability_start: '',
     weekly_hours: '',
     work_styles: [],
@@ -337,6 +339,11 @@ export default function OnboardingPage() {
       case 5:
         return !!(formData.country && formData.occupation && formData.school_name && formData.graduation_year)
       case 6:
+        // work_statusが選択されていない場合は無効
+        if (!formData.work_status) return false
+        // 「未定」の場合は詳細項目は任意なのでOK
+        if (formData.work_status === 'undecided') return true
+        // 「検討中」の場合は詳細項目が必須
         return !!(formData.availability_start && formData.weekly_hours && formData.work_styles.length > 0)
       case 7:
         return true // 確認ページ - 常にtrue
@@ -970,9 +977,58 @@ export default function OnboardingPage() {
                     </h2>
                   </div>
 
+                  {/* 検討中 or 未定 の選択 */}
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      いつから働けますか？<span className="text-red-500">*</span>
+                      現在の就職活動状況<span className="text-red-500">*</span>
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <motion.button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, work_status: 'considering' })}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`px-6 py-4 rounded-xl font-medium transition-all ${
+                          formData.work_status === 'considering'
+                            ? 'bg-blue-600 text-white shadow-lg'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        }`}
+                      >
+                        検討中
+                      </motion.button>
+                      <motion.button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, work_status: 'undecided' })}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`px-6 py-4 rounded-xl font-medium transition-all ${
+                          formData.work_status === 'undecided'
+                            ? 'bg-blue-600 text-white shadow-lg'
+                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                        }`}
+                      >
+                        未定
+                      </motion.button>
+                    </div>
+                  </div>
+
+                  {/* 詳細質問 - 検討中の場合は必須、未定の場合は任意 */}
+                  {formData.work_status && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-6"
+                    >
+                      {formData.work_status === 'undecided' && (
+                        <p className="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                          以下の項目は任意です。決まっている範囲で入力してください。
+                        </p>
+                      )}
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                      いつから働けますか？{formData.work_status === 'considering' && <span className="text-red-500">*</span>}
                     </label>
                     <div className="space-y-2">
                       {AVAILABILITY_OPTIONS.map(option => (
@@ -996,7 +1052,7 @@ export default function OnboardingPage() {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      週何時間働けますか？<span className="text-red-500">*</span>
+                      週何時間働けますか？{formData.work_status === 'considering' && <span className="text-red-500">*</span>}
                     </label>
                     <div className="space-y-2">
                       {WEEKLY_HOURS_OPTIONS.map(option => (
@@ -1020,7 +1076,7 @@ export default function OnboardingPage() {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      勤務スタイル<span className="text-red-500">*</span>（複数選択可）
+                      勤務スタイル{formData.work_status === 'considering' && <span className="text-red-500">*</span>}（複数選択可）
                     </label>
                     <div className="space-y-2">
                       {WORK_STYLES.map(style => (
@@ -1107,6 +1163,9 @@ export default function OnboardingPage() {
                       ))}
                     </div>
                   </div>
+
+                    </motion.div>
+                  )}
                 </div>
               )}
 

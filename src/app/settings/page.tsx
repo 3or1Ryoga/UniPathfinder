@@ -5,6 +5,16 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import MainLayout from '@/components/layout/MainLayout'
 
+interface BioData {
+  self_intro?: string
+  birth_year?: number
+  birth_month?: number
+  availability_start?: string
+  weekly_hours?: string
+  hourly_rate?: string
+  work_styles?: string[]
+}
+
 interface Profile {
   // 基本情報
   full_name: string | null
@@ -55,6 +65,8 @@ export default function SettingsPage() {
     learning_goal: ''
   })
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null)
+  const [selfIntro, setSelfIntro] = useState('')
+  const [bioData, setBioData] = useState<BioData | null>(null)
 
   useEffect(() => {
     loadProfile()
@@ -81,6 +93,19 @@ export default function SettingsPage() {
 
       if (data) {
         setProfile(data)
+
+        // bioフィールドがJSON形式の場合、パースしてself_introを取り出す
+        if (data.bio) {
+          try {
+            const parsedBio = JSON.parse(data.bio) as BioData
+            setBioData(parsedBio)
+            setSelfIntro(parsedBio.self_intro || '')
+          } catch {
+            // JSONでない場合はそのままself_introとして扱う
+            setSelfIntro(data.bio)
+            setBioData(null)
+          }
+        }
       }
     } catch (error) {
       console.error('Error loading profile:', error)
@@ -104,13 +129,26 @@ export default function SettingsPage() {
         return
       }
 
+      // bioフィールドを適切に更新（JSON形式を維持）
+      let updatedBio: string
+      if (bioData) {
+        // 既存のJSONデータを維持しながらself_introのみ更新
+        updatedBio = JSON.stringify({
+          ...bioData,
+          self_intro: selfIntro
+        })
+      } else {
+        // JSONデータがない場合はそのままself_introを保存
+        updatedBio = selfIntro
+      }
+
       const { error } = await supabase
         .from('profiles')
         .update({
           // 基本情報
           full_name: profile.full_name,
           username: profile.username,
-          bio: profile.bio,
+          bio: updatedBio,
           location: profile.location,
           // SNS・リンク
           website: profile.website,
@@ -210,8 +248,8 @@ export default function SettingsPage() {
                   自己紹介
                 </label>
                 <textarea
-                  value={profile.bio || ''}
-                  onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
+                  value={selfIntro}
+                  onChange={(e) => setSelfIntro(e.target.value)}
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent resize-none dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                   placeholder="簡単な自己紹介を入力してください"
