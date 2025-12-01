@@ -305,6 +305,7 @@ export default function OnboardingPage() {
           school_name: data.education || '',
           graduation_year: data.graduation_year || null,
           receive_emails: true,
+          work_status: bioData.availability_start ? 'considering' : '',
           availability_start: bioData.availability_start || '',
           weekly_hours: bioData.weekly_hours || '',
           work_styles: Array.isArray(bioData.work_styles) ? bioData.work_styles : [],
