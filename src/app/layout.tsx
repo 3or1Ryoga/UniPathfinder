@@ -21,25 +21,47 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "学生エンジニア.com",
-  description: "学生エンジニアの成長を追いながら、就職活動に活かせる実績を自動で蓄積します。",
-  keywords: ["GitHub", "活動可視化", "キャリア支援", "学生エンジニア", "就活", "成長トラッキング", "コミット記録", "技術スキル", "ポートフォリオ"],
-  authors: [{ name: "TechMight Team" }],
-  creator: "TechMight",
-  publisher: "TechMight",
+  title: {
+    default: "学生エンジニア.com | エンジニアを目指す学生のためのキャリア支援・SNSサービス",
+    template: "%s | 学生エンジニア.com",
+  },
+  description: "学生エンジニア.comは、エンジニアを目指す学生のためのキャリア支援・SNSサービスです。GitHub連携で技術力を自動可視化し、AI診断で強みを発見。あなたに合った企業からのスカウトやインターン情報が届きます。完全無料でポートフォリオ作成から就活までサポート。",
+  keywords: [
+    "学生エンジニア",
+    "エンジニア就活",
+    "新卒エンジニア",
+    "プログラミング",
+    "GitHub",
+    "ポートフォリオ",
+    "インターン",
+    "エンジニア採用",
+    "キャリア支援",
+    "技術力可視化",
+    "AI診断",
+    "スカウト",
+    "IT就活",
+    "エンジニア転職",
+    "プログラマー",
+  ],
+  authors: [{ name: "学生エンジニア.com", url: "https://gakusei-engineer.com" }],
+  creator: "学生エンジニア.com",
+  publisher: "学生エンジニア.com",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://techmight.com'),
+  metadataBase: new URL('https://gakusei-engineer.com'),
   alternates: {
     canonical: '/',
+    languages: {
+      'ja': '/',
+    },
   },
   openGraph: {
-    title: "学生エンジニア.com",
-    description: "学生エンジニアの成長を追いながら、就職活動に活かせる実績を自動で蓄積します。",
-    url: 'https://techmight.com',
+    title: "学生エンジニア.com | エンジニアを目指す学生のためのキャリア支援・SNSサービス",
+    description: "学生エンジニア.comは、エンジニアを目指す学生のためのキャリア支援・SNSサービスです。GitHub連携で技術力を自動可視化し、AI診断で強みを発見。完全無料でポートフォリオ作成から就活までサポート。",
+    url: 'https://gakusei-engineer.com',
     siteName: '学生エンジニア.com',
     locale: 'ja_JP',
     type: 'website',
@@ -48,15 +70,16 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: '学生エンジニア.com',
+        alt: '学生エンジニア.com - エンジニアを目指す学生のためのキャリア支援・SNSサービス',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: "学生エンジニア.com",
-    description: "学生エンジニアの成長を追いながら、就職活動に活かせる実績を自動で蓄積します。",
+    title: "学生エンジニア.com | エンジニアを目指す学生のキャリア支援",
+    description: "GitHub連携で技術力を自動可視化。AI診断で強みを発見し、あなたに合った企業からスカウトが届く。完全無料の学生エンジニア向けキャリア支援サービス。",
     images: ['/og-image.png'],
+    creator: '@gakusei_eng',
   },
   robots: {
     index: true,
@@ -71,9 +94,8 @@ export const metadata: Metadata = {
   },
   verification: {
     google: 'your-google-verification-code',
-    yandex: 'your-yandex-verification-code',
-    yahoo: 'your-yahoo-verification-code',
   },
+  category: 'technology',
 };
 
 export default async function RootLayout({
@@ -104,6 +126,69 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
       >
+        {/* JSON-LD 構造化データ */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "WebSite",
+                  "@id": "https://gakusei-engineer.com/#website",
+                  "name": "学生エンジニア.com",
+                  "url": "https://gakusei-engineer.com",
+                  "description": "エンジニアを目指す学生のためのキャリア支援・SNSサービス",
+                  "inLanguage": "ja",
+                  "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": {
+                      "@type": "EntryPoint",
+                      "urlTemplate": "https://gakusei-engineer.com/search?q={search_term_string}"
+                    },
+                    "query-input": "required name=search_term_string"
+                  }
+                },
+                {
+                  "@type": "Organization",
+                  "@id": "https://gakusei-engineer.com/#organization",
+                  "name": "学生エンジニア.com",
+                  "url": "https://gakusei-engineer.com",
+                  "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://gakusei-engineer.com/gakusei_engineer_.com_logo.png",
+                    "width": 512,
+                    "height": 512
+                  },
+                  "sameAs": []
+                },
+                {
+                  "@type": "WebApplication",
+                  "name": "学生エンジニア.com",
+                  "url": "https://gakusei-engineer.com",
+                  "applicationCategory": "BusinessApplication",
+                  "operatingSystem": "Web Browser",
+                  "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "JPY"
+                  },
+                  "featureList": [
+                    "GitHub連携による技術力の自動可視化",
+                    "AI診断による強み発見",
+                    "企業からのスカウト機能",
+                    "インターン情報の提供",
+                    "ポートフォリオ作成支援"
+                  ],
+                  "audience": {
+                    "@type": "Audience",
+                    "audienceType": "学生エンジニア、新卒エンジニア"
+                  }
+                }
+              ]
+            })
+          }}
+        />
         <ThemeProvider selectedTheme={theme}>
           {children}
         </ThemeProvider>
