@@ -289,10 +289,10 @@ export async function GET(request: NextRequest) {
                     .single()
 
                 // 新規ユーザーまたはオンボーディング未完了の場合
-                // LINE連携フローに直接遷移（友だち追加がデフォルトONの認証画面を表示）
+                // LINE連携ページに遷移（ユーザータップでUniversal Linksが機能）
                 if (!profileData?.onboarding_completed) {
-                    console.log('New user or onboarding not completed, redirecting to LINE auth')
-                    return NextResponse.redirect(`${origin}/api/auth/line`)
+                    console.log('New user or onboarding not completed, redirecting to LINE link page')
+                    return NextResponse.redirect(`${origin}/link-line`)
                 }
 
                 // 既存ユーザー（オンボーディング完了済み）
