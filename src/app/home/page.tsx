@@ -4,6 +4,7 @@ import { useEffect, useState, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import MainLayout from '@/components/layout/MainLayout'
+import LineSuggestionModal from '@/components/modals/LineSuggestionModal'
 import { Tables } from '@/app/database.types'
 // import IcebergVisualization from '@/components/growth/IcebergVisualization' // 氷山ビジュアライゼーション - デザインが分かりづらいためコメントアウト
 
@@ -1023,6 +1024,9 @@ function HomePageContent() {
 
   return (
     <MainLayout>
+      {/* LINE登録サジェストモーダル */}
+      <LineSuggestionModal />
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* 新しいプロフィールカード */}
         <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-4 sm:p-8 mb-8 border border-gray-100 dark:border-gray-700">
