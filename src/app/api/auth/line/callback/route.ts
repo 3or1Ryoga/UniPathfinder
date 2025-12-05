@@ -153,9 +153,9 @@ export async function GET(request: NextRequest) {
 
         console.log('LINE info saved successfully for user:', userId)
 
-        // ログインフロー内で友だち追加は完了しているため、
-        // アプリのオンボーディング画面へ直接遷移して離脱を防ぐ
-        return NextResponse.redirect(`${origin}/onboarding`)
+        // LINE連携完了後、ログインページへリダイレクトして自動再ログインを促す
+        // （別ブラウザでセッションがない場合に対応）
+        return NextResponse.redirect(`${origin}/?auto_login=true&line_linked=true`)
     } catch (error) {
         console.error('LINE OAuth callback error:', error)
         return NextResponse.redirect(

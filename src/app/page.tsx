@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useContext } from 'react'
+import { useState, useContext, useEffect, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { createClient } from '@/utils/supabase/client'
@@ -10,11 +11,14 @@ import { ThemeContext } from '@/contexts/ThemeProvider'
 import { ThemeType } from '@/types/theme'
 
 export default function LandingPage() {
+  const searchParams = useSearchParams()
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [lineLinkedMessage, setLineLinkedMessage] = useState(false)
   const { theme, changer } = useContext(ThemeContext)
+  const autoLoginTriggered = useRef(false)
 
   const handleGitHubLogin = async () => {
     try {
@@ -128,6 +132,28 @@ export default function LandingPage() {
       setGoogleLoading(false)
     }
   }
+
+  // LINE連携完了後の自動ログイン処理
+  useEffect(() => {
+    const autoLogin = searchParams.get('auto_login')
+    const lineLinked = searchParams.get('line_linked')
+
+    if (autoLogin === 'true' && !autoLoginTriggered.current) {
+      autoLoginTriggered.current = true
+
+      if (lineLinked === 'true') {
+        setLineLinkedMessage(true)
+      }
+
+      // 少し遅延を入れてから自動ログインを開始（UIが表示されてから）
+      const timer = setTimeout(() => {
+        handleGitHubLogin()
+      }, 1000)
+
+      return () => clearTimeout(timer)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:bg-black transition-colors duration-300">
@@ -292,6 +318,17 @@ export default function LandingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.6 }}
               >
+                {lineLinkedMessage && (
+                  <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-xl text-green-800 dark:text-green-200 text-sm">
+                    <div className="flex items-center gap-2">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>LINE連携が完了しました！GitHubでログインしてください。</span>
+                    </div>
+                  </div>
+                )}
+
                 {error && (
                   <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-800 dark:text-red-200 text-sm">
                     {error}
@@ -422,6 +459,17 @@ export default function LandingPage() {
 
             {/* スマホ専用コンテンツ */}
             <div className="lg:hidden space-y-6 w-full">
+              {lineLinkedMessage && (
+                <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-xl text-green-800 dark:text-green-200 text-sm">
+                  <div className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>LINE連携が完了しました！GitHubでログインしてください。</span>
+                  </div>
+                </div>
+              )}
+
               {error && (
                 <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-800 dark:text-red-200 text-sm">
                   {error}
