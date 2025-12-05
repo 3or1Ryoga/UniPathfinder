@@ -281,16 +281,20 @@ export async function GET(request: NextRequest) {
                 }
 
                 // GitHub/Google認証の場合の処理
-                // オンボーディング完了状態を確認
+                // オンボーディング完了状態とLINE連携状態を確認
                 const { data: profileData } = await supabase
                     .from('profiles')
-                    .select('onboarding_completed')
+                    .select('onboarding_completed, line_user_id')
                     .eq('id', userId)
                     .single()
 
                 // 新規ユーザーまたはオンボーディング未完了の場合
-                // LINE連携ページに遷移（ユーザータップでUniversal Linksが機能）
                 if (!profileData?.onboarding_completed) {
+                    // LINE連携済みなら /onboarding へ、未連携なら /link-line へ
+                    if (profileData?.line_user_id) {
+                        console.log('LINE already linked, redirecting to onboarding')
+                        return NextResponse.redirect(`${origin}/onboarding`)
+                    }
                     console.log('New user or onboarding not completed, redirecting to LINE link page')
                     return NextResponse.redirect(`${origin}/link-line`)
                 }
