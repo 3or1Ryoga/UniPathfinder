@@ -14,6 +14,7 @@ interface LineSuggestionModalProps {
 
 export default function LineSuggestionModal({ onClose }: LineSuggestionModalProps) {
   const [isOpen, setIsOpen] = useState(false)
+  const [confirmCount, setConfirmCount] = useState(0)
 
   useEffect(() => {
     // 既に登録済みの場合は表示しない
@@ -56,10 +57,15 @@ export default function LineSuggestionModal({ onClose }: LineSuggestionModalProp
   }
 
   const handleRegistered = () => {
-    // 登録済みフラグを保存
-    localStorage.setItem(STORAGE_KEY_REGISTERED, 'true')
-    setIsOpen(false)
-    onClose?.()
+    if (confirmCount === 0) {
+      // 1回目: 確認を促す
+      setConfirmCount(1)
+    } else {
+      // 2回目: 登録済みフラグを保存して閉じる
+      localStorage.setItem(STORAGE_KEY_REGISTERED, 'true')
+      setIsOpen(false)
+      onClose?.()
+    }
   }
 
   return (
@@ -71,13 +77,12 @@ export default function LineSuggestionModal({ onClose }: LineSuggestionModalProp
           exit={{ opacity: 0 }}
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
         >
-          {/* 背景オーバーレイ */}
+          {/* 背景オーバーレイ（クリックしても閉じない） */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-            onClick={handleClose}
           />
 
           {/* モーダルコンテンツ */}
@@ -163,9 +168,13 @@ export default function LineSuggestionModal({ onClose }: LineSuggestionModalProp
 
                 <button
                   onClick={handleRegistered}
-                  className="w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium rounded-xl transition-colors"
+                  className={`w-full py-3 px-4 font-medium rounded-xl transition-colors ${
+                    confirmCount === 0
+                      ? 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300'
+                      : 'bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/50 dark:hover:bg-blue-900/70 text-blue-700 dark:text-blue-300 ring-2 ring-blue-500'
+                  }`}
                 >
-                  登録済みです
+                  {confirmCount === 0 ? '登録済みです' : '本当に登録しましたか？（もう一度押してください）'}
                 </button>
 
                 <button
