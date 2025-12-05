@@ -877,34 +877,6 @@ export default function OnboardingPage() {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      生年月日（任意）
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <select
-                        value={formData.birth_year}
-                        onChange={(e) => setFormData({ ...formData, birth_year: e.target.value })}
-                        className="px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      >
-                        <option value="">年</option>
-                        {Array.from({ length: 50 }, (_, i) => 2010 - i).map(year => (
-                          <option key={year} value={year}>{year}年</option>
-                        ))}
-                      </select>
-                      <select
-                        value={formData.birth_month}
-                        onChange={(e) => setFormData({ ...formData, birth_month: e.target.value })}
-                        className="px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      >
-                        <option value="">月</option>
-                        {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
-                          <option key={month} value={month}>{month}月</option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                       職業<span className="text-red-500">*</span>
                     </label>
                     <div className="grid grid-cols-2 gap-2">
@@ -953,10 +925,11 @@ export default function OnboardingPage() {
                         required
                       >
                         <option value="">年</option>
-                        {[2025, 2026, 2027, 2028, 2029, 2030].map(year => (
+                        {[2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033].map(year => (
                           <option key={year} value={year}>{year}年</option>
                         ))}
                         <option value="0">卒業済み</option>
+                        <option value="-1">その他</option>
                       </select>
                       <select
                         className="px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
