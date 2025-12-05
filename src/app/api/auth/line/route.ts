@@ -30,10 +30,28 @@ export async function GET(request: NextRequest) {
         // ランダムなstateを生成（CSRF対策）
         const state = crypto.randomUUID()
 
+        // stateをDBに保存（Cookieの代わり - ブラウザ間で引き継ぎ可能にするため）
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10分後
+        const { error: updateError } = await supabase
+            .from('profiles')
+            .update({
+                line_oauth_state: state,
+                line_oauth_state_expires_at: expiresAt.toISOString()
+            })
+            .eq('id', user.id)
+
+        if (updateError) {
+            console.error('Failed to save OAuth state:', updateError)
+            return NextResponse.json(
+                { error: 'Failed to initiate LINE authentication' },
+                { status: 500 }
+            )
+        }
+
         // 全ユーザーに対し、ログイン同意画面で友だち追加を「デフォルトON」で提案する
         const botPrompt = '&bot_prompt=aggressive'
 
-        // stateをセッションに保存（クッキーを使用）
+        // LINE認証画面にリダイレクト
         const response = NextResponse.redirect(
             `https://access.line.me/oauth2/v2.1/authorize?` +
             `response_type=code` +
@@ -43,25 +61,6 @@ export async function GET(request: NextRequest) {
             `&scope=profile%20openid` +
             botPrompt
         )
-
-        // stateとuserIdをクッキーに保存
-        // sameSite: 'none' を使用してクロスサイトでも動作するようにする
-        // ※ 'none' を使う場合は secure: true が必須
-        response.cookies.set('line_oauth_state', state, {
-            httpOnly: true,
-            secure: true, // 本番環境では必須
-            sameSite: 'none', // クロスサイトリクエストでもクッキーを送信
-            maxAge: 600, // 10分
-            path: '/'
-        })
-
-        response.cookies.set('line_oauth_user_id', user.id, {
-            httpOnly: true,
-            secure: true, // 本番環境では必須
-            sameSite: 'none', // クロスサイトリクエストでもクッキーを送信
-            maxAge: 600, // 10分
-            path: '/'
-        })
 
         return response
     } catch (error) {

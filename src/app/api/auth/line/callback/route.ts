@@ -25,23 +25,38 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        // クッキーからstateとuserIdを取得
-        const savedState = request.cookies.get('line_oauth_state')?.value
-        const userId = request.cookies.get('line_oauth_user_id')?.value
+        const supabase = await createClient()
+
+        // DBからstateを検索してユーザーを特定（Cookieの代わり - ブラウザ間で動作）
+        const { data: profileWithState, error: stateError } = await supabase
+            .from('profiles')
+            .select('id, line_oauth_state, line_oauth_state_expires_at')
+            .eq('line_oauth_state', state)
+            .single()
 
         // CSRF対策: stateの検証
-        if (!savedState || savedState !== state) {
-            console.error('State mismatch:', { savedState, state })
+        if (stateError || !profileWithState) {
+            console.error('State not found in DB:', { state, error: stateError })
             return NextResponse.redirect(
                 `${origin}/link-line?error=${encodeURIComponent('セキュリティエラー: 無効なリクエストです')}`
             )
         }
 
-        if (!userId) {
+        // 有効期限のチェック
+        const expiresAt = new Date(profileWithState.line_oauth_state_expires_at)
+        if (expiresAt < new Date()) {
+            console.error('OAuth state expired:', { expiresAt })
+            // 期限切れのstateをクリア
+            await supabase
+                .from('profiles')
+                .update({ line_oauth_state: null, line_oauth_state_expires_at: null })
+                .eq('id', profileWithState.id)
             return NextResponse.redirect(
-                `${origin}/link-line?error=${encodeURIComponent('ユーザーセッションが見つかりません')}`
+                `${origin}/link-line?error=${encodeURIComponent('認証の有効期限が切れました。もう一度お試しください。')}`
             )
         }
+
+        const userId = profileWithState.id
 
         // 環境変数の取得
         const channelId = process.env.NEXT_PUBLIC_LINE_CHANNEL_ID
@@ -100,8 +115,6 @@ export async function GET(request: NextRequest) {
         console.log('LINE profile data received:', { userId: profileData.userId, displayName: profileData.displayName })
 
         // Step 3: Supabase profilesテーブルを更新
-        const supabase = await createClient()
-
         // まず、同じLINE user IDが別のユーザーに紐付いていないかチェック
         const { data: existingProfiles } = await supabase
             .from('profiles')
@@ -117,13 +130,15 @@ export async function GET(request: NextRequest) {
             )
         }
 
-        // 現在のユーザーにLINE情報を紐付け
+        // 現在のユーザーにLINE情報を紐付け + OAuth stateをクリア
         const { error: updateError } = await supabase
             .from('profiles')
             .update({
                 line_user_id: profileData.userId,
                 line_display_name: profileData.displayName,
                 line_avatar_url: profileData.pictureUrl || null,
+                line_oauth_state: null,
+                line_oauth_state_expires_at: null,
                 updated_at: new Date().toISOString(),
             })
             .eq('id', userId)
@@ -140,13 +155,7 @@ export async function GET(request: NextRequest) {
 
         // ログインフロー内で友だち追加は完了しているため、
         // アプリのオンボーディング画面へ直接遷移して離脱を防ぐ
-        const response = NextResponse.redirect(`${origin}/onboarding`)
-
-        // クッキーを削除
-        response.cookies.delete('line_oauth_state')
-        response.cookies.delete('line_oauth_user_id')
-
-        return response
+        return NextResponse.redirect(`${origin}/onboarding`)
     } catch (error) {
         console.error('LINE OAuth callback error:', error)
         return NextResponse.redirect(
