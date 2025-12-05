@@ -138,9 +138,9 @@ export async function GET(request: NextRequest) {
 
         console.log('LINE info saved successfully for user:', userId)
 
-        // LINE友達追加ページに直接リダイレクト
-        // ユーザーはLINE公式アカウントを友達追加し、Botからオンボーディングリンクを受け取る
-        const response = NextResponse.redirect('https://line.me/R/ti/p/@409fwjcr')
+        // ログインフロー内で友だち追加は完了しているため、
+        // アプリのオンボーディング画面へ直接遷移して離脱を防ぐ
+        const response = NextResponse.redirect(`${origin}/onboarding`)
 
         // クッキーを削除
         response.cookies.delete('line_oauth_state')

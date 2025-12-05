@@ -30,12 +30,8 @@ export async function GET(request: NextRequest) {
         // ランダムなstateを生成（CSRF対策）
         const state = crypto.randomUUID()
 
-        // User-Agentからモバイルデバイスかどうかを判定
-        const userAgent = request.headers.get('user-agent') || ''
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(userAgent)
-
-        // モバイルの場合、bot_prompt=normalを追加してLINEアプリを優先的に開く
-        const botPrompt = isMobile ? '&bot_prompt=normal' : ''
+        // 全ユーザーに対し、ログイン同意画面で友だち追加を「デフォルトON」で提案する
+        const botPrompt = '&bot_prompt=aggressive'
 
         // stateをセッションに保存（クッキーを使用）
         const response = NextResponse.redirect(
