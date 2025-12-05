@@ -24,9 +24,9 @@ const MAIN_ROLES = [
 // プログラミング経験レベル
 const PROGRAMMING_EXPERIENCE_LEVELS = [
   { id: 'created', label: '作ったものがある', prompt: '何を作りましたか？（例：ToDoアプリ、ゲーム）' },
-  { id: 'academic', label: '授業/研究でプログラミング経験', prompt: 'どんな授業/研究ですか？' },
-  { id: 'self_learning', label: '独学で勉強中', prompt: '何を勉強中ですか？' },
-  { id: 'want_to_learn', label: 'これから学びたい', prompt: 'なぜプログラミングを学びたいですか？（50文字程度）' }
+  { id: 'academic', label: '授業/研究でプログラミング経験', prompt: 'どんな授業/研究ですか？（例：情報工学基礎、機械学習の研究）' },
+  { id: 'self_learning', label: '独学で勉強中', prompt: '何を勉強中ですか？（例：Reactでのフロントエンド開発、Pythonでデータ分析）' },
+  { id: 'want_to_learn', label: 'これから学びたい', prompt: 'なぜプログラミングを学びたいですか？（例：自分のアイデアをアプリにしたい、データ分析スキルを身につけたい）' }
 ]
 
 // 興味のある分野
