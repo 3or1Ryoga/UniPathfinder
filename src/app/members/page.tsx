@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/utils/supabase/client'
 import Sidebar from '@/components/layout/Sidebar'
 import { motion } from 'framer-motion'
+import LineSuggestionModal from '@/components/modals/LineSuggestionModal'
 
 interface MemberProfile {
   id: string
@@ -536,6 +537,8 @@ export default function MembersPage() {
           </div>
         </div>
       </div>
+
+      <LineSuggestionModal />
     </>
   )
 }
