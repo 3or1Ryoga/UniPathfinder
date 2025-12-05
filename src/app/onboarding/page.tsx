@@ -798,30 +798,42 @@ export default function OnboardingPage() {
                       興味のあるイベント/バイト/職務<span className="text-red-500">*</span>
                     </h2>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-                      複数選択可
+                      3つまで選択可（{formData.interest_areas.length}/3）
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-3 mb-6">
-                    {INTEREST_AREAS.map(area => (
-                      <motion.button
-                        key={area}
-                        type="button"
-                        onClick={() => setFormData({
-                          ...formData,
-                          interest_areas: toggleArrayValue(formData.interest_areas, area)
-                        })}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className={`px-4 py-3 rounded-lg font-medium transition-all text-sm ${
-                          formData.interest_areas.includes(area)
-                            ? 'bg-blue-600 text-white shadow-md'
-                            : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
-                        }`}
-                      >
-                        {area}
-                      </motion.button>
-                    ))}
+                    {INTEREST_AREAS.map(area => {
+                      const isSelected = formData.interest_areas.includes(area)
+                      const isDisabled = !isSelected && formData.interest_areas.length >= 3
+
+                      return (
+                        <motion.button
+                          key={area}
+                          type="button"
+                          onClick={() => {
+                            if (!isDisabled) {
+                              setFormData({
+                                ...formData,
+                                interest_areas: toggleArrayValue(formData.interest_areas, area)
+                              })
+                            }
+                          }}
+                          whileHover={!isDisabled ? { scale: 1.05 } : {}}
+                          whileTap={!isDisabled ? { scale: 0.95 } : {}}
+                          className={`px-4 py-3 rounded-lg font-medium transition-all text-sm ${
+                            isSelected
+                              ? 'bg-blue-600 text-white shadow-md'
+                              : isDisabled
+                              ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 cursor-not-allowed opacity-50'
+                              : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'
+                          }`}
+                          disabled={isDisabled}
+                        >
+                          {area}
+                        </motion.button>
+                      )
+                    })}
                   </div>
 
                   <div>
@@ -1013,23 +1025,18 @@ export default function OnboardingPage() {
                     </div>
                   </div>
 
-                  {/* 詳細質問 - 検討中の場合は必須、未定の場合は任意 */}
-                  {formData.work_status && (
+                  {/* 詳細質問 - 検討中の場合のみ表示 */}
+                  {formData.work_status === 'considering' && (
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
                       className="space-y-6"
                     >
-                      {formData.work_status === 'undecided' && (
-                        <p className="text-sm text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                          以下の項目は任意です。決まっている範囲で入力してください。
-                        </p>
-                      )}
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      いつから働けますか？{formData.work_status === 'considering' && <span className="text-red-500">*</span>}
+                      いつから働けますか？<span className="text-red-500">*</span>
                     </label>
                     <div className="space-y-2">
                       {AVAILABILITY_OPTIONS.map(option => (
@@ -1053,7 +1060,7 @@ export default function OnboardingPage() {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      週何時間働けますか？{formData.work_status === 'considering' && <span className="text-red-500">*</span>}
+                      週何時間働けますか？<span className="text-red-500">*</span>
                     </label>
                     <div className="space-y-2">
                       {WEEKLY_HOURS_OPTIONS.map(option => (
@@ -1077,7 +1084,7 @@ export default function OnboardingPage() {
 
                   <div>
                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
-                      勤務スタイル{formData.work_status === 'considering' && <span className="text-red-500">*</span>}（複数選択可）
+                      勤務スタイル<span className="text-red-500">*</span>（複数選択可）
                     </label>
                     <div className="space-y-2">
                       {WORK_STYLES.map(style => (
